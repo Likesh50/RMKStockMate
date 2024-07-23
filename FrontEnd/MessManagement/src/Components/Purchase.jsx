@@ -1,11 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect  } from 'react';
 import styled from 'styled-components';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
-// Styled components
+import axios from 'axios';
 const Container = styled.div`
   h1 {
     color: #164863;
@@ -136,6 +135,26 @@ const SubmitButton = styled.button`
 const Purchase = () => {
   const [rows, setRows] = useState([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
   const numRecordsRef = useRef(null);
+  const [date, setDate] = useState(null);
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        console.log("Fetching items...");
+        const response = await axios.get("http://localhost:3002/purchase/getItems");
+        console.log("Items fetched:", response.data);
+        setItems(response.data);
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    };
+    fetchItems();
+  }, []);
+
+  const fetchCategoryForItem = (itemName) => {
+    const item = items.find(i => i.item === itemName);
+    return item ? item.category : '';
+  };
 
   const handleAddRows = () => {
     const numberOfRows = parseInt(numRecordsRef.current.value, 10);
@@ -144,27 +163,68 @@ const Purchase = () => {
       const newRows = Array.from({ length: numberOfRows }, (_, index) => ({
         id: Date.now() + index,
         sno: lastSno + index + 1,
+        id: Date.now() + index,
+        sno: lastSno + index + 1,
         quantity: '',
-        amount: ''
+        amount: '',
+        item: '',
+        category: ''
       }));
       setRows(prevRows => [...prevRows, ...newRows]);
+      numRecordsRef.current.value = '';
       numRecordsRef.current.value = '';
     }
   };
 
   const handleInputChange = (id, field, value) => {
-    const numericValue = value === '' ? '' : parseFloat(value) || 0;
-    setRows(prevRows =>
-      prevRows.map(row =>
-        row.id === id ? { ...row, [field]: numericValue, totalAmount: (row.quantity || 0) * (row.amount || 0) } : row
-      )
-    );
+    if (field === 'item') {
+      const category = fetchCategoryForItem(value);
+      setRows(prevRows =>
+        prevRows.map(row =>
+          row.id === id ? { ...row, [field]: value, category } : row
+        )
+      );
+    } else {
+      const numericValue = value === '' ? 0 : parseFloat(value);
+      setRows(prevRows =>
+        prevRows.map(row =>
+          row.id === id ? { ...row, [field]: numericValue, totalAmount: (row.quantity || 0) * (row.amount || 0) } : row
+        )
+      );
+    }
   };
 
-  const handleSubmit = () => {
-    // Add your submit logic here
-    alert('Form submitted');
+  const handleSubmit = async () => {
+    if (!date) {
+      alert("Please enter the date.");
+      return;
+    }
+
+    // Format date to YYYY-MM-DD format
+    const formattedDate = date.format('YYYY-MM-DD');
+
+    // Prepare data to send
+    const formattedRows = rows.map(row => ({
+      ...row,
+      amount: isNaN(row.amount) ? 0 : row.amount,
+      quantity: isNaN(row.quantity) ? 0 : row.quantity,
+      totalAmount: isNaN(row.totalAmount) ? 0 : row.totalAmount // Ensure totalAmount is valid
+    }));
+
+    try {
+      console.log("Submitting data...", { date: formattedDate, arr: formattedRows });
+      const response = await axios.post('http://localhost:3002/purchase/add', {
+        date: formattedDate,
+        arr: formattedRows
+      });
+      console.log("Response from server:", response.data);
+      alert("Items added successfully");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
   };
+
 
   return (
     <Container>
@@ -172,7 +232,9 @@ const Purchase = () => {
       <FormContainer>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
-            <DatePicker label="Basic date picker" className="date-picker" />
+            <DatePicker label="Basic date picker" className="date-picker" onChange={(newDate) => setDate(newDate)}
+            value={date}
+            format="YYYY-MM-DD" />
           </DemoContainer>
         </LocalizationProvider>
         <Records>
@@ -201,13 +263,27 @@ const Purchase = () => {
             <tr key={row.id}>
               <td className='sno'>{row.sno}</td>
               <td>
-                <select className="item-select">
+              <select
+                  className="item-select"
+                  value={row.item}
+                  onChange={(e) => handleInputChange(row.id, 'item', e.target.value)}
+                >
                   <option value="">SELECT</option>
-                  {/* Add more options as needed */}
+                  {items.map((item, idx) => (
+                    <option key={idx} value={item.item}>
+                      {item.item}
+                    </option>
+                  ))}
                 </select>
               </td>
               <td>
-                <input type="text" className="item-input" placeholder="Category" />
+                <input
+                  type="text"
+                  className="item-input"
+                  placeholder="Category"
+                  value={row.category}
+                  readOnly
+                />
               </td>
               <td>
                 <input

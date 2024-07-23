@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import Axios from 'axios';
 
 // Styled components
 const Container = styled.div`
@@ -88,6 +89,32 @@ const TableHeader = styled.table`
 `;
 
 function AvailableStock() {
+  const [curr, setCurr] = useState([]);
+  const [filteredCurr, setFilteredCurr] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    Axios.get('http://localhost:3002/stocks/availablestock')
+      .then(res => {
+        setCurr(res.data.data); // Access data from the response
+        setFilteredCurr(res.data.data); // Initialize filtered data with fetched data
+        console.log(res.data);
+      })
+      .catch(err => console.error("Error fetching stock data:", err));
+  }, []);
+
+  const handleSearch = (e) => {
+    const searchValue = e.target.value;
+    setSearchTerm(searchValue);
+    
+    // Filter `curr` data based on the search term
+    const filteredData = curr.filter(item =>
+      item.itemName.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    
+    setFilteredCurr(filteredData);
+  };
+
   return (
     <Container>
       <h1>Available Stock</h1>
@@ -96,38 +123,31 @@ function AvailableStock() {
           type="text"
           className="search-input"
           placeholder="Enter item name"
+          value={searchTerm}
+          onChange={handleSearch} // Update search term and filter data
         />
-        <button className="search-button">Search</button>
+        <button className="search-button" onClick={() => handleSearch({ target: { value: searchTerm } })}>Search</button>
       </SearchContainer>
       <TableHeader>
         <thead>
           <tr>
-            <th>ITEMS</th>
+            <th>ITEM</th>
             <th>CATEGORY</th>
             <th>QUANTITY</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Item 1</td>
-            <td>Category A</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>Item 2</td>
-            <td>Category B</td>
-            <td>150</td>
-          </tr>
-          <tr>
-            <td>Item 3</td>
-            <td>Category C</td>
-            <td>200</td>
-          </tr>
-          <tr>
-            <td>Item 4</td>
-            <td>Category D</td>
-            <td>250</td>
-          </tr>
+          {filteredCurr.length > 0 ? filteredCurr.map((item, index) => (
+            <tr key={index}>
+              <td>{item.itemName}</td>
+              <td>{item.category}</td>
+              <td>{item.quantity}</td>
+            </tr>
+          )) : (
+            <tr>
+              <td colSpan="3">No data available</td>
+            </tr>
+          )}
         </tbody>
       </TableHeader>
     </Container>
