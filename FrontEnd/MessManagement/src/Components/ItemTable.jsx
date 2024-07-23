@@ -34,7 +34,6 @@ const ItemTable = () => {
     const numberOfRows = parseInt(numRecordsRef.current.value, 10);
     if (numberOfRows > 0) {
       const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
-      const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
       const newRows = Array.from({ length: numberOfRows }, (_, index) => ({
         id: Date.now() + index,
         sno: lastSno + index + 1,
