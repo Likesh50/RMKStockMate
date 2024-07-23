@@ -5,6 +5,7 @@ import LoginPage from './Components/LoginPage'
 import Layout from "./Components/Layout";
 import Dispatch from "./Components/Dispatch";
 import Purchase from "./Components/Purchase.jsx";
+import AvailableStock from "./Components/AvailableStock.jsx";
 
 
 function ScrollToTop() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/dashboard/*" element={<Layout/>}>
               <Route index element={<Purchase/>} />
               <Route path="dispatch" element={<Dispatch/>} />
+              <Route path="available" element={<AvailableStock/>} />
           </Route>
           </Routes>
       </Router>

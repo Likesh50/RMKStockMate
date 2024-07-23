@@ -9,33 +9,32 @@ import add from '../assets/add.png'
 import menu from '../assets/menu.png'
 import view from '../assets/view.png'
 function SideBar() {
-
     const isActive = (path) => {
         return location.pathname === path ? 'active' : '';
       };
   return (
     <div className="sidebar">
       <ul>
-      <li className={isActive('/purchase')}>
+      <li className={isActive('/dashboard')}>
           <Link to="./">
             <img src={purchase} width="40px" height="40px" alt="Faculty Details" />
             Purchase
           </Link>
         </li>
-        <li className={isActive('/purchase')}>
+        <li className={isActive('/dashboard/dispatch')}>
           <Link to="./dispatch">
             <img src={dispatch} width="60px" height="40px" alt="Mail" />
             Dispatch
           </Link>
         </li>
-        <li className={isActive('/purchase')}>
-          <Link to="purchase">
+        <li className={isActive('/available')}>
+          <Link to="available">
             <img src={Available} width="40px" height="40px" alt="other forms" />
             Available Stock
           </Link>
         </li>
         <li className={isActive('/purchase')}>
-          <Link to="purchase">
+          <Link to="">
             <img src={reports} width="40px" height="40px" alt="other forms" />
             Reports
           </Link>
