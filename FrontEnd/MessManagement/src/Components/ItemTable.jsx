@@ -34,7 +34,10 @@ const ItemTable = () => {
     const numberOfRows = parseInt(numRecordsRef.current.value, 10);
     if (numberOfRows > 0) {
       const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
+      const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
       const newRows = Array.from({ length: numberOfRows }, (_, index) => ({
+        id: Date.now() + index,
+        sno: lastSno + index + 1,
         id: Date.now() + index,
         sno: lastSno + index + 1,
         quantity: '',
@@ -43,6 +46,7 @@ const ItemTable = () => {
         category: ''
       }));
       setRows(prevRows => [...prevRows, ...newRows]);
+      numRecordsRef.current.value = '';
       numRecordsRef.current.value = '';
     }
   };
@@ -120,12 +124,14 @@ const ItemTable = () => {
       <table className="item-table">
         <thead>
           <tr>
+          <tr>
             <th>SNo</th>
             <th>Select Item</th>
             <th>Category</th>
             <th>Quantity</th>
             <th>Amount</th>
             <th>Total Amount</th>
+          </tr>
           </tr>
         </thead>
         <tbody>
@@ -193,4 +199,4 @@ const ItemTable = () => {
   );
 };
 
-export default ItemTable;
+export default ItemTableComponent;
