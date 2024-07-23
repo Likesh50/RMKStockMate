@@ -4,7 +4,7 @@
     width: 85px;
     display: flex;
     flex-direction: column;
-    margin-top: 60px;
+    margin-top: 70px;
     left: 0;
     z-index: 10;
     transition: left 0.3s ease-in-out;

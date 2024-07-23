@@ -1,8 +1,8 @@
 import React from 'react'
-
+import './Navigation.css'
 function Navigation() {
   return (
-    <div>Navigation</div>
+    <div className='navigation'>Navigation</div>
   )
 }
 
