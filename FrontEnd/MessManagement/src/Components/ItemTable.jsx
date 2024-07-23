@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState,useEffect } from 'react';
 import './ItemTable.css'; // Import your CSS file
-import axios from "axios";
+
 const ItemTable = () => {
   useEffect(() => {
     const fetchItems = async () => {
@@ -35,6 +35,7 @@ const ItemTable = () => {
           <td>
             <select className="item-select">
               <option value="">SELECT</option>
+              {/* Add more options as needed */}
             </select>
           </td>
           <td>
