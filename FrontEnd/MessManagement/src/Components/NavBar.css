@@ -65,6 +65,9 @@
     justify-content: center;
     gap: 20px;
     h5{
-      margin-top: 9px;
+      margin-top: 0px;
     }
+  }
+  .txt{
+    margin-top: 10px;
   }

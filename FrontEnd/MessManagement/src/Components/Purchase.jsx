@@ -1,180 +1,250 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Table } from "react-bootstrap";
-import './purchase.css';
-import "./tables.css";
+import React, { useState, useRef } from 'react';
+import styled from 'styled-components';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-// Setting up Axios interceptors for logging requests and responses
-axios.interceptors.request.use(request => {
-  console.log('Starting Request', request);
-  return request;
-});
+// Styled components
+const Container = styled.div`
+  h1 {
+    color: #164863;
+    text-align: center;
+  }
+`;
 
-axios.interceptors.response.use(response => {
-  console.log('Response:', response);
-  return response;
-});
+const FormContainer = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 450px;
+`;
 
-export default function Purchase() {
-  const [items, setItems] = useState([]);
-  const [formData, setFormData] = useState([{ item: "", category: "", quantity: 0, amount: 0, total: 0 }]);
-  const [date, setDate] = useState("");
-  const [numRows, setNumRows] = useState(1);
+const Records = styled.div`
+  display: flex;
+  flex-direction: column;
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        console.log("Fetching items...");
-        const response = await axios.get("http://localhost:3002/purchase/getItems");
-        console.log("Items fetched:", response.data);
-        setItems(response.data);
-      } catch (error) {
-        console.error("Error fetching items:", error);
-      }
-    };
-    console.log("Working");
-    fetchItems();
-  }, []);
+  label {
+    margin-left: 12px;
+  }
+`;
 
-  const handleInputChange = (index, field, value) => {
-    const updatedFormData = [...formData];
-    updatedFormData[index] = { ...updatedFormData[index], [field]: value };
-    if (field === 'quantity' || field === 'amount') {
-      updatedFormData[index].total = updatedFormData[index].quantity * updatedFormData[index].amount;
+const InputNumber = styled.input`
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f4f4f4;
+  margin-left: 10px;
+`;
+
+const AddButton = styled.button`
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #164863;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 24px;
+  margin-left: 10px;
+
+  &:hover {
+    background-color: #0a3d62;
+  }
+`;
+
+const ItemTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  th {
+    background-color: #164863;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  tbody tr {
+    background-color: #f9f9f9;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f1f1f1;
+  }
+
+  tbody tr:hover {
+    background-color: #e0f7fa;
+    color: #000;
+  }
+
+  td input {
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  td input:focus {
+    outline: 2px solid #164863;
+  }
+
+  .item-select {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .sno {
+    min-width: 50px;
+  }
+`;
+
+const SubmitContainer = styled.div`
+  margin-top: 20px;
+  text-align: center;
+`;
+
+const SubmitButton = styled.button`
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+
+  &:hover {
+    background-color: #45a049;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;
+
+const Purchase = () => {
+  const [rows, setRows] = useState([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
+  const numRecordsRef = useRef(null);
+
+  const handleAddRows = () => {
+    const numberOfRows = parseInt(numRecordsRef.current.value, 10);
+    if (numberOfRows > 0) {
+      const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
+      const newRows = Array.from({ length: numberOfRows }, (_, index) => ({
+        id: Date.now() + index,
+        sno: lastSno + index + 1,
+        quantity: '',
+        amount: ''
+      }));
+      setRows(prevRows => [...prevRows, ...newRows]);
+      numRecordsRef.current.value = '';
     }
-    setFormData(updatedFormData);
   };
 
-  const addRows = () => {
-    const newRows = Array.from({ length: numRows }, () => ({ item: "", category: "", quantity: 0, amount: 0, total: 0 }));
-    setFormData([...formData, ...newRows]);
+  const handleInputChange = (id, field, value) => {
+    const numericValue = value === '' ? '' : parseFloat(value) || 0;
+    setRows(prevRows =>
+      prevRows.map(row =>
+        row.id === id ? { ...row, [field]: numericValue, totalAmount: (row.quantity || 0) * (row.amount || 0) } : row
+      )
+    );
   };
 
-  const submit = async () => {
-    if (!date) {
-      alert("Please enter the date.");
-      return;
-    }
-
-    try {
-      console.log("Submitting data...", { date, arr: formData });
-      const response = await axios.post('http://localhost:3002/purchase/add', {
-        date,
-        arr: formData
-      });
-      console.log("Response from server:", response.data);
-      alert("Items added successfully");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error submitting data:", error);
-    }
+  const handleSubmit = () => {
+    // Add your submit logic here
+    alert('Form submitted');
   };
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-3"></div>
-        <div className="col-9">
-          <div className="container">
-            <h1 className="h1-dis">FOOD MANAGEMENT SYSTEM</h1>
-            <h2 className="h2-dis">PURCHASE</h2>
-            <div className="row r-dis">
-              <div className="col-3">
-                <label htmlFor="date" id="date-label"><b>Date:</b></label>
-                <input type="date" id="date" name="date" className="inpt-d" value={date} onChange={(e) => setDate(e.target.value)} />
-              </div>
-              <div className="col-3"></div>
-              <div className="col-3">
-                <label htmlFor="number" id="row"><b>Enter number of rows:</b></label>
-                <div className="div">
-                  <input 
-                    type="number" 
-                    id="num" 
-                    className="inpt-r" 
-                    min='1' 
-                    value={numRows} 
-                    onChange={(e) => setNumRows(Number(e.target.value))} 
-                  />
-                  <button className="btn btn-primary btn-pur" id="add-btn" onClick={addRows}>Add</button>
-                </div>
-              </div>
-            </div>
-            <div className="row tab-dis">
-              <Table striped bordered hover id="table">
-                <thead className="t-pur">
-                  <tr>
-                    <th>SNo</th>
-                    <th>Select Item</th>
-                    <th>Category</th>
-                    <th>Quantity</th>
-                    <th>Amount</th>
-                    <th>Total Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {formData.map((row, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          value={row.item}
-                          onChange={(e) => handleInputChange(index, 'item', e.target.value)}
-                        >
-                          <option value="">Select</option>
-                          {items.map((item, idx) => (
-                            <option key={idx} value={item.item}>
-                              {item.item}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Category"
-                          value={row.category}
-                          onChange={(e) => handleInputChange(index, 'category', e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Quantity"
-                          value={row.quantity}
-                          onChange={(e) => handleInputChange(index, 'quantity', Number(e.target.value))}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Amount"
-                          value={row.amount}
-                          onChange={(e) => handleInputChange(index, 'amount', Number(e.target.value))}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          className="form-control"
-                          placeholder="Total Amount"
-                          value={row.total}
-                          disabled
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-            <button className="btn btn-primary btn-dis1" id="submit-btn" onClick={submit}>Submit</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Container>
+      <h1>PURCHASE</h1>
+      <FormContainer>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer components={['DatePicker']}>
+            <DatePicker label="Basic date picker" className="date-picker" />
+          </DemoContainer>
+        </LocalizationProvider>
+        <Records>
+          <label>No of records:</label>
+          <InputNumber
+            type='number'
+            id='num-records'
+            ref={numRecordsRef}
+          />
+        </Records>
+        <AddButton onClick={handleAddRows}>Add</AddButton>
+      </FormContainer>
+      <ItemTable>
+        <thead>
+          <tr>
+            <th>SNo</th>
+            <th>Select Item</th>
+            <th>Category</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Total Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(row => (
+            <tr key={row.id}>
+              <td className='sno'>{row.sno}</td>
+              <td>
+                <select className="item-select">
+                  <option value="">SELECT</option>
+                  {/* Add more options as needed */}
+                </select>
+              </td>
+              <td>
+                <input type="text" className="item-input" placeholder="Category" />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  className="item-input"
+                  placeholder="Quantity"
+                  value={row.quantity}
+                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  className="item-input"
+                  placeholder="Amount"
+                  value={row.amount}
+                  onChange={(e) => handleInputChange(row.id, 'amount', e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  className="item-input"
+                  placeholder="Total Amount"
+                  value={(row.quantity || 0) * (row.amount || 0)}
+                  readOnly
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </ItemTable>
+      <SubmitContainer>
+        <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+      </SubmitContainer>
+    </Container>
   );
-}
+};
+
+export default Purchase;

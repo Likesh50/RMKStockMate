@@ -17,13 +17,13 @@ function SideBar() {
     <div className="sidebar">
       <ul>
       <li className={isActive('/purchase')}>
-          <Link to="purchase">
+          <Link to="./">
             <img src={purchase} width="40px" height="40px" alt="Faculty Details" />
             Purchase
           </Link>
         </li>
         <li className={isActive('/purchase')}>
-          <Link to="purchase">
+          <Link to="./dispatch">
             <img src={dispatch} width="60px" height="40px" alt="Mail" />
             Dispatch
           </Link>

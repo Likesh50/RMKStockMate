@@ -3,7 +3,10 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import './App.css'
 import LoginPage from './Components/LoginPage'
 import Layout from "./Components/Layout";
-import ItemTable from './Components/ItemTable';
+import Dispatch from "./Components/Dispatch";
+import Purchase from "./Components/Purchase.jsx";
+
+
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -22,7 +25,8 @@ function App() {
           <Routes>
           <Route path='/' element={<LoginPage/>}/>
           <Route path="/dashboard/*" element={<Layout/>}>
-              <Route index element={<ItemTable/>} />
+              <Route index element={<Purchase/>} />
+              <Route path="dispatch" element={<Dispatch/>} />
           </Route>
           </Routes>
       </Router>

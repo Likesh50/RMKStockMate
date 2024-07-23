@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
-import styled from 'styled-components';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import styled from 'styled-components';
 
 // Styled components
 const Container = styled.div`
@@ -58,6 +58,7 @@ const ItemTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
+  table-layout: auto;
 
   th, td {
     border: 1px solid #ddd;
@@ -87,25 +88,58 @@ const ItemTable = styled.table`
   }
 
   td input {
-    border: none;
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  td input:focus {
-    outline: 2px solid #164863;
-  }
-
-  .item-select {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 8px;
     font-size: 14px;
+    width: 90%;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+  }
+
+  td input:focus {
+    border-color: #164863;
+    outline: none;
+    box-shadow: 0 0 5px rgba(22, 72, 99, 0.3);
+  }
+
+  td input::placeholder {
+    color: #888;
+    font-style: italic;
+  }
+
+  td select {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    min-width: 180px;
   }
 
   .sno {
     min-width: 50px;
+  }
+
+  /* Specific column widths */
+  th:nth-child(4),
+  td:nth-child(4) {
+    width: 130px;
+  }
+
+  th:nth-child(5),
+  td:nth-child(5) {
+    width: 130px;
+  }
+
+  th:nth-child(6),
+  td:nth-child(6) {
+    width: 130px;
+  }
+
+  th:nth-child(7),
+  td:nth-child(7) {
+    width: 130px;
   }
 `;
 
@@ -133,7 +167,7 @@ const SubmitButton = styled.button`
   }
 `;
 
-const ItemTableComponent = () => {
+function Dispatch() {
   const [rows, setRows] = useState([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
   const numRecordsRef = useRef(null);
 
@@ -168,7 +202,7 @@ const ItemTableComponent = () => {
 
   return (
     <Container>
-      <h1>PURCHASE</h1>
+      <h1>DISPATCH</h1>
       <FormContainer>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
@@ -189,11 +223,13 @@ const ItemTableComponent = () => {
         <thead>
           <tr>
             <th>SNo</th>
-            <th>Select Item</th>
-            <th>Category</th>
-            <th>Quantity</th>
-            <th>Amount</th>
-            <th>Total Amount</th>
+            <th>Select Items</th>
+            <th>Total Quantity</th>
+            <th>RMK</th>
+            <th>RMD</th>
+            <th>RMKCET</th>
+            <th>School</th>
+            <th>Current Quantity</th>
           </tr>
         </thead>
         <tbody>
@@ -207,14 +243,18 @@ const ItemTableComponent = () => {
                 </select>
               </td>
               <td>
-                <input type="text" className="item-input" placeholder="Category" />
+                <input
+                  type="number"
+                  className="item-input"
+                  placeholder="Total Quantity"
+                  onChange={(e) => handleInputChange(row.id, 'totalQuantity', e.target.value)}
+                />
               </td>
               <td>
                 <input
                   type="number"
                   className="item-input"
                   placeholder="Quantity"
-                  value={row.quantity}
                   onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
                 />
               </td>
@@ -222,18 +262,32 @@ const ItemTableComponent = () => {
                 <input
                   type="number"
                   className="item-input"
-                  placeholder="Amount"
-                  value={row.amount}
-                  onChange={(e) => handleInputChange(row.id, 'amount', e.target.value)}
+                  placeholder="Quantity"
+                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
                 />
               </td>
               <td>
                 <input
-                  type="text"
+                  type="number"
                   className="item-input"
-                  placeholder="Total Amount"
-                  value={(row.quantity || 0) * (row.amount || 0)}
-                  readOnly
+                  placeholder="Quantity"
+                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  className="item-input"
+                  placeholder="Quantity"
+                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                />
+              </td>
+              <td>
+                <input
+                  type="number"
+                  className="item-input"
+                  placeholder="Current Quantity"
+                  onChange={(e) => handleInputChange(row.id, 'currentQuantity', e.target.value)}
                 />
               </td>
             </tr>
@@ -245,6 +299,6 @@ const ItemTableComponent = () => {
       </SubmitContainer>
     </Container>
   );
-};
+}
 
-export default ItemTableComponent;
+export default Dispatch;
