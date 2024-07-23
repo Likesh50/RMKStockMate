@@ -4,7 +4,7 @@ const mysql = require("mysql2");
 const cors = require("cors");
 let bodyParser = require('body-parser');
 const db = require('./db');
-const purchaseRtr = require('../routes/Purchase');
+const purchaseRtr = require('./Routes/Purchase');
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));

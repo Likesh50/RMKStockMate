@@ -1,6 +1,6 @@
 const mysql=require('mysql2');
 var express = require('express');
-const db = require('../database');
+const db = require('../db');
 var router = express.Router();
 router.get('/getItems', async (req, res) => {
     try {
