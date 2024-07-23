@@ -4,6 +4,7 @@ const db = require('../db');
 var router = express.Router();
 router.get('/getItems', async (req, res) => {
     try {
+      console.log("working");
       const [rows] = await db.promise().query('SELECT item FROM category ORDER BY item');
       res.status(200).json(rows);
     } catch (error) {
