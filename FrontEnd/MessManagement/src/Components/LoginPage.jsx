@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import logo from '../assets/Logo.png';
 import backgroundImage from '../assets/Front.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const PageWrapper = styled.div`
   background-image: url(${backgroundImage});
@@ -63,18 +64,26 @@ const SubmitButton = styled.button`
   margin-left: 33%;
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+  margin-top: 20px;
+  font-size: 18px;
+  text-align: center;
+`;
+
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
+  const navigate=useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if ((username === 'ADMIN' || username === 'admin') && password === 'selva') {
       alert('Login successful');
+      navigate('dashboard');
+      setError(''); // Clear the error message on successful login
     } else {
-      alert("Invalid username or assword");
       setError('Invalid username or password');
     }
   };
@@ -85,7 +94,7 @@ function LoginPage() {
         <FlowerLogo>
           <LogoImage src={logo} alt="Logo" />
         </FlowerLogo>
-        <form>
+        <form onSubmit={handleSubmit}>
           <FormGroup>
             <Input
               type="text"
@@ -108,6 +117,7 @@ function LoginPage() {
           </FormGroup>
           <SubmitButton type="submit">Sign in</SubmitButton>
         </form>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
       </LoginForm>
     </PageWrapper>
   );

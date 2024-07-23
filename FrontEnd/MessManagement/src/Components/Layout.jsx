@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from 'react-router-dom';
 import NavBar from "./NavBar";
-import LoginPage from "../Pages/LoginPage";
 import './Layout.css'; 
 import Navigation from "./Navigation";
+import SideBar from "./SideBar";
 
 const Layout = () => {
     const navigate = useNavigate();
