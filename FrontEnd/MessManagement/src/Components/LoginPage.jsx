@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import logo from '../assets/Logo.png';
-import front from '../assets/Front.jpg'
-import './LoginPage.css'
+import './LoginPage.css';
+
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   return (
-    <div className='loginpage'>
+    <div className='loginpage'> 
       <div className="login-form">
         <div className="flower-logo">
           <img src={logo} alt="Logo" />
@@ -19,6 +19,7 @@ function LoginPage() {
               id="username"
               placeholder="USERNAME"
               value={username}
+              onChange={(e) => setUsername(e.target.value)}
               aria-label="Username"
             />
           </div>
@@ -28,6 +29,7 @@ function LoginPage() {
               id="password"
               placeholder="PASSWORD"
               value={password}
+              onChange={(e) => setPassword(e.target.value)}
               aria-label="Password"
             />
           </div>

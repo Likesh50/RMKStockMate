@@ -1,14 +1,14 @@
-import { useState } from 'react'
+import React from 'react'
 import './App.css'
 import LoginPage from './Components/LoginPage'
 
+
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <>
-        <LoginPage/>
-    </>
+    <div className='app'>
+      <LoginPage/>
+    </div>
   )
 }
 
