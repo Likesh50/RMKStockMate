@@ -1,0 +1,30 @@
+.item-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .item-table th, .item-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .item-table th {
+    background-color: #008000; /* Green background for headers */
+    color: white;
+  }
+  
+  .item-select, .item-input {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+  
+  .item-input[readonly] {
+    background-color: #f0f0f0; /* Grey background for read-only inputs */
+  }
+  
+  .item-input::placeholder {
+    font-style: italic;
+  }
+  

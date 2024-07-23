@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './SideBar.css';
 import { Link, useLocation } from 'react-router-dom';
-import front from '../assets/Front.jpg';
 import purchase from '../assets/purchase.png'
 import dispatch from '../assets/dispatch.png'
 import Available from '../assets/Available.png'
+import reports from '../assets/reports.png'
+import add from '../assets/add.png'
+import menu from '../assets/menu.png'
+import view from '../assets/view.png'
 function SideBar() {
 
     const isActive = (path) => {
@@ -29,6 +32,30 @@ function SideBar() {
           <Link to="purchase">
             <img src={Available} width="40px" height="40px" alt="other forms" />
             Available Stock
+          </Link>
+        </li>
+        <li className={isActive('/purchase')}>
+          <Link to="purchase">
+            <img src={reports} width="40px" height="40px" alt="other forms" />
+            Reports
+          </Link>
+        </li>
+        <li className={isActive('/purchase')}>
+          <Link to="purchase">
+            <img src={add} width="40px" height="40px" alt="other forms" />
+            Add Items
+          </Link>
+        </li>
+        <li className={isActive('/purchase')}>
+          <Link to="purchase">
+            <img src={menu} width="40px" height="40px" alt="other forms" />
+            Add Event menu
+          </Link>
+        </li>
+        <li className={isActive('/purchase')}>
+          <Link to="purchase">
+            <img src={view} width="40px" height="40px" alt="other forms" />
+            View Event menu
           </Link>
         </li>
       </ul>
