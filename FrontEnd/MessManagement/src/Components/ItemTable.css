@@ -1,67 +1,109 @@
-/* General Styles for Table */
+
 .item-table {
     width: 100%;
     border-collapse: collapse;
+    font-family: Arial, sans-serif;
   }
   
   .item-table th, .item-table td {
-    border: 1px solid #ccc;
-    padding: 8px;
+    border: 1px solid #ddd; 
+    padding: 12px; 
     text-align: left;
+    transition: background-color 0.3s, color 0.3s; 
   }
   
   .item-table th {
-    background-color: #164863; /* Green background for headers */
-    color: white;
+    background-color: #164863; 
+    color: white; 
+    font-size: 16px; 
+    font-weight: bold; 
   }
   
-  .item-select, .item-input {
-    width: 100%;
-    padding: 5px;
-    box-sizing: border-box;
+  .item-table tbody tr {
+    background-color: #f9f9f9; 
   }
   
-  .item-input[readonly] {
-    background-color: #f0f0f0; /* Grey background for read-only inputs */
+  .item-table tbody tr:nth-child(even) {
+    background-color: #f1f1f1; 
   }
   
-  .item-input::placeholder {
-    font-style: italic;
+  .item-table tbody tr:hover {
+    background-color: #e0f7fa; 
+    color: #000;
   }
   
-  /* Styles for Form Container */
-  .form-container {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Adjust the gap as needed */
-    margin-bottom: 20px; /* Space between form and table */
-  }
-  
-  /* Date Picker Styles */
-  .date-picker {
-    flex: 1; /* Adjust the flex value as needed */
-  }
-  
-  /* Input Number Styles */
-  .input-number {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 120px;
-  }
-  
-  /* Button Styles */
-  .add-button {
-    padding: 10px 20px;
-    background-color: #164863; /* Button background color */
-    color: white;
+  .item-table td input {
     border: none;
     border-radius: 4px;
+    padding: 8px;
+    font-size: 14px; 
+  }
+  
+  .item-table td input:focus {
+    outline: 2px solid #164863; 
+  }
+  
+  .item-select {
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px; 
+  }
+  
+
+  .form-container {
+    margin-bottom: 20px; 
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 350px;
+  }
+  
+  .input-number, .add-button {
+    margin-left: 10px;
+  }
+  
+  .input-number {
+    padding: 8px;
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+  }
+  
+  .add-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px; 
+    background-color: #164863;
+    color: white; 
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 14px; 
   }
   
   .add-button:hover {
-    background-color: #123456; /* Darker shade for hover effect */
+    background-color: #0a3d62;
+  }
+  
+.submit-container {
+    margin-top: 20px; 
+    text-align: center; 
+  }
+
+  .submit-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px; 
+    background-color: #4CAF50; 
+    color: white; 
+    font-size: 16px; 
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; 
+  }
+  
+  .submit-button:hover {
+    background-color: #45a049; 
+  }
+  
+  .submit-button:active {
+    transform: scale(0.98);
   }
   
