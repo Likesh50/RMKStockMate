@@ -4,6 +4,17 @@ import { Table } from "react-bootstrap";
 import './purchase.css';
 import "./tables.css";
 
+// Setting up Axios interceptors for logging requests and responses
+axios.interceptors.request.use(request => {
+  console.log('Starting Request', request);
+  return request;
+});
+
+axios.interceptors.response.use(response => {
+  console.log('Response:', response);
+  return response;
+});
+
 export default function Purchase() {
   const [items, setItems] = useState([]);
   const [formData, setFormData] = useState([{ item: "", category: "", quantity: 0, amount: 0, total: 0 }]);
@@ -11,35 +22,26 @@ export default function Purchase() {
   const [numRows, setNumRows] = useState(1);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3002/purchase/getItems")
-      .then(response => {
+    const fetchItems = async () => {
+      try {
+        console.log("Fetching items...");
+        const response = await axios.get("http://localhost:3002/purchase/getItems");
+        console.log("Items fetched:", response.data);
         setItems(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    };
+    console.log("Working");
+    fetchItems();
   }, []);
 
   const handleInputChange = (index, field, value) => {
     const updatedFormData = [...formData];
     updatedFormData[index] = { ...updatedFormData[index], [field]: value };
-    setFormData(updatedFormData);
-  };
-
-  const handleQuantityChange = (index, value) => {
-    const updatedFormData = [...formData];
-    const updatedItem = { ...updatedFormData[index], quantity: value };
-    updatedItem.total = updatedItem.quantity * updatedItem.amount;
-    updatedFormData[index] = updatedItem;
-    setFormData(updatedFormData);
-  };
-
-  const handleAmountChange = (index, value) => {
-    const updatedFormData = [...formData];
-    const updatedItem = { ...updatedFormData[index], amount: value };
-    updatedItem.total = updatedItem.quantity * updatedItem.amount;
-    updatedFormData[index] = updatedItem;
+    if (field === 'quantity' || field === 'amount') {
+      updatedFormData[index].total = updatedFormData[index].quantity * updatedFormData[index].amount;
+    }
     setFormData(updatedFormData);
   };
 
@@ -48,24 +50,24 @@ export default function Purchase() {
     setFormData([...formData, ...newRows]);
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!date) {
-      alert("Enter date please");
+      alert("Please enter the date.");
       return;
     }
-    
-    axios.post('http://localhost:3002/purchase/add', {
-      date,
-      arr: formData
-    })
-    .then(response => {
-      console.log(response.data);
+
+    try {
+      console.log("Submitting data...", { date, arr: formData });
+      const response = await axios.post('http://localhost:3002/purchase/add', {
+        date,
+        arr: formData
+      });
+      console.log("Response from server:", response.data);
       alert("Items added successfully");
       window.location.reload();
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
   };
 
   return (
@@ -143,7 +145,7 @@ export default function Purchase() {
                           className="form-control"
                           placeholder="Quantity"
                           value={row.quantity}
-                          onChange={(e) => handleQuantityChange(index, e.target.value)}
+                          onChange={(e) => handleInputChange(index, 'quantity', Number(e.target.value))}
                         />
                       </td>
                       <td>
@@ -152,7 +154,7 @@ export default function Purchase() {
                           className="form-control"
                           placeholder="Amount"
                           value={row.amount}
-                          onChange={(e) => handleAmountChange(index, e.target.value)}
+                          onChange={(e) => handleInputChange(index, 'amount', Number(e.target.value))}
                         />
                       </td>
                       <td>
