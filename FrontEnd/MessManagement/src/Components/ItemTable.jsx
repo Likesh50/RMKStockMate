@@ -1,165 +1,16 @@
-import React, { useState, useRef, useEffect  } from 'react';
-import styled from 'styled-components';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import React, { useState, useRef, useEffect } from 'react';
+import './ItemTable.css';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
-const Container = styled.div`
-  h1 {
-    color: #164863;
-    text-align: center;
-    font-weigth:800;
-  }
-`;
 
-const FormContainer = styled.div`
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-left: 450px;
-`;
-
-const Records = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  label {
-    margin-left: 12px;
-  }
-`;
-
-const InputNumber = styled.input`
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f4f4f4;
-  margin-left: 10px;
-  margin-top:24px;
-  width:190px;
-`;
-
-const AddButton = styled.button`
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  background-color: #164863;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 24px;
-  margin-left: 10px;
-
-  &:hover {
-    background-color: #0a3d62;
-  }
-`;
-
-const ItemTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  font-family: Arial, sans-serif;
-
-  th, td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-    transition: background-color 0.3s, color 0.3s;
-  }
-
-  th {
-    background-color: #164863;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-  }
-
-  tbody tr {
-    background-color: #f9f9f9;
-  }
-
-  tbody tr:nth-child(even) {
-    background-color: #f1f1f1;
-  }
-
-  tbody tr:hover {
-    background-color: #e0f7fa;
-    color: #000;
-  }
-
-  td input {
-    border: none;
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  td input:focus {
-    outline: 2px solid #164863;
-  }
-
-  .item-select {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 14px;
-  }
-
-  .sno {
-    min-width: 50px;
-  }
-`;
-
-const SubmitContainer = styled.div`
-  margin-top: 20px;
-  text-align: center;
-
-  .add-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #164863;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    margin-right: 10px;
-
-    &:hover {
-      background-color: #0a3d62;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-  }
-`;
-
-const SubmitButton = styled.button`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  background-color: #4caf50;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-
-  &:hover {
-    background-color: #45a049;
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-`;
-
-const Purchase = () => {
-  const [rows, setRows] = useState([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
+const ItemTable = () => {
+  const [rows, setRows] = useState([{ id: Date.now(), sno: 1, quantity: '', amount: '', item: '', category: '' }]);
   const numRecordsRef = useRef(null);
-  const [date, setDate] = useState(null);
   const [items, setItems] = useState([]);
+  const [date, setDate] = useState(null);
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -217,14 +68,6 @@ const Purchase = () => {
     }
   };
 
-  const handleAddOneRow = () => {
-    const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
-    setRows(prevRows => [
-      ...prevRows,
-      { id: Date.now(), sno: lastSno + 1, quantity: '', amount: '' }
-    ]);
-  };
-
   const handleSubmit = async () => {
     if (!date) {
       alert("Please enter the date.");
@@ -256,30 +99,30 @@ const Purchase = () => {
     }
   };
 
-
   return (
-    <Container>
-      <h1>PURCHASE</h1>
-      <FormContainer>
+    <div>
+      <div className="form-container">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={['DatePicker']}>
-            <DatePicker label="Basic date picker" className="date-picker" onChange={(newDate) => setDate(newDate)}
+          <DatePicker
+            label="Basic date picker"
+            className="date-picker"
+            onChange={(newDate) => setDate(newDate)}
             value={date}
-            format="YYYY-MM-DD" />
-          </DemoContainer>
-        </LocalizationProvider>
-        <Records>
-          <InputNumber
-            type='number'
-            id='num-records'
-            placeholder='No of rows to be added'
-            ref={numRecordsRef}
+            format="YYYY-MM-DD" // Ensure that the date picker uses the correct format
           />
-        </Records>
-        <AddButton onClick={handleAddRows}>Add</AddButton>
-      </FormContainer>
-      <ItemTable>
+        </LocalizationProvider>
+        <label>No of records:</label>
+        <input
+          type='number'
+          id='num-records'
+          className="input-number"
+          ref={numRecordsRef}
+        />
+        <button className="add-button" onClick={handleAddRows}>Add</button>
+      </div>
+      <table className="item-table">
         <thead>
+          <tr>
           <tr>
             <th>SNo</th>
             <th>Select Item</th>
@@ -288,13 +131,14 @@ const Purchase = () => {
             <th>Amount</th>
             <th>Total Amount</th>
           </tr>
+          </tr>
         </thead>
         <tbody>
           {rows.map(row => (
             <tr key={row.id}>
-              <td className='sno'>{row.sno}</td>
+              <td>{row.sno}</td>
               <td>
-              <select
+                <select
                   className="item-select"
                   value={row.item}
                   onChange={(e) => handleInputChange(row.id, 'item', e.target.value)}
@@ -346,14 +190,12 @@ const Purchase = () => {
             </tr>
           ))}
         </tbody>
-        
-      </ItemTable>
-      <SubmitContainer>
-      <SubmitButton className="add-button" onClick={handleAddOneRow}>Add</SubmitButton>
-        <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
-      </SubmitContainer>
-    </Container>
+      </table>
+      <div className="submit-container">
+        <button className="submit-button" onClick={handleSubmit}>Submit</button>
+      </div>
+    </div>
   );
 };
 
-export default Purchase;
+export default ItemTableComponent;
