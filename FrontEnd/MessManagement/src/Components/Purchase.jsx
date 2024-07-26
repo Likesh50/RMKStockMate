@@ -10,6 +10,7 @@ const Container = styled.div`
   h1 {
     color: #164863;
     text-align: center;
+    font-weigth:800;
   }
 `;
 
@@ -36,6 +37,8 @@ const InputNumber = styled.input`
   border-radius: 4px;
   background-color: #f4f4f4;
   margin-left: 10px;
+  margin-top:24px;
+  width:190px;
 `;
 
 const AddButton = styled.button`
@@ -112,6 +115,26 @@ const ItemTable = styled.table`
 const SubmitContainer = styled.div`
   margin-top: 20px;
   text-align: center;
+
+  .add-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #164863;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-right: 10px;
+
+    &:hover {
+      background-color: #0a3d62;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -161,6 +184,14 @@ const Purchase = () => {
     );
   };
 
+  const handleAddOneRow = () => {
+    const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
+    setRows(prevRows => [
+      ...prevRows,
+      { id: Date.now(), sno: lastSno + 1, quantity: '', amount: '' }
+    ]);
+  };
+
   const handleSubmit = () => {
     // Add your submit logic here
     alert('Form submitted');
@@ -176,10 +207,10 @@ const Purchase = () => {
           </DemoContainer>
         </LocalizationProvider>
         <Records>
-          <label>No of records:</label>
           <InputNumber
             type='number'
             id='num-records'
+            placeholder='No of rows to be added'
             ref={numRecordsRef}
           />
         </Records>
@@ -239,8 +270,10 @@ const Purchase = () => {
             </tr>
           ))}
         </tbody>
+        
       </ItemTable>
       <SubmitContainer>
+      <SubmitButton className="add-button" onClick={handleAddOneRow}>Add</SubmitButton>
         <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
       </SubmitContainer>
     </Container>

@@ -34,13 +34,13 @@ function SideBar() {
           </Link>
         </li>
         <li className={isActive('/purchase')}>
-          <Link to="">
+          <Link to="reports">
             <img src={reports} width="40px" height="40px" alt="other forms" />
             Reports
           </Link>
         </li>
         <li className={isActive('/purchase')}>
-          <Link to="purchase">
+          <Link to="add">
             <img src={add} width="40px" height="40px" alt="other forms" />
             Add Items
           </Link>

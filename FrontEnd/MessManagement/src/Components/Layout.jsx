@@ -22,6 +22,9 @@ const Layout = () => {
                     </div>
                 </div>
             </div>
+            <footer className="footer">
+                Copyright © 2024. All rights reserved to DEPARTMENT of INFORMATION TECHNOLOGY - RMKEC
+            </footer>
         </div>
     );
 }

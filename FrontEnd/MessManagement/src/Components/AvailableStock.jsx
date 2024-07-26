@@ -29,7 +29,6 @@ const SearchContainer = styled.div`
 
     &::placeholder {
       color: #888;
-      font-style: italic;
     }
 
     &:focus {
@@ -90,7 +89,7 @@ const TableHeader = styled.table`
 function AvailableStock() {
   return (
     <Container>
-      <h1>Available Stock</h1>
+      <h1>AVAILABLE STOCK</h1>
       <SearchContainer>
         <input
           type="text"

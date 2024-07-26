@@ -36,6 +36,8 @@ const InputNumber = styled.input`
   border-radius: 4px;
   background-color: #f4f4f4;
   margin-left: 10px;
+  margin-top:24px;
+  width:190px
 `;
 
 const AddButton = styled.button`
@@ -106,7 +108,6 @@ const ItemTable = styled.table`
 
   td input::placeholder {
     color: #888;
-    font-style: italic;
   }
 
   td select {
@@ -146,6 +147,26 @@ const ItemTable = styled.table`
 const SubmitContainer = styled.div`
   margin-top: 20px;
   text-align: center;
+
+  .add-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #164863;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-right: 10px;
+
+    &:hover {
+      background-color: #0a3d62;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -195,6 +216,14 @@ function Dispatch() {
     );
   };
 
+  const handleAddOneRow = () => {
+    const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
+    setRows(prevRows => [
+      ...prevRows,
+      { id: Date.now(), sno: lastSno + 1, quantity: '', amount: '' }
+    ]);
+  };
+
   const handleSubmit = () => {
     // Add your submit logic here
     alert('Form submitted');
@@ -210,10 +239,10 @@ function Dispatch() {
           </DemoContainer>
         </LocalizationProvider>
         <Records>
-          <label>No of records:</label>
           <InputNumber
             type='number'
             id='num-records'
+            placeholder='No of rows to be added'
             ref={numRecordsRef}
           />
         </Records>
@@ -225,10 +254,10 @@ function Dispatch() {
             <th>SNo</th>
             <th>Select Items</th>
             <th>Total Quantity</th>
-            <th>RMK</th>
-            <th>RMD</th>
+            <th>RMKEC</th>
+            <th>RMDEC</th>
             <th>RMKCET</th>
-            <th>School</th>
+            <th>Schools</th>
             <th>Current Quantity</th>
           </tr>
         </thead>
@@ -255,7 +284,7 @@ function Dispatch() {
                   type="number"
                   className="item-input"
                   placeholder="Quantity"
-                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'rmkec', e.target.value)}
                 />
               </td>
               <td>
@@ -263,7 +292,7 @@ function Dispatch() {
                   type="number"
                   className="item-input"
                   placeholder="Quantity"
-                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'rmdec', e.target.value)}
                 />
               </td>
               <td>
@@ -271,7 +300,7 @@ function Dispatch() {
                   type="number"
                   className="item-input"
                   placeholder="Quantity"
-                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'rmkcet', e.target.value)}
                 />
               </td>
               <td>
@@ -279,14 +308,14 @@ function Dispatch() {
                   type="number"
                   className="item-input"
                   placeholder="Quantity"
-                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'schools', e.target.value)}
                 />
               </td>
               <td>
                 <input
                   type="number"
                   className="item-input"
-                  placeholder="Current Quantity"
+                  placeholder="Quantity"
                   onChange={(e) => handleInputChange(row.id, 'currentQuantity', e.target.value)}
                 />
               </td>
@@ -295,6 +324,7 @@ function Dispatch() {
         </tbody>
       </ItemTable>
       <SubmitContainer>
+        <SubmitButton className="add-button" onClick={handleAddOneRow}>Add</SubmitButton>
         <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
       </SubmitContainer>
     </Container>
