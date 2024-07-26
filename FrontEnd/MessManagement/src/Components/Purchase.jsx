@@ -163,16 +163,13 @@ const Purchase = () => {
       const newRows = Array.from({ length: numberOfRows }, (_, index) => ({
         id: Date.now() + index,
         sno: lastSno + index + 1,
-        id: Date.now() + index,
-        sno: lastSno + index + 1,
         quantity: '',
         amount: '',
         item: '',
         category: ''
       }));
       setRows(prevRows => [...prevRows, ...newRows]);
-      numRecordsRef.current.value = '';
-      numRecordsRef.current.value = '';
+      numRecordsRef.current.value = ''; 
     }
   };
 
