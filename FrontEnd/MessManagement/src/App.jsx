@@ -10,6 +10,8 @@ import Reports from "./Components/Reports.jsx";
 import AddItems from "./Components/AddItems.jsx";
 import { MonthlyReport } from "./Components/MonthlyReport.jsx";
 import PrintMonthlyReport from "./Components/PrintMonthlyReport.jsx";
+import PrintCategoryReport from "./Components/PrintCategoryReport.jsx";
+
 
 
 function ScrollToTop() {
@@ -35,6 +37,9 @@ function App() {
               <Route path="available" element={<AvailableStock/>} />
               <Route path="reports" element={<Reports/>} />
               <Route path="add" element={<AddItems/>} />
+              <Route path="reports/monthly" element={<PrintMonthlyReport/>} />
+              <Route path="reports/category-wise" element={<PrintCategoryReport />} />
+
           </Route>
           </Routes>
       </Router>

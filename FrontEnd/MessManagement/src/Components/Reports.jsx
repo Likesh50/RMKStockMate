@@ -4,18 +4,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const ReportsContainer = styled.div`
   padding: 0px 20px;
   text-align: center;
-
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
 const ReportsHeader = styled.h1`
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
   color: #164863;
   margin-top: 0px;
 `;
@@ -76,31 +76,82 @@ const FetchButton = styled.button`
   }
 `;
 
+const Dropdown = styled.select`
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  font-size: 1rem;
+`;
 
-const ReportCard = ({ title }) => {
+const ReportCard = ({ title, route, withDropdown }) => {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const [selectedItem, setSelectedItem] = useState("");
+  const navigate = useNavigate();
+
+  const handleFetch = () => {
+    if (withDropdown) {
+      // For item-wise comparison, include selectedItem in navigation or state
+      navigate(`${route}?item=${selectedItem}`);
+    } else {
+      navigate(route);
+    }
+  };
 
   return (
     <ReportCardContainer>
       <ReportCardTitle>{title}</ReportCardTitle>
-      <DatePickerContainer>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DemoContainer components={['DatePicker']}>
-            <DatePicker
-              label="From"
-              value={fromDate}
-              onChange={(newValue) => setFromDate(newValue)}
-            />
-            <DatePicker
-              label="To"
-              value={toDate}
-              onChange={(newValue) => setToDate(newValue)}
-            />
-          </DemoContainer>
-        </LocalizationProvider>
-      </DatePickerContainer>
-      <FetchButton>Fetch</FetchButton>
+      {withDropdown && (
+        <>
+        <DatePickerContainer>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['DatePicker']}>
+              <DatePicker
+                label="From"
+                value={fromDate}
+                onChange={(newValue) => setFromDate(newValue)}
+              />
+              <DatePicker
+                label="To"
+                value={toDate}
+                onChange={(newValue) => setToDate(newValue)}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+        </DatePickerContainer>
+        <Dropdown
+          value={selectedItem}
+          onChange={(e) => setSelectedItem(e.target.value)}
+        >
+          <option value="">Select Item</option>
+          {/* Add your items here */}
+          <option value="item1">Item 1</option>
+          <option value="item2">Item 2</option>
+          <option value="item3">Item 3</option>
+        </Dropdown>
+        </>
+        
+      )}
+      {!withDropdown && (
+        <DatePickerContainer>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['DatePicker']}>
+              <DatePicker
+                label="From"
+                value={fromDate}
+                onChange={(newValue) => setFromDate(newValue)}
+              />
+              <DatePicker
+                label="To"
+                value={toDate}
+                onChange={(newValue) => setToDate(newValue)}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+        </DatePickerContainer>
+      )}
+      <FetchButton onClick={handleFetch}>Fetch</FetchButton>
     </ReportCardContainer>
   );
 };
@@ -110,10 +161,10 @@ const Reports = () => {
     <ReportsContainer>
       <ReportsHeader>REPORTS</ReportsHeader>
       <ReportsGrid>
-        <ReportCard title="Monthly" />
-        <ReportCard title="Category-wise" />
-        <ReportCard title="Item-wise" />
-        <ReportCard title="Comparison" />
+        <ReportCard title="Monthly" route="/dashboard/reports/monthly" />
+        <ReportCard title="Category-wise" route="/dashboard/reports/category-wise" />
+        <ReportCard title="Item-wise Comparison" route="/dashboard/reports/item-wise" withDropdown />
+        <ReportCard title="Comparison" route="/dashboard/reports/comparison" />
       </ReportsGrid>
     </ReportsContainer>
   );
