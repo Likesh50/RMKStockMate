@@ -1,8 +1,8 @@
 // PrintMonthlyReport.js
 import React, { useRef } from 'react';
 import ReactToPrint from 'react-to-print';
-import { MonthlyReport } from './MonthlyReport'; // Adjust the path as needed
 import styled from 'styled-components';
+import { CategoryReport } from './CategoryReport';
 
 const Test = styled.div`
   height: 100%;
@@ -10,7 +10,7 @@ const Test = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top:-45px;
+  margin-top:-180px;
 `;
 
 const PrintButton = styled.button`
@@ -40,18 +40,18 @@ const PrintButton = styled.button`
   }
 `;
 
-const PrintMonthlyReport = () => {
+const PrintCategoryReport = () => {
   const reportRef = useRef();
 
   return (
     <Test>
       <ReactToPrint
-        trigger={() => <PrintButton>Print Monthly Report</PrintButton>}
+        trigger={() => <PrintButton>Print Category Report</PrintButton>}
         content={() => reportRef.current}
       />
-      <MonthlyReport ref={reportRef} />
+      <CategoryReport ref={reportRef}/>
     </Test>
   );
 };
 
-export default PrintMonthlyReport;
+export default PrintCategoryReport;

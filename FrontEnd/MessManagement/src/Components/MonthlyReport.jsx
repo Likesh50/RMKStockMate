@@ -25,13 +25,13 @@ const ItemTable = styled.table`
     text-align: center;
     overflow-wrap: break-word; /* Handles long text wrapping */
     word-break: break-word; /* Prevents overflow of long words */
-    font-size:12px;
+    font-size:18px;
   }
 
   th {
     background-color: #164863;
     color: white;
-    font-size: 14px;
+    font-size: 20px;
     font-weight: bold;
   }
 
@@ -67,7 +67,11 @@ const ItemTable = styled.table`
   .sno {
     min-width: 50px;
   }
-
+  @media print {
+    th, td {
+      font-size: 14px; 
+    }
+  }
  
 `;
 
@@ -287,7 +291,7 @@ export const MonthlyReport = React.forwardRef((props, ref) => {
       IssueTotal: { quantity: 5000000, amount: 50000000 }
     },
     {
-      itemName: 'Item 1',
+      itemName: 'Milk and Milk product',
       RMK: { quantity: 10000000, amount: 10000000 },
       RMD: { quantity: 1500000, amount: 15000000 },
       RMKCET: { quantity: 2000000, amount: 20000000},
@@ -313,7 +317,7 @@ export const MonthlyReport = React.forwardRef((props, ref) => {
       <ItemTable>
         <thead>
           <tr>
-            <th>Item Name</th>
+            <th rowSpan="2">Item Name</th>
             <th colSpan="2">RMK</th>
             <th colSpan="2">RMD</th>
             <th colSpan="2">RMKCET</th>
@@ -321,7 +325,6 @@ export const MonthlyReport = React.forwardRef((props, ref) => {
             <th colSpan="2">Issue Total</th>
           </tr>
           <tr>
-            <th></th>
             <th>Quantity</th>
             <th>Amount</th>
             <th>Quantity</th>
