@@ -31,6 +31,7 @@ router.post('/getQuantity', async (req, res) => {
 });
 
 router.post('/updateDispatch', async (req, res) => {
+    console.log(req.body);
   const arr = req.body.ItemArray;
   
   if (!Array.isArray(arr) || arr.length === 0) {

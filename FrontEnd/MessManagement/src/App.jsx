@@ -34,7 +34,7 @@ function App() {
               <Route path="dispatch" element={<Dispatch/>} />
               <Route path="available" element={<AvailableStock/>} />
               <Route path="reports" element={<Reports/>} />
-              <Route path="add" element={<PrintMonthlyReport/>} />
+              <Route path="add" element={<AddItems/>} />
           </Route>
           </Routes>
       </Router>
