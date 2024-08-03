@@ -11,6 +11,8 @@ import AddItems from "./Components/AddItems.jsx";
 import { MonthlyReport } from "./Components/MonthlyReport.jsx";
 import PrintMonthlyReport from "./Components/PrintMonthlyReport.jsx";
 import PrintCategoryReport from "./Components/PrintCategoryReport.jsx";
+import PrintItemReport from "./Components/PrintItemReport.jsx";
+import PrintComparisonReport from "./Components/PrintComparisonReport.jsx";
 
 
 
@@ -39,7 +41,8 @@ function App() {
               <Route path="add" element={<AddItems/>} />
               <Route path="reports/monthly" element={<PrintMonthlyReport/>} />
               <Route path="reports/category-wise" element={<PrintCategoryReport />} />
-
+              <Route path="reports/item-wise" element={<PrintItemReport/>} />
+              <Route path="reports/comparison" element={<PrintComparisonReport/>} />
           </Route>
           </Routes>
       </Router>
