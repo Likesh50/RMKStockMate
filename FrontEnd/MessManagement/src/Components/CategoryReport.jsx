@@ -1,4 +1,6 @@
 import React from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Logo from '../assets/Logo.png';
 
@@ -17,15 +19,15 @@ const ItemTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
-  table-layout: fixed; /* Ensures columns do not expand beyond their width */
+  table-layout: fixed;
 
   th, td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
-    overflow-wrap: break-word; /* Handles long text wrapping */
-    word-break: break-word; /* Prevents overflow of long words */
-    font-size:18px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    font-size: 18px;
   }
 
   th {
@@ -67,12 +69,12 @@ const ItemTable = styled.table`
   .sno {
     min-width: 50px;
   }
+
   @media print {
     th, td {
       font-size: 14px; 
     }
   }
- 
 `;
 
 const DateRange = styled.div`
@@ -105,42 +107,31 @@ const PrintHeader = styled.div`
   }
 `;
 
-export const CategoryReport = React.forwardRef((props, ref) => {
-    const data = [
-        {
-          itemName: 'Projector',
-          RMK: 5,
-          RMD: 3,
-          RMKCET: 2,
-          School: 1,
-          issueTotal: 11
-        },
-        {
-          itemName: 'Laptop',
-          RMK: 10,
-          RMD: 8,
-          RMKCET: 6,
-          School: 4,
-          issueTotal: 28
-        },
-        {
-          itemName: 'Whiteboard',
-          RMK: 7,
-          RMD: 5,
-          RMKCET: 3,
-          School: 2,
-          issueTotal: 17
-        },
-        {
-          itemName: 'Chair',
-          RMK: 15,
-          RMD: 12,
-          RMKCET: 10,
-          School: 8,
-          issueTotal: 45
-        }
-      ];
-      
+export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get('http://localhost:3002/category/report', {
+      params: {
+        fdate: fromDate,
+        tdate: toDate
+      }
+    })
+    .then(res => {
+      setData(res.data || []);
+      console.log(data);
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error("Error fetching report data:", err);
+      setLoading(false);
+    });
+  }, [fromDate, toDate]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Container ref={ref} className="print-container">
@@ -150,29 +141,32 @@ export const CategoryReport = React.forwardRef((props, ref) => {
       </PrintHeader>
       <h1>Category Report</h1>
       <DateRange>
-        <h2>From: 12.7.2004</h2>
-        <h2>To: 12.7.2004</h2>
+        <h2>From: {fromDate}</h2>
+        <h2>To: {toDate}</h2>
       </DateRange>
       <ItemTable>
         <thead>
           <tr>
-            <th >Item Name</th>
-            <th >RMK</th>
-            <th >RMD</th>
-            <th >RMKCET</th>
-            <th >School</th>
-            <th >Issue Total</th>
+            <th>Category Name</th>
+            <th>RMK</th>
+            <th>RMD</th>
+            <th>RMKCET</th>
+            <th>School</th>
+            <th>Issue Total</th>
+            <th>Purchase Total</th>
+
           </tr>
         </thead>
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
-              <td>{row.itemName}</td>
-              <td>{row.RMK}</td>
-              <td>{row.RMD}</td>
-              <td>{row.RMKCET}</td>
-              <td>{row.School}</td>
-              <td>{row.issueTotal}</td>
+              <td>{row.category}</td>
+              <td>{row.RMK_amount}</td>
+              <td>{row.RMD_amount}</td>
+              <td>{row.RMKCET_amount}</td>
+              <td>{row.RMKSCHOOL_amount}</td>
+              <td>{row.total_amount}</td>
+              <td>{row.purchase_amount}</td>
             </tr>
           ))}
         </tbody>
