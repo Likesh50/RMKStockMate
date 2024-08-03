@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Styled components
 const Container = styled.div`
   padding: 0px;
   text-align: center;
@@ -159,39 +160,66 @@ const SubmitButton = styled.button`
 `;
 
 const AddItems = () => {
-  const [rows, setRows] = useState(1);
-  const [inputValue, setInputValue] = useState('');
+  const [itemName, setItemName] = useState("");
+  const [category, setCategory] = useState("");
+  const [items, setItems] = useState([]);
+  const [itemsAvail, setItemsAvail] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
 
-  const handleAddRows = () => {
-    const numRowsToAdd = parseInt(inputValue, 10);
-    if (!isNaN(numRowsToAdd) && numRowsToAdd > 0) {
-      setRows(rows + numRowsToAdd);
-      setInputValue('');
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        console.log("Fetching items...");
+        const response = await axios.get("http://localhost:3002/addItems/getCategory");
+        console.log("Items fetched:", response.data);
+        setItems(response.data);
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    };
+    const fetchItemsAvail = async () => {
+      try {
+        console.log("Fetching items...");
+        const response = await axios.get("http://localhost:3002/addItems/getItemCategory");
+        console.log("Items fetched Avail:", response.data);
+        setItemsAvail(response.data);
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      }
+    };
+    fetchItems();
+    fetchItemsAvail();
+  }, []);
+
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setItemName(value);
+    if (value) {
+      const filtered = itemsAvail.filter(item =>
+        item.item.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredItems(filtered);
+    } else {
+      setFilteredItems([]);
     }
   };
 
-  const handleAddOneRow = () => {
-    setRows(rows + 1);
+  const handleCategoryChange = (event) => {
+    setCategory(event.target.value);
   };
 
-  const handleSubmit = () => {
-    // Add your submit logic here
-    alert('Form submitted');
-  };
+  const handleSubmit = async () => {
+    try {
+        const response = await axios.post('http://localhost:3002/addItems/insert', { itemName,category});
+        console.log(response.data);
+    } catch (error) {
+        console.error('Error adding data:', error.response ? error.response.data : error.message);
+    }
+};
 
   return (
     <Container>
       <Heading>Add Items</Heading>
-      <SearchContainer>
-        <input
-          type="number"
-          className="search-input"
-          placeholder="No of rows to be added"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        <button className="add-button" onClick={handleAddRows}>ADD</button>
-      </SearchContainer>
       <Table>
         <thead>
           <tr>
@@ -201,24 +229,42 @@ const AddItems = () => {
           </tr>
         </thead>
         <tbody>
-          {Array.from({ length: rows }).map((_, index) => (
-            <tr key={index}>
-              <Td>{index + 1}</Td>
-              <Td><Input placeholder="ITEMS" /></Td>
-              <Td>
-                <Select>
-                  <option value="" disabled selected>Select Category</option>
-                  <option value="Category1">Category1</option>
-                  <option value="Category2">Category2</option>
-                  <option value="Category3">Category3</option>
-                </Select>
-              </Td>
-            </tr>
-          ))}
+          <tr>
+            <Td>1</Td>
+            <Td><Input placeholder="ITEMS" onChange={handleInputChange} /></Td>
+            <Td>
+              <Select onChange={handleCategoryChange}>
+                <option value="" disabled selected>Select Category</option>
+                {items.map((item, idx) => (
+                  <option key={idx} value={item.category}>
+                    {item.category}
+                  </option>
+                ))}
+              </Select>
+            </Td>
+          </tr>
         </tbody>
       </Table>
+      <Heading>Existing Items That Match</Heading>
+      {filteredItems.length > 0 && (
+        <Table className="table table-bordered">
+          <thead>
+            <tr>
+              <Th>Item Name</Th>
+              <Th>Category</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredItems.map((item, idx) => (
+              <tr key={idx}>
+                <Td>{item.item}</Td>
+                <Td>{item.category}</Td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      )}
       <SubmitContainer>
-        <button className="add-button" onClick={handleAddOneRow}>ADD</button>
         <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
       </SubmitContainer>
     </Container>

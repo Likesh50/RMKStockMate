@@ -95,8 +95,8 @@ function AvailableStock() {
   useEffect(() => {
     Axios.get('http://localhost:3002/stocks/availablestock')
       .then(res => {
-        setCurr(res.data.data); // Access data from the response
-        setFilteredCurr(res.data.data); // Initialize filtered data with fetched data
+        setCurr(res.data.data); 
+        setFilteredCurr(res.data.data); 
         console.log(res.data);
       })
       .catch(err => console.error("Error fetching stock data:", err));
@@ -105,10 +105,8 @@ function AvailableStock() {
   const handleSearch = (e) => {
     const searchValue = e.target.value;
     setSearchTerm(searchValue);
-    
-    // Filter `curr` data based on the search term
     const filteredData = curr.filter(item =>
-      item.itemName.toLowerCase().includes(searchValue.toLowerCase())
+      item.itemName.toLowerCase().includes(searchValue.toLowerCase()) || item.category.toLowerCase().includes(searchValue.toLowerCase())
     );
     
     setFilteredCurr(filteredData);
@@ -121,9 +119,9 @@ function AvailableStock() {
         <input
           type="text"
           className="search-input"
-          placeholder="Enter item name"
+          placeholder="Enter item name/ Category name"
           value={searchTerm}
-          onChange={handleSearch} // Update search term and filter data
+          onChange={handleSearch} 
         />
         <button className="search-button" onClick={() => handleSearch({ target: { value: searchTerm } })}>Search</button>
       </SearchContainer>

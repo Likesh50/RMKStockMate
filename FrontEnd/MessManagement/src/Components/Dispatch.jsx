@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components';
+import axios from 'axios';
 
-// Styled components
 const Container = styled.div`
   h1 {
     color: #164863;
@@ -189,8 +189,53 @@ const SubmitButton = styled.button`
 `;
 
 function Dispatch() {
-  const [rows, setRows] = useState([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
+  const [rows, setRows] = useState([{ id: Date.now(), sno: 1, item: '', quantity: '', currentQuantity: '', rmk: '', rmd: '', rmkcet: '', school: '' }]);
+  const [items, setItems] = useState([]);
   const numRecordsRef = useRef(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleSubmit = async () => {
+    if (!selectedDate) {
+      alert("Please enter the date");
+      return;
+    }
+  
+    const dateFormatted = selectedDate.format('YYYY-MM-DD');
+  
+    const arr = rows.map(row => ({
+      ItemName: row.item.toUpperCase(),
+      CurrentQuantity: row.currentQuantity,
+      RMK: row.rmk || 0, 
+      RMD: row.rmd || 0, 
+      RMKCET: row.rmkcet || 0, 
+      SCHOOL: row.school || 0, 
+      DATE: dateFormatted,
+    }));
+  
+    try {
+      const response = await axios.post('http://localhost:3002/dispatch/updateDispatch', { ItemArray: arr });
+      console.log(response.data);
+      alert("Items updated successfully");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating items:", error);
+      alert("Error updating items. Please try again.");
+    }
+  };
+  
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3002/dispatch/retrieve");
+        setItems(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };    
+    fetchData();
+    console.log(items);
+  }, []);
 
   const handleAddRows = () => {
     const numberOfRows = parseInt(numRecordsRef.current.value, 10);
@@ -199,23 +244,41 @@ function Dispatch() {
       const newRows = Array.from({ length: numberOfRows }, (_, index) => ({
         id: Date.now() + index,
         sno: lastSno + index + 1,
+        item: '',
         quantity: '',
-        amount: ''
+        currentQuantity: '',
+        rmk: '',
+        rmd: '',
+        rmkcet: '',
+        school: '',
       }));
       setRows(prevRows => [...prevRows, ...newRows]);
       numRecordsRef.current.value = '';
     }
   };
 
-  const handleInputChange = (id, field, value) => {
-    const numericValue = value === '' ? '' : parseFloat(value) || 0;
-    setRows(prevRows =>
-      prevRows.map(row =>
-        row.id === id ? { ...row, [field]: numericValue, totalAmount: (row.quantity || 0) * (row.amount || 0) } : row
-      )
-    );
+  const fetchTotalForItem = async (itemName) => {
+    try {
+      const response = await axios.post("http://localhost:3002/dispatch/getQuantity", {
+        itemName: itemName,
+      });
+      console.log(response.data.quantity); 
+      return parseInt(response.data.quantity, 10); 
+    } catch (error) {
+      console.error("Error fetching quantity:", error);
+      return 0; 
+    }
   };
-
+  
+  
+  const calculateCurrentQuantity = (row) => {
+    const quantity = parseInt(row.quantity || 0, 10);
+    const rmk = parseInt(row.rmk || 0, 10);
+    const rmd = parseInt(row.rmd || 0, 10);
+    const rmkcet = parseInt(row.rmkcet || 0, 10);
+    const school = parseInt(row.school || 0, 10);
+    return quantity - rmk - rmd - rmkcet - school;
+  };
   const handleAddOneRow = () => {
     const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
     setRows(prevRows => [
@@ -224,18 +287,66 @@ function Dispatch() {
     ]);
   };
 
-  const handleSubmit = () => {
-    // Add your submit logic here
-    alert('Form submitted');
+  const handleInputChange = async (id, field, value) => {
+    if (field === 'item') {
+      const newQuantity = await fetchTotalForItem(value);
+      setRows(prevRows =>
+        prevRows.map(row => {
+          if (row.id === id) {
+            return {
+              ...row,
+              item: value,
+              quantity: newQuantity,
+              rmk: '',
+              rmd: '',
+              rmkcet: '',
+              school: '',
+              currentQuantity: newQuantity, // Reset currentQuantity to newQuantity when item is changed
+            };
+          }
+          return row;
+        })
+      );
+    } else {
+      setRows(prevRows =>
+        prevRows.map(row => {
+          if (row.id === id) {
+            const updatedRow = { ...row, [field]: value };
+            const currentQuantity = calculateCurrentQuantity(updatedRow);
+  
+            if (currentQuantity < 0) {
+              alert("Current quantity cannot be less than 0.");
+              return row; // Keep the old value if validation fails
+            }
+  
+            if (parseInt(updatedRow.rmk || 0, 10) > parseInt(updatedRow.quantity, 10) ||
+                parseInt(updatedRow.rmd || 0, 10) > parseInt(updatedRow.quantity, 10) ||
+                parseInt(updatedRow.rmkcet || 0, 10) > parseInt(updatedRow.quantity, 10) ||
+                parseInt(updatedRow.school || 0, 10) > parseInt(updatedRow.quantity, 10)) {
+              alert("Quantities for RMK, RMD, RMKCET, and School cannot be more than the total quantity.");
+              return row; // Keep the old value if validation fails
+            }
+  
+            return {
+              ...updatedRow,
+              currentQuantity: currentQuantity,
+            };
+          }
+          return row;
+        })
+      );
+    }
   };
-
+  
+  
+  
   return (
     <Container>
       <h1>DISPATCH</h1>
       <FormContainer>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
-            <DatePicker label="Basic date picker" className="date-picker" />
+            <DatePicker label="Basic date picker" className="date-picker"  value={selectedDate} onChange={(newValue) => setSelectedDate(newValue)}/>
           </DemoContainer>
         </LocalizationProvider>
         <Records>
@@ -266,39 +377,46 @@ function Dispatch() {
             <tr key={row.id}>
               <td className='sno'>{row.sno}</td>
               <td>
-                <select className="item-select">
+                <select className="item-select" value={row.item} onChange={(e) => handleInputChange(row.id, 'item', e.target.value)}>
                   <option value="">SELECT</option>
-                  {/* Add more options as needed */}
+                  {items.map((item, index) => (
+                    <option key={index} value={item.item}>{item.item}</option>
+                  ))}
                 </select>
               </td>
               <td>
                 <input
                   type="number"
                   className="item-input"
+                  value={row.quantity}
                   placeholder="Total Quantity"
-                  onChange={(e) => handleInputChange(row.id, 'totalQuantity', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                  readOnly
                 />
               </td>
               <td>
                 <input
                   type="number"
                   className="item-input"
+                  value={row.rmk}
                   placeholder="Quantity"
-                  onChange={(e) => handleInputChange(row.id, 'rmkec', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'rmk', e.target.value)}
                 />
               </td>
               <td>
                 <input
                   type="number"
                   className="item-input"
+                  value={row.rmd}
                   placeholder="Quantity"
-                  onChange={(e) => handleInputChange(row.id, 'rmdec', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'rmd', e.target.value)}
                 />
               </td>
               <td>
                 <input
                   type="number"
                   className="item-input"
+                  value={row.rmkcet}
                   placeholder="Quantity"
                   onChange={(e) => handleInputChange(row.id, 'rmkcet', e.target.value)}
                 />
@@ -307,15 +425,17 @@ function Dispatch() {
                 <input
                   type="number"
                   className="item-input"
+                  value={row.school}
                   placeholder="Quantity"
-                  onChange={(e) => handleInputChange(row.id, 'schools', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'school', e.target.value)}
                 />
               </td>
               <td>
                 <input
                   type="number"
                   className="item-input"
-                  placeholder="Quantity"
+                  value={row.currentQuantity}
+                  placeholder="Current Quantity"
                   onChange={(e) => handleInputChange(row.id, 'currentQuantity', e.target.value)}
                 />
               </td>

@@ -1,9 +1,9 @@
 // PrintMonthlyReport.js
-import React, { useRef } from 'react';
+import React, { useRef} from 'react';
 import ReactToPrint from 'react-to-print';
 import styled from 'styled-components';
 import { CategoryReport } from './CategoryReport';
-
+import { useLocation } from 'react-router-dom';
 const Test = styled.div`
   height: 100%;
   display: flex;
@@ -42,6 +42,8 @@ const PrintButton = styled.button`
 
 const PrintCategoryReport = () => {
   const reportRef = useRef();
+  const location = useLocation();
+  const { fromDate, toDate } = location.state || {};
 
   return (
     <Test>
@@ -49,7 +51,7 @@ const PrintCategoryReport = () => {
         trigger={() => <PrintButton>Print Category Report</PrintButton>}
         content={() => reportRef.current}
       />
-      <CategoryReport ref={reportRef}/>
+      <CategoryReport ref={reportRef} fromDate={fromDate} toDate={toDate}/>
     </Test>
   );
 };
