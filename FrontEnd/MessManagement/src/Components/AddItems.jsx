@@ -118,7 +118,6 @@ const SearchContainer = styled.div`
 const SubmitContainer = styled.div`
   margin-top: 20px;
   text-align: center;
-
   .add-button {
     padding: 10px 20px;
     border: none;
@@ -159,12 +158,19 @@ const SubmitButton = styled.button`
   }
 `;
 
+const ErrorText = styled.div`
+  color: red;
+  margin-top: 20px;
+  font-size: 32px;
+`;
+
 const AddItems = () => {
   const [itemName, setItemName] = useState("");
   const [category, setCategory] = useState("");
   const [items, setItems] = useState([]);
   const [itemsAvail, setItemsAvail] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -194,6 +200,7 @@ const AddItems = () => {
   const handleInputChange = (event) => {
     const value = event.target.value;
     setItemName(value);
+    setError(""); // Clear error when input changes
     if (value) {
       const filtered = itemsAvail.filter(item =>
         item.item.toLowerCase().includes(value.toLowerCase())
@@ -210,12 +217,14 @@ const AddItems = () => {
 
   const handleSubmit = async () => {
     try {
-        const response = await axios.post('http://localhost:3002/addItems/insert', { itemName,category});
-        console.log(response.data);
+      const response = await axios.post('http://localhost:3002/addItems/insert', { itemName, category });
+      console.log(response.data);
+      setError(""); // Clear error if successful
     } catch (error) {
-        console.error('Error adding data:', error.response ? error.response.data : error.message);
+      console.error('Error adding data:', error.response ? error.response.data : error.message);
+      setError(error.response ? error.response.data : 'An error occurred while adding the item.');
     }
-};
+  };
 
   return (
     <Container>
@@ -245,6 +254,10 @@ const AddItems = () => {
           </tr>
         </tbody>
       </Table>
+      <SubmitContainer>
+        <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+        {error && <ErrorText>{error}</ErrorText>}
+      </SubmitContainer>
       <Heading>Existing Items That Match</Heading>
       {filteredItems.length > 0 && (
         <Table className="table table-bordered">
@@ -264,9 +277,6 @@ const AddItems = () => {
           </tbody>
         </Table>
       )}
-      <SubmitContainer>
-        <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
-      </SubmitContainer>
     </Container>
   );
 };

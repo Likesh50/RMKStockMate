@@ -10,14 +10,13 @@ import dayjs from 'dayjs';
 const ReportsContainer = styled.div`
   padding: 0px 20px;
   text-align: center;
-
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
 const ReportsHeader = styled.h1`
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
   color: #164863;
   margin-top: 0px;
 `;
@@ -78,73 +77,34 @@ const FetchButton = styled.button`
   }
 `;
 
-
-const ReportCard = ({ title, route, withDropdown, fromDate, toDate, setFromDate, setToDate }) => {
-  const [selectedItem, setSelectedItem] = useState("");
+const ReportCard = ({ title, route, fromDate, toDate, setFromDate, setToDate }) => {
   const navigate = useNavigate();
 
   const handleFetch = () => {
     const formattedFromDate = fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : '';
     const formattedToDate = toDate ? dayjs(toDate).format('YYYY-MM-DD') : '';
-
-    if (withDropdown) {
-      navigate(`${route}?item=${selectedItem}`, { state: { fromDate: formattedFromDate, toDate: formattedToDate } });
-    } else {
-      navigate(route, { state: { fromDate: formattedFromDate, toDate: formattedToDate } });
-    }
+    navigate(route, { state: { fromDate: formattedFromDate, toDate: formattedToDate } });
   };
 
   return (
     <ReportCardContainer>
       <ReportCardTitle>{title}</ReportCardTitle>
-      {withDropdown && (
-        <>
-          <DatePickerContainer>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  label="From"
-                  value={fromDate}
-                  onChange={(newValue) => setFromDate(newValue)}
-                />
-                <DatePicker
-                  label="To"
-                  value={toDate}
-                  onChange={(newValue) => setToDate(newValue)}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </DatePickerContainer>
-          <Dropdown
-            value={selectedItem}
-            onChange={(e) => setSelectedItem(e.target.value)}
-          >
-            <option value="">Select Item</option>
-            {/* Add your items here */}
-            <option value="item1">Item 1</option>
-            <option value="item2">Item 2</option>
-            <option value="item3">Item 3</option>
-          </Dropdown>
-        </>
-      )}
-      {!withDropdown && (
-        <DatePickerContainer>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']}>
-              <DatePicker
-                label="From"
-                value={fromDate}
-                onChange={(newValue) => setFromDate(newValue)}
-              />
-              <DatePicker
-                label="To"
-                value={toDate}
-                onChange={(newValue) => setToDate(newValue)}
-              />
-            </DemoContainer>
-          </LocalizationProvider>
-        </DatePickerContainer>
-      )}
+      <DatePickerContainer>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer components={['DatePicker']}>
+            <DatePicker
+              label="From"
+              value={fromDate}
+              onChange={(newValue) => setFromDate(newValue)}
+            />
+            <DatePicker
+              label="To"
+              value={toDate}
+              onChange={(newValue) => setToDate(newValue)}
+            />
+          </DemoContainer>
+        </LocalizationProvider>
+      </DatePickerContainer>
       <FetchButton onClick={handleFetch}>Fetch</FetchButton>
     </ReportCardContainer>
   );
@@ -177,7 +137,6 @@ const Reports = () => {
         <ReportCard 
           title="Item-wise Comparison" 
           route="/dashboard/reports/item-wise" 
-          withDropdown 
           fromDate={fromDate} 
           toDate={toDate} 
           setFromDate={setFromDate} 

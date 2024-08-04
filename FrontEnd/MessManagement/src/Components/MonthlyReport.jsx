@@ -167,28 +167,29 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
         </thead>
         <tbody>
           {data.length > 0 ? (
-            data.map((row, index) => (
-              <tr key={index}>
-                <td>{row.item}</td>
-                <td>{row.purchaseQuantity}</td>
-                <td>{row.purchaseAmount}</td>
-                <td>{row.closingStock}</td>
-                <td>{row.RMK}</td>
-                <td>{row.RMK * row.purchaseAmount}</td> {/* Adjust calculation as needed */}
-                <td>{row.RMD}</td>
-                <td>{row.RMD * row.purchaseAmount}</td> {/* Adjust calculation as needed */}
-                <td>{row.RMKCET}</td>
-                <td>{row.RMKCET * row.purchaseAmount}</td> {/* Adjust calculation as needed */}
-                <td>{row.RMKSCHOOL}</td>
-                <td>{row.RMKSCHOOL * row.purchaseAmount}</td> {/* Adjust calculation as needed */}
-                <td>{row.RMK+row.RMD+row.RMKCET+row.RMKSCHOOL}</td>
-                <td>{(row.RMK+row.RMD+row.RMKCET+row.RMKSCHOOL)* row.purchaseAmount}</td> {/* Adjust calculation as needed */}
-              </tr>
-            ))
+            data.map((row, index) => {
+              const unitPrice = row.unitPrice;
+              return (
+                <tr key={index}>
+                  <td>{row.item}</td>
+                  <td>{row.purchaseQuantity}</td>
+                  <td>{row.purchaseAmount.toFixed(2)}</td>
+                  <td>{row.closingStock}</td>
+                  <td>{row.RMK}</td>
+                  <td>{(row.RMK * unitPrice).toFixed(2)}</td>
+                  <td>{row.RMD}</td>
+                  <td>{(row.RMD * unitPrice).toFixed(2)}</td>
+                  <td>{row.RMKCET}</td>
+                  <td>{(row.RMKCET * unitPrice).toFixed(2)}</td>
+                  <td>{row.RMKSCHOOL}</td>
+                  <td>{(row.RMKSCHOOL * unitPrice).toFixed(2)}</td>
+                  <td>{(row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL).toFixed(2)}</td>
+                  <td>{((row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL) * unitPrice).toFixed(2)}</td>
+                </tr>
+              );
+            })
           ) : (
-            <tr>
-              <td colSpan="14">No data available</td>
-            </tr>
+            <tr><td colSpan="13">No data available</td></tr>
           )}
         </tbody>
       </ItemTable>

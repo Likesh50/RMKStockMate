@@ -2,14 +2,14 @@ import React, { useRef } from 'react';
 import ReactToPrint from 'react-to-print';
 import styled from 'styled-components';
 import { ComparisonReport } from './ComparisonReport';
-
+import { useLocation } from 'react-router-dom';
 const Test = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top:-150px;
+
 `;
 
 const PrintButton = styled.button`
@@ -39,8 +39,10 @@ const PrintButton = styled.button`
   }
 `;
 
-const PrintComparisonReport = () => {
+const PrintComparisonReport = ({}) => {
   const reportRef = useRef();
+  const location = useLocation();
+  const { fromDate, toDate } = location.state || {};
 
   return (
     <Test>
@@ -48,7 +50,7 @@ const PrintComparisonReport = () => {
         trigger={() => <PrintButton>Print Comparison Report</PrintButton>}
         content={() => reportRef.current}
       />
-      <ComparisonReport ref={reportRef}/>
+      <ComparisonReport ref={reportRef} fromDate={fromDate} toDate={toDate}/>
     </Test>
   );
 };

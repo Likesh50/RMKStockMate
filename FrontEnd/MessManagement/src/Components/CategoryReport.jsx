@@ -120,7 +120,6 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
     })
     .then(res => {
       setData(res.data || []);
-      console.log(data);
       setLoading(false);
     })
     .catch(err => {
@@ -128,6 +127,10 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
       setLoading(false);
     });
   }, [fromDate, toDate]);
+
+  const formatNumber = (number) => {
+    return Number(number).toFixed(2);
+  };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -154,19 +157,18 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
             <th>School</th>
             <th>Issue Total</th>
             <th>Purchase Total</th>
-
           </tr>
         </thead>
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
               <td>{row.category}</td>
-              <td>{row.RMK_amount}</td>
-              <td>{row.RMD_amount}</td>
-              <td>{row.RMKCET_amount}</td>
-              <td>{row.RMKSCHOOL_amount}</td>
-              <td>{row.total_amount}</td>
-              <td>{row.purchase_amount}</td>
+              <td>{formatNumber(row.RMK_amount)}</td>
+              <td>{formatNumber(row.RMD_amount)}</td>
+              <td>{formatNumber(row.RMKCET_amount)}</td>
+              <td>{formatNumber(row.RMKSCHOOL_amount)}</td>
+              <td>{formatNumber(row.total_amount)}</td>
+              <td>{formatNumber(row.purchase_amount)}</td>
             </tr>
           ))}
         </tbody>

@@ -9,6 +9,8 @@ const Dispatch = require('./Routes/Dispatch');
 const addItems = require('./Routes/addItems');
 const monthlyItem = require('./Routes/Monthly');
 const categoryItem = require('./Routes/Category');
+const compareItem = require('./Routes/Comparison');
+const Itemwise = require('./Routes/ItemWise');
 
 app.use(cors());
 app.use(express.json());
@@ -19,6 +21,8 @@ app.use('/dispatch',Dispatch);
 app.use('/addItems',addItems);
 app.use('/monthly',monthlyItem);
 app.use('/category',categoryItem);
+app.use('/comparison',compareItem);
+app.use('/item',Itemwise);
 
 app.listen(3002,()=>{
   console.log("You r up!!!");

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 import Logo from '../assets/Logo.png';
 
 const Container = styled.div`
@@ -119,36 +120,65 @@ const TableContainer = styled.div`
   min-height: 300px; /* Adjust this value as needed */
 `;
 
-export const ItemReport = React.forwardRef((props, ref) => {
-  const [selectedItem, setSelectedItem] = useState('');
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+`;
 
-  const data = [
-    {
-      itemName: 'Item 1',
-      RMK: { quantity: 10000000, amount: 10000000 },
-      RMD: { quantity: 1500000, amount: 15000000 },
-      RMKCET: { quantity: 2000000, amount: 20000000 },
-      School: { quantity: 500000, amount: 5000000 },
-      IssueTotal: { quantity: 5000000, amount: 50000000 }
-    },
-    {
-      itemName: 'Item 2',
-      RMK: { quantity: 5000000, amount: 5000000 },
-      RMD: { quantity: 1000000, amount: 10000000 },
-      RMKCET: { quantity: 3000000, amount: 30000000 },
-      School: { quantity: 200000, amount: 2000000 },
-      IssueTotal: { quantity: 9200000, amount: 92000000 }
-    },
-    // Add more rows as needed
-  ];
+export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
+  const [selectedItem, setSelectedItem] = useState('');
+  const [items, setItems] = useState([]);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // State to manage errors
+
+  useEffect(() => {
+    // Fetch items for the dropdown
+    axios.get('http://localhost:3002/item/getItems')
+      .then(response => {
+        setItems(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching items:', error);
+        setError('Failed to load items.');
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (selectedItem) {
+      // Fetch data for the selected item
+      axios.get('http://localhost:3002/item/report', {
+        params: {
+          item: selectedItem,
+          fdate: fromDate,
+          tdate: toDate
+        }
+      })
+        .then(response => {
+          if (response.data.length === 0) {
+            setError('No data found for the selected item and date range.');
+          } else {
+            setData(response.data);
+            setError(null); // Clear error if data is fetched successfully
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching item data:', error);
+          setError('Failed to load item data.');
+        });
+    } else {
+      setData([]);
+    }
+  }, [selectedItem, fromDate, toDate]);
 
   const handleItemChange = (e) => {
     setSelectedItem(e.target.value);
+    setData([]); // Clear the table data on dropdown change
   };
-
-  const filteredData = selectedItem
-    ? data.filter((item) => item.itemName === selectedItem)
-    : data;
 
   return (
     <Container ref={ref} className="print-container">
@@ -159,17 +189,18 @@ export const ItemReport = React.forwardRef((props, ref) => {
         </div>
       </PrintHeader>
       <h1>Item-Wise Report</h1>
+      {error && <ErrorMessage>{error}</ErrorMessage>} {/* Display error message if there is one */}
       <Dropdown value={selectedItem} onChange={handleItemChange}>
         <option value="">Select Item</option>
-        {data.map((item, index) => (
-          <option key={index} value={item.itemName}>
-            {item.itemName}
+        {items.map((item, index) => (
+          <option key={index} value={item.item}>
+            {item.item}
           </option>
         ))}
       </Dropdown>
       <DateRange>
-        <h2>From: 12.7.2004</h2>
-        <h2>To: 12.7.2004</h2>
+        <h2>From: {fromDate}</h2>
+        <h2>To: {toDate}</h2>
       </DateRange>
       <TableContainer>
         <ItemTable>
@@ -180,9 +211,12 @@ export const ItemReport = React.forwardRef((props, ref) => {
               <th colSpan="2">RMD</th>
               <th colSpan="2">RMKCET</th>
               <th colSpan="2">School</th>
-              <th colSpan="2">Issue Total</th>
+              <th colSpan="2">Issued</th>
+              <th colSpan="2">Purchased</th>
             </tr>
             <tr>
+              <th>Quantity</th>
+              <th>Amount</th>
               <th>Quantity</th>
               <th>Amount</th>
               <th>Quantity</th>
@@ -196,19 +230,26 @@ export const ItemReport = React.forwardRef((props, ref) => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((row, index) => (
+            {data.length === 0 && selectedItem && !error && (
+              <tr>
+                <td colSpan="12">Loading...</td>
+              </tr>
+            )}
+            {data.map((row, index) => (
               <tr key={index}>
-                <td>{row.itemName}</td>
-                <td>{row.RMK.quantity}</td>
-                <td>{row.RMK.amount}</td>
-                <td>{row.RMD.quantity}</td>
-                <td>{row.RMD.amount}</td>
-                <td>{row.RMKCET.quantity}</td>
-                <td>{row.RMKCET.amount}</td>
-                <td>{row.School.quantity}</td>
-                <td>{row.School.amount}</td>
-                <td>{row.IssueTotal.quantity}</td>
-                <td>{row.IssueTotal.amount}</td>
+                <td>{row.item}</td>
+                <td>{row.RMK_quantity}</td>
+                <td>{row.RMK_amount}</td>
+                <td>{row.RMD_quantity}</td>
+                <td>{row.RMD_amount}</td>
+                <td>{row.RMKCET_quantity}</td>
+                <td>{row.RMKCET_amount}</td>
+                <td>{row.RMKSCHOOL_quantity}</td>
+                <td>{row.RMKSCHOOL_amount}</td>
+                <td>{row.RMK_quantity+row.RMD_quantity+row.RMKCET_quantity+row.RMKSCHOOL_quantity}</td>
+                <td>{row.RMK_amount+row.RMD_amount+row.RMKCET_amount+row.RMKSCHOOL_amount}</td>
+                <td>{row.Purchased_quantity}</td>
+                <td>{row.Purchased_amount}</td>
               </tr>
             ))}
           </tbody>

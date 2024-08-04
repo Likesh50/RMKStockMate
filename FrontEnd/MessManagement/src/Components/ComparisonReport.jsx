@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Logo from '../assets/Logo.png';
+import axios from 'axios';
 
 const Container = styled.div`
   @media print {
@@ -106,33 +107,49 @@ const PrintHeader = styled.div`
   }
 `;
 
-const dummyData = [
-  {
-    itemName: 'Item 1',
-    January: { quantity: 100, amount: 1000 },
-    February: { quantity: 150, amount: 1500 },
-  },
-  {
-    itemName: 'Item 2',
-    January: { quantity: 200, amount: 2000 },
-    February: { quantity: 250, amount: 2500 },
-    March: { quantity: 300, amount: 3000 },
-  },
-  {
-    itemName: 'Item 3',
-    February: { quantity: 100, amount: 1000 },
-    March: { quantity: 150, amount: 1500 },
-    April: { quantity: 200, amount: 2000 },
-    June:{ quantity: 200, amount: 2000 },
-    July:{ quantity: 200, amount: 2000 },
-  },
-];
+export const ComparisonReport = React.forwardRef(({ fromDate, toDate }, ref) => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [months, setMonths] = useState([]);
 
-export const ComparisonReport = React.forwardRef((props, ref) => {
-  const { data = dummyData, fromDate = '01/01/2024', toDate = '31/12/2024' } = props;
+  useEffect(() => {
+    axios.get('http://localhost:3002/comparison/report', {
+      params: {
+        fdate: fromDate,
+        tdate: toDate
+      }
+    })
+    .then(res => {
+      const fetchedData = res.data || [];
+      setData(fetchedData);
 
-  // Extract unique months from data keys
-  const months = Array.from(new Set(data.flatMap(item => Object.keys(item).filter(key => key !== 'itemName'))));
+      // Determine unique months from data keys
+      const monthSet = new Set();
+      fetchedData.forEach(row => {
+        Object.keys(row).forEach(key => {
+          const monthMatch = key.match(/(\w+)_quantity/);
+          if (monthMatch) {
+            monthSet.add(monthMatch[1]);
+          }
+        });
+      });
+
+      setMonths([...monthSet]);
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error("Error fetching report data:", err);
+      setLoading(false);
+    });
+  }, [fromDate, toDate]);
+
+  const formatNumber = (number) => {
+    return Number(number).toFixed(2);
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Container ref={ref} className="print-container">
@@ -158,8 +175,8 @@ export const ComparisonReport = React.forwardRef((props, ref) => {
           <tr>
             {months.map(month => (
               <React.Fragment key={month}>
-                <th key={`${month}-quantity`}>Quantity</th>
-                <th key={`${month}-amount`}>Amount</th>
+                <th>Quantity</th>
+                <th>Amount</th>
               </React.Fragment>
             ))}
           </tr>
@@ -167,11 +184,11 @@ export const ComparisonReport = React.forwardRef((props, ref) => {
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
-              <td>{row.itemName}</td>
+              <td>{row.item_name}</td>
               {months.map(month => (
                 <React.Fragment key={month}>
-                  <td key={`${month}-quantity-${index}`}>{row[month]?.quantity ?? '-'}</td>
-                  <td key={`${month}-amount-${index}`}>{row[month]?.amount ?? '-'}</td>
+                  <td>{row[`${month}_quantity`] ?? '-'}</td>
+                  <td>{row[`${month}_amount`] ?? '-'}</td>
                 </React.Fragment>
               ))}
             </tr>

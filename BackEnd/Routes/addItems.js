@@ -21,25 +21,42 @@ router.get('/getCategory', async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   });
-router.post('/insert', (req, res) => {
+  router.post('/insert', (req, res) => {
     const cat = req.body.category;
     const items = req.body.itemName;
+
     console.log(req.body);
-    db.query('INSERT INTO category (item, category) VALUES (?, ?)', [items, cat], (err, result) => {
+
+    // Check if the record already exists in the category table
+    db.query('SELECT * FROM category WHERE item = ?', [items], (err, results) => {
         if (err) {
             console.error(err);
-            return res.status(500).send('Error inserting into category');
+            return res.status(500).send('Error checking existing records');
         }
 
-        db.query('INSERT INTO current (item, category, quantity) VALUES (?, ?, 0)', [items, cat], (err, result) => {
+        if (results.length > 0) {
+            // Record already exists
+            return res.status(400).send('Record already exists');
+        }
+
+        // Record does not exist, proceed to insert
+        db.query('INSERT INTO category (item, category) VALUES (?, ?)', [items, cat], (err, result) => {
             if (err) {
                 console.error(err);
-                return res.status(500).send('Error inserting into current');
+                return res.status(500).send('Error inserting into category');
             }
 
-            res.send('Added successfully');
+            db.query('INSERT INTO current (item, category, quantity) VALUES (?, ?, 0)', [items, cat], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('Error inserting into current');
+                }
+
+                res.send('Added successfully');
+            });
         });
     });
 });
+
 
 module.exports=router;

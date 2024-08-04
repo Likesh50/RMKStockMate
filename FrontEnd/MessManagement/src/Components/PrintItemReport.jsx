@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import ReactToPrint from 'react-to-print';
 import styled from 'styled-components';
 import { ItemReport } from './ItemReport';
-
+import { useLocation } from 'react-router-dom';
 const Test = styled.div`
   height: 100%;
   display: flex;
@@ -42,6 +42,8 @@ const PrintButton = styled.button`
 
 const PrintItemReport = () => {
   const reportRef = useRef();
+  const location = useLocation();
+  const { fromDate, toDate } = location.state || {};
 
   return (
     <Test>
@@ -49,7 +51,7 @@ const PrintItemReport = () => {
         trigger={() => <PrintButton>Print Items Report</PrintButton>}
         content={() => reportRef.current}
       />
-      <ItemReport ref={reportRef}/>
+      <ItemReport ref={reportRef} fromDate={fromDate} toDate={toDate}/>
     </Test>
   );
 };

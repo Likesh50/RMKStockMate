@@ -1,15 +1,16 @@
-import React, { useState, useRef, useEffect  } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
+
 const Container = styled.div`
   h1 {
     color: #164863;
     text-align: center;
-    font-weigth:800;
+    font-weight: 800;
   }
 `;
 
@@ -36,8 +37,8 @@ const InputNumber = styled.input`
   border-radius: 4px;
   background-color: #f4f4f4;
   margin-left: 10px;
-  margin-top:24px;
-  width:190px;
+  margin-top: 24px;
+  width: 190px;
 `;
 
 const AddButton = styled.button`
@@ -160,6 +161,7 @@ const Purchase = () => {
   const numRecordsRef = useRef(null);
   const [date, setDate] = useState(null);
   const [items, setItems] = useState([]);
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -192,7 +194,7 @@ const Purchase = () => {
         category: ''
       }));
       setRows(prevRows => [...prevRows, ...newRows]);
-      numRecordsRef.current.value = ''; 
+      numRecordsRef.current.value = '';
     }
   };
 
@@ -205,10 +207,9 @@ const Purchase = () => {
         )
       );
     } else {
-      const numericValue = value === '' ? 0 : parseFloat(value);
       setRows(prevRows =>
         prevRows.map(row =>
-          row.id === id ? { ...row, [field]: numericValue, totalAmount: (row.quantity || 0) * (row.amount || 0) } : row
+          row.id === id ? { ...row, [field]: value } : row
         )
       );
     }
@@ -228,11 +229,19 @@ const Purchase = () => {
       return;
     }
 
+    // Calculate totalAmount for each row
+    const updatedRows = rows.map(row => ({
+      ...row,
+      amount: isNaN(row.amount) ? 0 : row.amount,
+      quantity: isNaN(row.quantity) ? 0 : row.quantity,
+      totalAmount: (isNaN(row.quantity) ? 0 : row.quantity) * (isNaN(row.amount) ? 0 : row.amount) // Calculate totalAmount
+    }));
+
     // Format date to YYYY-MM-DD format
     const formattedDate = date.format('YYYY-MM-DD');
 
     // Prepare data to send
-    const formattedRows = rows.map(row => ({
+    const formattedRowsData = updatedRows.map(row => ({
       ...row,
       amount: isNaN(row.amount) ? 0 : row.amount,
       quantity: isNaN(row.quantity) ? 0 : row.quantity,
@@ -240,19 +249,23 @@ const Purchase = () => {
     }));
 
     try {
-      console.log("Submitting data...", { date: formattedDate, arr: formattedRows });
+      console.log("Submitting data...", { date: formattedDate, arr: formattedRowsData });
       const response = await axios.post('http://localhost:3002/purchase/add', {
         date: formattedDate,
-        arr: formattedRows
+        arr: formattedRowsData
       });
       console.log("Response from server:", response.data);
       alert("Items added successfully");
-      window.location.reload();
+
+      // Clear the form
+      setRows([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
+      setDate(null);
+      numRecordsRef.current.value = '';
+
     } catch (error) {
       console.error("Error submitting data:", error);
     }
   };
-
 
   return (
     <Container>
@@ -261,8 +274,8 @@ const Purchase = () => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
             <DatePicker label="Basic date picker" className="date-picker" onChange={(newDate) => setDate(newDate)}
-            value={date}
-            format="YYYY-MM-DD" />
+              value={date}
+              format="YYYY-MM-DD" />
           </DemoContainer>
         </LocalizationProvider>
         <Records>
@@ -287,37 +300,25 @@ const Purchase = () => {
           </tr>
         </thead>
         <tbody>
-          {rows.map(row => (
+          {rows.map((row, index) => (
             <tr key={row.id}>
-              <td className='sno'>{row.sno}</td>
+              <td className="sno">{row.sno}</td>
               <td>
-              <select
-                  className="item-select"
+                <select
                   value={row.item}
+                  className="item-select"
                   onChange={(e) => handleInputChange(row.id, 'item', e.target.value)}
                 >
-                  <option value="">SELECT</option>
-                  {items.map((item, idx) => (
-                    <option key={idx} value={item.item}>
-                      {item.item}
-                    </option>
+                  <option value="">Select item</option>
+                  {items.map((item) => (
+                    <option key={item.item} value={item.item}>{item.item}</option>
                   ))}
                 </select>
               </td>
-              <td>
-                <input
-                  type="text"
-                  className="item-input"
-                  placeholder="Category"
-                  value={row.category}
-                  readOnly
-                />
-              </td>
+              <td>{row.category}</td>
               <td>
                 <input
                   type="number"
-                  className="item-input"
-                  placeholder="Quantity"
                   value={row.quantity}
                   onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
                 />
@@ -325,28 +326,19 @@ const Purchase = () => {
               <td>
                 <input
                   type="number"
-                  className="item-input"
-                  placeholder="Amount"
                   value={row.amount}
                   onChange={(e) => handleInputChange(row.id, 'amount', e.target.value)}
                 />
               </td>
               <td>
-                <input
-                  type="text"
-                  className="item-input"
-                  placeholder="Total Amount"
-                  value={(row.quantity || 0) * (row.amount || 0)}
-                  readOnly
-                />
+                {row.quantity && row.amount ? row.quantity * row.amount : 0}
               </td>
             </tr>
           ))}
         </tbody>
-        
       </ItemTable>
       <SubmitContainer>
-      <SubmitButton className="add-button" onClick={handleAddOneRow}>Add</SubmitButton>
+        <button className="add-button" onClick={handleAddOneRow}>Add One Row</button>
         <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
       </SubmitContainer>
     </Container>
