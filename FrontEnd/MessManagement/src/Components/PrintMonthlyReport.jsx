@@ -1,4 +1,3 @@
-// PrintMonthlyReport.js
 import React, { useRef } from 'react';
 import ReactToPrint from 'react-to-print';
 import { useLocation } from 'react-router-dom';

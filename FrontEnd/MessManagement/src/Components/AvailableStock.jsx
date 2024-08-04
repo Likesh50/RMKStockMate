@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Axios from 'axios';
 
-// Styled components
 const Container = styled.div`
   h1 {
     color: #164863;
@@ -61,7 +60,7 @@ const SearchContainer = styled.div`
 const TableHeader = styled.table`
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: 30px;
   font-family: Arial, sans-serif;
 
   th {
@@ -119,7 +118,7 @@ function AvailableStock() {
         <input
           type="text"
           className="search-input"
-          placeholder="Enter item name/ Category name"
+          placeholder="Enter item name / Category name"
           value={searchTerm}
           onChange={handleSearch} 
         />

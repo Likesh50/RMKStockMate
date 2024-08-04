@@ -1,64 +1,115 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './SideBar.css';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import purchase from '../assets/purchase.png'
-import dispatch from '../assets/dispatch.png'
-import Available from '../assets/Available.png'
-import reports from '../assets/reports.png'
-import add from '../assets/add.png'
-import menu from '../assets/menu.png'
-import view from '../assets/view.png'
-function SideBar() {
-    const isActive = (path) => {
-        return location.pathname === path ? 'active' : '';
-      };
+import styled from 'styled-components';
+import purchase from '../assets/purchase.png';
+import dispatch from '../assets/dispatch.png';
+import Available from '../assets/Available.png';
+import reports from '../assets/reports.png';
+import add from '../assets/add.png';
+import menu from '../assets/menu.png';
+import view from '../assets/view.png';
+
+const SidebarContainer = styled.div`
+  background-color: white;
+  min-height: 100vh; 
+  width: 85px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 70px;
+  left: 0;
+  z-index: 10;
+  transition: left 0.3s ease-in-out;
+  padding-top: 20px;
+  overflow-y: auto;
+`;
+
+const SidebarList = styled.ul`
+  list-style: none;
+  padding: 0px;
+`;
+
+const SidebarItem = styled.li`
+  margin-bottom: 10px;
+
+  &.active a {
+    background-color: #D0E8F0;
+  }
+
+  a {
+    font-size: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: black;
+    font-weight: 200;
+    transition: background-color 0.3s ease-in-out;
+
+    &:hover {
+      background-color: #D0E8F0;
+    }
+  }
+
+  a img {
+    margin-bottom: 5px;
+  }
+`;
+
+const SideBar = () => {
+  const location = useLocation();
+  const isActive = (path) => location.pathname === path ? 'active' : '';
+
   return (
-    <div className="sidebar">
-      <ul>
-      <li className={isActive('/dashboard')}>
-          <Link to="./">
-            <img src={purchase} width="40px" height="40px" alt="Faculty Details" />
+    <SidebarContainer>
+      <SidebarList>
+        <SidebarItem className={isActive('/dashboard')}>
+          <Link to="">
+            <img src={purchase} width="40px" height="40px" alt="Purchase" />
             Purchase
           </Link>
-        </li>
-        <li className={isActive('/dashboard/dispatch')}>
+        </SidebarItem>
+        <SidebarItem className={isActive('/dashboard/dispatch')}>
           <Link to="./dispatch">
-            <img src={dispatch} width="60px" height="40px" alt="Mail" />
+            <img src={dispatch} width="60px" height="40px" alt="Dispatch" />
             Dispatch
           </Link>
-        </li>
-        <li className={isActive('/available')}>
+        </SidebarItem>
+        <SidebarItem className={isActive('/dashboard/available')}>
           <Link to="available">
-            <img src={Available} width="40px" height="40px" alt="other forms" />
+            <img src={Available} width="40px" height="40px" alt="Available Stock" />
             Available Stock
           </Link>
-        </li>
-        <li className={isActive('/purchase')}>
+        </SidebarItem>
+        <SidebarItem className={isActive('/dashboard/reports')}>
           <Link to="reports">
-            <img src={reports} width="40px" height="40px" alt="other forms" />
+            <img src={reports} width="40px" height="40px" alt="Reports" />
             Reports
           </Link>
-        </li>
-        <li className={isActive('/purchase')}>
+        </SidebarItem>
+        <SidebarItem className={isActive('/dashboard/add')}>
           <Link to="add">
-            <img src={add} width="40px" height="40px" alt="other forms" />
+            <img src={add} width="40px" height="40px" alt="Add Items" />
             Add Items
           </Link>
-        </li>
-        <li className={isActive('/purchase')}>
-          <Link to="purchase">
-            <img src={menu} width="40px" height="40px" alt="other forms" />
+        </SidebarItem>
+        <SidebarItem className={isActive('/dashboard/addevents')}>
+          <Link to="addevents">
+            <img src={menu} width="40px" height="40px" alt="Add Event menu" />
             Add Event menu
           </Link>
-        </li>
-        <li className={isActive('/purchase')}>
-          <Link to="purchase">
-            <img src={view} width="40px" height="40px" alt="other forms" />
+        </SidebarItem>
+        <SidebarItem className={isActive('/dashboard/eventlist')}>
+          <Link to="eventlist">
+            <img src={view} width="40px" height="40px" alt="View Event menu" />
             View Event menu
           </Link>
-        </li>
-      </ul>
-    </div>
+        </SidebarItem>
+      </SidebarList>
+    </SidebarContainer>
   );
 }
 

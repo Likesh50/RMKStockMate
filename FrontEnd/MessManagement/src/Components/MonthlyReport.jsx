@@ -119,7 +119,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
       }
     })
     .then(res => {
-      setData(res.data || []); // Ensure data is an array
+      setData(res.data || []); 
       setLoading(false);
       console.log(data);
     })

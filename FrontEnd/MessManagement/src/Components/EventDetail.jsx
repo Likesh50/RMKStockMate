@@ -1,0 +1,162 @@
+import React from 'react';
+import styled from 'styled-components';
+import { FaPizzaSlice, FaCoffee, FaAppleAlt, FaHamburger, FaCookieBite, FaBeer, FaCalendarAlt, FaSchool, FaClipboardList } from 'react-icons/fa';
+
+const MenuContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const EventDetails = styled.div`
+  margin-bottom: 20px;
+`;
+
+const EventTitle = styled.h1`
+  font-size: 2rem;
+  color: #164863;
+  margin-bottom: 15px;
+  text-align: center;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+`;
+
+const EventInfoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+`;
+
+const EventInfo = styled.p`
+  font-size: 1.2rem;
+  color: #164863;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+`;
+
+const EventDate = styled(EventInfo)`
+  font-size: 1.2rem;
+  color: #164863;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+`;
+
+const MealsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+`;
+
+const MealSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  flex: 1 1 calc(50% - 20px); /* Adjusts the width to be 50% minus the gap */
+  box-sizing: border-box;
+`;
+
+const MealHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #164863;
+`;
+
+const ItemList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const ItemEntry = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0;
+`;
+
+const ItemName = styled.span`
+  font-size: 1rem;
+  color: #333;
+`;
+
+const ItemQuantity = styled.span`
+  font-size: 1rem;
+  color: #333;
+`;
+
+const getIconForMealType = (mealType) => {
+  switch (mealType) {
+    case 'Breakfast':
+      return <FaCoffee />;
+    case 'Lunch':
+      return <FaHamburger />;
+    case 'Dinner':
+      return <FaPizzaSlice />;
+    case 'Snacks':
+      return <FaCookieBite />;
+    case 'Beverages':
+      return <FaBeer />;
+    default:
+      return <FaAppleAlt />;
+  }
+};
+
+const EventDetail = ({ event }) => {
+  if (!event) {
+    return null; 
+  }
+
+  return (
+    <MenuContainer>
+      <EventDetails>
+        <EventTitle><FaClipboardList /> {event.eventName}</EventTitle>
+        <EventInfoContainer>
+          <EventInfo><FaSchool /> {event.institution}</EventInfo>
+          <EventDate><FaCalendarAlt /> {event.date}</EventDate>
+        </EventInfoContainer>
+      </EventDetails>
+      <MealsContainer>
+        {event.menuData.map((meal, index) => (
+          <MealSection key={index}>
+            <MealHeader>
+              {getIconForMealType(meal.mealType)}
+              {meal.mealType}
+            </MealHeader>
+            <ItemList>
+              {meal.items.map((item, i) => (
+                <ItemEntry key={i}>
+                  <ItemName>{item.name}</ItemName>
+                  <ItemQuantity>{item.quantity} pcs</ItemQuantity>
+                </ItemEntry>
+              ))}
+            </ItemList>
+          </MealSection>
+        ))}
+      </MealsContainer>
+    </MenuContainer>
+  );
+};
+
+export default EventDetail;

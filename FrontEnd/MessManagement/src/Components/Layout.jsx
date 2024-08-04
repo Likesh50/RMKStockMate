@@ -1,31 +1,60 @@
-import React, { useEffect } from "react";
-import { Outlet, useNavigate } from 'react-router-dom';
+import React from "react";
+import { Outlet } from 'react-router-dom';
 import NavBar from "./NavBar";
-import './Layout.css'; 
+import styled from 'styled-components';
 import Navigation from "./Navigation";
 import SideBar from "./SideBar";
+import BackToTopButton from "./BackToTopButton";
+
+const LayoutContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+`;
+
+const MainContent = styled.div`
+  display: flex;
+  flex: 1;
+`;
+
+const MainFrame = styled.div`
+  margin-top: 0;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  max-height: 100%;
+  min-width: 93.2vw;
+  background-color: #f4f4f4;
+`;
+
+const Footer = styled.footer`
+    text-align: center;
+    padding: 10px;
+    background-color: #164863;
+    color: white;
+    margin-top: 130px;
+`;
 
 const Layout = () => {
-    const navigate = useNavigate();
-    
     return (
-        <div>
-            <NavBar/>
-            <div className="er">
+        <LayoutContainer>
+            <NavBar />
+            <MainContent>
                 <aside>
-                <SideBar/>
+                    <SideBar />
                 </aside>
                 <div className="pr">
-                <Navigation/>
-                    <div className="main-frame">
-                    <Outlet/>
-                    </div>
+                    <Navigation />
+                    <MainFrame>
+                        <Outlet />
+                        <BackToTopButton/>
+                    </MainFrame>
                 </div>
-            </div>
-            <footer className="footer">
+            </MainContent>
+            <Footer>
                 Copyright © 2024. All rights reserved to DEPARTMENT of INFORMATION TECHNOLOGY - RMKEC
-            </footer>
-        </div>
+            </Footer>
+        </LayoutContainer>
     );
 }
 

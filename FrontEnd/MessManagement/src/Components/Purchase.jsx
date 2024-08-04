@@ -37,8 +37,9 @@ const InputNumber = styled.input`
   border-radius: 4px;
   background-color: #f4f4f4;
   margin-left: 10px;
-  margin-top: 24px;
-  width: 190px;
+  margin-top:24px;
+  width:190px;
+  font-size:13px;
 `;
 
 const AddButton = styled.button`
@@ -90,7 +91,7 @@ const ItemTable = styled.table`
   }
 
   td input {
-    border: none;
+    border: 1px solid #ccc;
     border-radius: 4px;
     padding: 8px;
     font-size: 14px;
@@ -100,11 +101,12 @@ const ItemTable = styled.table`
     outline: 2px solid #164863;
   }
 
-  .item-select {
+  td select {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 8px;
     font-size: 14px;
+    min-width: 180px;
   }
 
   .sno {
@@ -237,15 +239,14 @@ const Purchase = () => {
       totalAmount: (isNaN(row.quantity) ? 0 : row.quantity) * (isNaN(row.amount) ? 0 : row.amount) // Calculate totalAmount
     }));
 
-    // Format date to YYYY-MM-DD format
     const formattedDate = date.format('YYYY-MM-DD');
 
     // Prepare data to send
-    const formattedRowsData = updatedRows.map(row => ({
+    const formattedRows = rows.map(row => ({
       ...row,
       amount: isNaN(row.amount) ? 0 : row.amount,
       quantity: isNaN(row.quantity) ? 0 : row.quantity,
-      totalAmount: isNaN(row.totalAmount) ? 0 : row.totalAmount // Ensure totalAmount is valid
+      totalAmount: isNaN(row.totalAmount) ? 0 : row.totalAmount
     }));
 
     try {
