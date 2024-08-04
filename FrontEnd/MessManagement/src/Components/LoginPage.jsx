@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import logo from '../assets/Logo.png';
 import backgroundImage from '../assets/Front.jpg';
 import { useNavigate } from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const PageWrapper = styled.div`
   background-image: url(${backgroundImage});
   background-repeat: no-repeat;
@@ -80,13 +81,13 @@ function LoginPage() {
     e.preventDefault();
 
     if ((username === 'ADMIN' || username === 'admin') && password === 'selva') {
-      alert('Login successful');
       navigate('dashboard');
-      setError(''); // Clear the error message on successful login
+      setError(''); 
     } else {
       setError('Invalid username or password');
     }
   };
+  const notify = () => toast("Wow so easy!");
 
   return (
     <PageWrapper>
@@ -115,10 +116,11 @@ function LoginPage() {
               aria-label="Password"
             />
           </FormGroup>
-          <SubmitButton type="submit">Sign in</SubmitButton>
+          <SubmitButton type="submit" onClick={notify}>Sign in</SubmitButton>
         </form>
         {error && <ErrorMessage>{error}</ErrorMessage>}
       </LoginForm>
+      <ToastContainer />
     </PageWrapper>
   );
 }

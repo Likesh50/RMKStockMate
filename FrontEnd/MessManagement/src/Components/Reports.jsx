@@ -115,16 +115,6 @@ const ReportCard = ({ title, route, withDropdown, fromDate, toDate, setFromDate,
               </DemoContainer>
             </LocalizationProvider>
           </DatePickerContainer>
-          <Dropdown
-            value={selectedItem}
-            onChange={(e) => setSelectedItem(e.target.value)}
-          >
-            <option value="">Select Item</option>
-            {/* Add your items here */}
-            <option value="item1">Item 1</option>
-            <option value="item2">Item 2</option>
-            <option value="item3">Item 3</option>
-          </Dropdown>
         </>
       )}
       {!withDropdown && (

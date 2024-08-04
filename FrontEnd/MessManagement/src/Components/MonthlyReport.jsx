@@ -119,7 +119,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
       }
     })
     .then(res => {
-      setData(res.data || []); // Ensure data is an array
+      setData(res.data || []); 
       setLoading(false);
       console.log(data);
     })
@@ -174,15 +174,15 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
                 <td>{row.purchaseAmount}</td>
                 <td>{row.closingStock}</td>
                 <td>{row.RMK}</td>
-                <td>{row.RMK * row.purchaseAmount}</td> {/* Adjust calculation as needed */}
+                <td>{row.RMK * row.purchaseAmount}</td> 
                 <td>{row.RMD}</td>
-                <td>{row.RMD * row.purchaseAmount}</td> {/* Adjust calculation as needed */}
+                <td>{row.RMD * row.purchaseAmount}</td> 
                 <td>{row.RMKCET}</td>
-                <td>{row.RMKCET * row.purchaseAmount}</td> {/* Adjust calculation as needed */}
+                <td>{row.RMKCET * row.purchaseAmount}</td>
                 <td>{row.RMKSCHOOL}</td>
-                <td>{row.RMKSCHOOL * row.purchaseAmount}</td> {/* Adjust calculation as needed */}
+                <td>{row.RMKSCHOOL * row.purchaseAmount}</td>
                 <td>{row.RMK+row.RMD+row.RMKCET+row.RMKSCHOOL}</td>
-                <td>{(row.RMK+row.RMD+row.RMKCET+row.RMKSCHOOL)* row.purchaseAmount}</td> {/* Adjust calculation as needed */}
+                <td>{(row.RMK+row.RMD+row.RMKCET+row.RMKSCHOOL)* row.purchaseAmount}</td>
               </tr>
             ))
           ) : (

@@ -5,6 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components';
 import axios from 'axios';
+import BackToTopButton from './BackToTopButton';
 
 const Container = styled.div`
   h1 {
@@ -38,6 +39,7 @@ const InputNumber = styled.input`
   margin-left: 10px;
   margin-top:24px;
   width:190px
+  font-size:13px;
 `;
 
 const AddButton = styled.button`
@@ -301,7 +303,7 @@ function Dispatch() {
               rmd: '',
               rmkcet: '',
               school: '',
-              currentQuantity: newQuantity, // Reset currentQuantity to newQuantity when item is changed
+              currentQuantity: newQuantity, 
             };
           }
           return row;
@@ -316,7 +318,7 @@ function Dispatch() {
   
             if (currentQuantity < 0) {
               alert("Current quantity cannot be less than 0.");
-              return row; // Keep the old value if validation fails
+              return row; 
             }
   
             if (parseInt(updatedRow.rmk || 0, 10) > parseInt(updatedRow.quantity, 10) ||
@@ -324,7 +326,7 @@ function Dispatch() {
                 parseInt(updatedRow.rmkcet || 0, 10) > parseInt(updatedRow.quantity, 10) ||
                 parseInt(updatedRow.school || 0, 10) > parseInt(updatedRow.quantity, 10)) {
               alert("Quantities for RMK, RMD, RMKCET, and School cannot be more than the total quantity.");
-              return row; // Keep the old value if validation fails
+              return row; 
             }
   
             return {
@@ -363,7 +365,7 @@ function Dispatch() {
         <thead>
           <tr>
             <th>SNo</th>
-            <th>Select Items</th>
+            <th>Select Item</th>
             <th>Total Quantity</th>
             <th>RMKEC</th>
             <th>RMDEC</th>
@@ -447,6 +449,7 @@ function Dispatch() {
         <SubmitButton className="add-button" onClick={handleAddOneRow}>Add</SubmitButton>
         <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
       </SubmitContainer>
+      
     </Container>
   );
 }

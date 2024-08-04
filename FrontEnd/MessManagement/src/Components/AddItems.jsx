@@ -12,6 +12,10 @@ const Heading = styled.h1`
   color: #164863;
   margin-bottom: 20px;
 `;
+const SubHeading=styled.h2`
+  color: #164863;
+  margin-bottom: 20px;
+`;
 
 const Table = styled.table`
   width: 80%;
@@ -49,7 +53,7 @@ const Input = styled.input`
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
-  border: none;
+  border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
 
@@ -231,7 +235,7 @@ const AddItems = () => {
         <tbody>
           <tr>
             <Td>1</Td>
-            <Td><Input placeholder="ITEMS" onChange={handleInputChange} /></Td>
+            <Td><Input placeholder="ITEM" onChange={handleInputChange} /></Td>
             <Td>
               <Select onChange={handleCategoryChange}>
                 <option value="" disabled selected>Select Category</option>
@@ -245,7 +249,8 @@ const AddItems = () => {
           </tr>
         </tbody>
       </Table>
-      <Heading>Existing Items That Match</Heading>
+      <SubHeading>Existing Items That Match</SubHeading>
+
       {filteredItems.length > 0 && (
         <Table className="table table-bordered">
           <thead>

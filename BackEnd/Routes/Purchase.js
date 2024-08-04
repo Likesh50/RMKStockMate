@@ -39,7 +39,7 @@ router.get('/getItems', async (req, res) => {
       
       console.log(itemName, purchaseQuantity, amountkg, total, date);
   
-      // Fetch current quantity for the item
+
       const [rows] = await db.promise().query(
         `SELECT COALESCE(quantity, 0) as quantity FROM current WHERE item = ? LIMIT 1`, 
         [itemName]
@@ -48,28 +48,23 @@ router.get('/getItems', async (req, res) => {
       const currentQuantity = rows.length > 0 ? rows[0].quantity : 0;
       const finalQuantity = currentQuantity + purchaseQuantity;
   
-      // Insert into purchase table
       await db.promise().query(
         `INSERT INTO purchase (item, category, quantity, amountkg, amount, date) VALUES (?, ?, ?, ?, ?, ?)`,
         [itemName, category, purchaseQuantity, amountkg, total, date]
       );
   
-      // Check if the item exists in the current table
       if (currentQuantity === 0) {
-        // Insert a new record into the current table
         await db.promise().query(
           `INSERT INTO current (item, category, quantity) VALUES (?, ?, ?)`,
           [itemName, category, finalQuantity]
         );
       } else {
-        // Update the existing record in the current table
         await db.promise().query(
           `UPDATE current SET quantity = ? WHERE item = ?`,
           [finalQuantity, itemName]
         );
       }
   
-      // Insert into closingstock table
       await db.promise().query(
         `INSERT INTO closingstock (item, quantity, date, category) VALUES (?, ?, ?, ?)`,
         [itemName, finalQuantity, date, category]
