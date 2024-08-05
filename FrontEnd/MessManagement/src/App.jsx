@@ -14,6 +14,7 @@ import PrintComparisonReport from "./Components/PrintComparisonReport.jsx";
 import AddEvent from "./Components/AddEvent.jsx";
 import EventList from "./Components/EventList.jsx";
 import Page from "./Components/Page.jsx"; 
+import EventDetail from "./Components/EventDetail.jsx";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -44,7 +45,7 @@ function App() {
             <Route path="reports/comparison" element={<PrintComparisonReport />} />
             <Route path="addevents" element={<AddEvent />} />
             <Route path="eventlist" element={<EventList />} />
-            <Route path="eventlist/:id" element={<Page />} /> 
+            <Route path="eventlist/:eventId" element={<EventDetail/>} /> 
           </Route>
         </Routes>
       </Router>

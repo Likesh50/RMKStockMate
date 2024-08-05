@@ -11,6 +11,7 @@ const monthlyItem = require('./Routes/Monthly');
 const categoryItem = require('./Routes/Category');
 const compareItem = require('./Routes/Comparison');
 const Itemwise = require('./Routes/ItemWise');
+const Event = require('./Routes/event');
 
 app.use(cors());
 app.use(express.json());
@@ -23,6 +24,8 @@ app.use('/monthly',monthlyItem);
 app.use('/category',categoryItem);
 app.use('/comparison',compareItem);
 app.use('/item',Itemwise);
+app.use('/event',Event);
+
 
 app.listen(3002,()=>{
   console.log("You r up!!!");

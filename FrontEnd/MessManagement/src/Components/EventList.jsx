@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import styled from 'styled-components';
-import { events } from './data';
 import { FaSearch } from 'react-icons/fa';
-
+import dayjs from 'dayjs';
 const Container = styled.div`
   max-width: 800px;
   margin: 20px auto;
@@ -54,9 +54,20 @@ const EventItem = styled(Link)`
 
 const EventList = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    axios.get('http://localhost:3002/event/events')
+      .then(response => {
+        setEvents(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching events:', error);
+      });
+  }, []);
 
   const filteredEvents = events.filter(event =>
-    event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+    event.event_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -73,8 +84,8 @@ const EventList = () => {
       </SearchContainer>
       {filteredEvents.map(event => (
         <EventItem key={event.id} to={`/dashboard/eventlist/${event.id}`}>
-          <span>{event.eventName}</span>
-          <span>{event.date}</span>
+          <span>{event.event_name}</span>
+          <span>{dayjs(event.event_date).format("DD-MM-YYYY")}</span>
         </EventItem>
       ))}
     </Container>

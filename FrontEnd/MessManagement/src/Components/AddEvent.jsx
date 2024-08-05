@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import axios from 'axios';
+import dayjs from 'dayjs';
 
 const Form = styled.form`
   display: flex;
@@ -114,16 +116,13 @@ const Holder = styled.div`
 `;
 
 const AddEvent = () => {
-  const [mealSections, setMealSections] = useState([
-    { mealType: '', items: [{ name: '', quantity: '' }] },
-  ]);
+  const [eventName, setEventName] = useState('');
+  const [institution, setInstitution] = useState('');
+  const [mealSections, setMealSections] = useState([{ mealType: '', items: [{ name: '', quantity: '' }] }]);
   const [eventDate, setEventDate] = useState(null);
 
   const handleAddMealSection = () => {
-    setMealSections([
-      ...mealSections,
-      { mealType: '', items: [{ name: '', quantity: '' }] },
-    ]);
+    setMealSections([...mealSections, { mealType: '', items: [{ name: '', quantity: '' }] }]);
   };
 
   const handleMealTypeChange = (index, value) => {
@@ -158,20 +157,66 @@ const AddEvent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted', { eventDate, mealSections });
+  
+    // Format the event date
+    const formattedEventDate = eventDate ? dayjs(eventDate).format('YYYY-MM-DD') : null;
+  
+    // Construct the event details in the required format
+    const eventDetails = {
+      event_name: eventName,
+      institution: institution,
+      event_date: formattedEventDate,
+      meal_details: mealSections.map(section => ({
+        mealType: section.mealType,
+        items: section.items.map(item => ({
+          name: item.name,
+          quantity: parseInt(item.quantity, 10) // Convert quantity to integer
+        }))
+      }))
+    };
+  
+    // Send data to the backend
+    axios.post('http://localhost:3002/event/addevent', eventDetails)
+      .then(response => {
+        console.log(response.data);
+        // handle success
+        alert('Form has been successfully submitted!');
+        // Clear form data
+        setEventName('');
+        setInstitution('');
+        setMealSections([{ mealType: '', items: [{ name: '', quantity: '' }] }]);
+        setEventDate(null);
+      })
+      .catch(error => {
+        console.error("There was an error submitting the form!", error);
+        // handle error
+        alert('There was an error submitting the form. Please try again.');
+      });
   };
-
+  
   return (
     <Form onSubmit={handleSubmit}>
       <Section>
         <SectionTitle>Event Details</SectionTitle>
         <FormGroup>
           <Label>Event Name:</Label>
-          <Input type="text" name="eventName" required />
+          <Input
+            type="text"
+            name="eventName"
+            value={eventName}
+            onChange={(e) => setEventName(e.target.value)}
+            required
+          />
         </FormGroup>
         <FormGroup>
           <Label>Institution:</Label>
-          <Input type="text" name="institutionConducted" required />
+          <Input
+            type="text"
+            name="institution"
+            value={institution}
+            onChange={(e) => setInstitution(e.target.value)}
+            required
+          />
         </FormGroup>
         <FormGroup>
           <Label>Date:</Label>
@@ -240,7 +285,7 @@ const AddEvent = () => {
       </Section>
       <Holder>
         <Button type="button" onClick={handleAddMealSection}>
-            Add Meal Type
+          Add Meal Type
         </Button>
         <Button type="submit">Submit</Button>
       </Holder>

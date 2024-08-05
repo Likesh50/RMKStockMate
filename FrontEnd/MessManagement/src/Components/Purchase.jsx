@@ -37,9 +37,8 @@ const InputNumber = styled.input`
   border-radius: 4px;
   background-color: #f4f4f4;
   margin-left: 10px;
-  margin-top:24px;
-  width:190px;
-  font-size:13px;
+  margin-top: 24px;
+  width: 190px;
 `;
 
 const AddButton = styled.button`
@@ -239,10 +238,11 @@ const Purchase = () => {
       totalAmount: (isNaN(row.quantity) ? 0 : row.quantity) * (isNaN(row.amount) ? 0 : row.amount) // Calculate totalAmount
     }));
 
+    // Format date to YYYY-MM-DD format
     const formattedDate = date.format('YYYY-MM-DD');
 
     // Prepare data to send
-    const formattedRows = rows.map(row => ({
+    const formattedRowsData = updatedRows.map(row => ({
       ...row,
       amount: isNaN(row.amount) ? 0 : row.amount,
       quantity: isNaN(row.quantity) ? 0 : row.quantity,
