@@ -68,6 +68,7 @@ const ItemTable = styled.table`
   .sno {
     min-width: 50px;
   }
+
   @media print {
     th, td {
       font-size: 14px; 
@@ -117,14 +118,8 @@ const Dropdown = styled.select`
 `;
 
 const TableContainer = styled.div`
-  min-height: 300px; /* Adjust this value as needed */
-`;
-
-const ErrorMessage = styled.div`
-  color: red;
-  text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 20px;
+  min-height: 300px; /* Ensures minimum height to avoid shifting */
+  position: relative; /* Helps to position error message absolutely */
 `;
 
 export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
@@ -132,7 +127,6 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
   const [items, setItems] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // State to manage errors
 
   useEffect(() => {
     // Fetch items for the dropdown
@@ -143,7 +137,6 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
       })
       .catch(error => {
         console.error('Error fetching items:', error);
-        setError('Failed to load items.');
         setLoading(false);
       });
   }, []);
@@ -160,15 +153,42 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
       })
         .then(response => {
           if (response.data.length === 0) {
-            setError('No data found for the selected item and date range.');
+            setData([{
+              item: selectedItem,
+              RMK_quantity: 0,
+              RMK_amount: 0,
+              RMD_quantity: 0,
+              RMD_amount: 0,
+              RMKCET_quantity: 0,
+              RMKCET_amount: 0,
+              RMKSCHOOL_quantity: 0,
+              RMKSCHOOL_amount: 0,
+              Issued_quantity: 0,
+              Issued_amount: 0,
+              Purchased_quantity: 0,
+              Purchased_amount: 0,
+            }]);
           } else {
             setData(response.data);
-            setError(null); // Clear error if data is fetched successfully
           }
         })
         .catch(error => {
           console.error('Error fetching item data:', error);
-          setError('Failed to load item data.');
+          setData([{
+            item: selectedItem,
+            RMK_quantity: 0,
+            RMK_amount: 0,
+            RMD_quantity: 0,
+            RMD_amount: 0,
+            RMKCET_quantity: 0,
+            RMKCET_amount: 0,
+            RMKSCHOOL_quantity: 0,
+            RMKSCHOOL_amount: 0,
+            Issued_quantity: 0,
+            Issued_amount: 0,
+            Purchased_quantity: 0,
+            Purchased_amount: 0,
+          }]);
         });
     } else {
       setData([]);
@@ -189,7 +209,6 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
         </div>
       </PrintHeader>
       <h1>Item-Wise Report</h1>
-      {error && <ErrorMessage>{error}</ErrorMessage>} {/* Display error message if there is one */}
       <Dropdown value={selectedItem} onChange={handleItemChange}>
         <option value="">Select Item</option>
         {items.map((item, index) => (
@@ -230,11 +249,6 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
             </tr>
           </thead>
           <tbody>
-            {data.length === 0 && selectedItem && !error && (
-              <tr>
-                <td colSpan="12">Loading...</td>
-              </tr>
-            )}
             {data.map((row, index) => (
               <tr key={index}>
                 <td>{row.item}</td>
@@ -246,8 +260,8 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
                 <td>{row.RMKCET_amount}</td>
                 <td>{row.RMKSCHOOL_quantity}</td>
                 <td>{row.RMKSCHOOL_amount}</td>
-                <td>{row.RMK_quantity+row.RMD_quantity+row.RMKCET_quantity+row.RMKSCHOOL_quantity}</td>
-                <td>{row.RMK_amount+row.RMD_amount+row.RMKCET_amount+row.RMKSCHOOL_amount}</td>
+                <td>{row.RMK_quantity + row.RMD_quantity + row.RMKCET_quantity + row.RMKSCHOOL_quantity}</td>
+                <td>{row.RMK_amount + row.RMD_amount + row.RMKCET_amount + row.RMKSCHOOL_amount}</td>
                 <td>{row.Purchased_quantity}</td>
                 <td>{row.Purchased_amount}</td>
               </tr>

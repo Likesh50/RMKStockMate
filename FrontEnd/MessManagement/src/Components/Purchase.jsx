@@ -105,7 +105,7 @@ const ItemTable = styled.table`
     border-radius: 4px;
     padding: 8px;
     font-size: 14px;
-    min-width: 180px;
+    width: 180px;
   }
 
   .sno {
