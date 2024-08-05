@@ -33,7 +33,7 @@ const ItemTable = styled.table`
   th {
     background-color: #164863;
     color: white;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
   }
 
@@ -54,7 +54,7 @@ const ItemTable = styled.table`
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 4px;
-    font-size: 12px;
+    font-size: 14px;
     width: 90%;
   }
 
@@ -62,7 +62,7 @@ const ItemTable = styled.table`
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 4px;
-    font-size: 12px;
+    font-size: 14px;
     min-width: 180px;
   }
 
@@ -72,7 +72,7 @@ const ItemTable = styled.table`
 
   @media print {
     th, td {
-      font-size: 14px; 
+      font-size: 11px; 
     }
   }
 `;

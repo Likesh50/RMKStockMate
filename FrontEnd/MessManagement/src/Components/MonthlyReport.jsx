@@ -26,13 +26,13 @@ const ItemTable = styled.table`
     text-align: center;
     overflow-wrap: break-word;
     word-break: break-word;
-    font-size: 14px;
+    font-size: 18px;
   }
 
   th {
     background-color: #164863;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
   }
 
@@ -53,7 +53,7 @@ const ItemTable = styled.table`
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 4px;
-    font-size: 12px;
+    font-size: 14px;
     width: 90%;
   }
 
@@ -71,7 +71,7 @@ const ItemTable = styled.table`
 
   @media print {
     th, td {
-      font-size: 14px; 
+      font-size: 11px; 
     }
   }
 `;
@@ -189,7 +189,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
               );
             })
           ) : (
-            <tr><td colSpan="13">No data available</td></tr>
+            <tr><td colSpan="14">No data available</td></tr>
           )}
         </tbody>
       </ItemTable>

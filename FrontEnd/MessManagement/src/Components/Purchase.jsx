@@ -10,7 +10,6 @@ const Container = styled.div`
   h1 {
     color: #164863;
     text-align: center;
-    font-weight: 800;
   }
 `;
 
