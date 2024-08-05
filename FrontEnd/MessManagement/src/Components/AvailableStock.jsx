@@ -71,7 +71,7 @@ const TableHeader = styled.table`
     padding: 10px;
     border: 1px solid #ddd;
     text-align: center;
-    min-width: 200px;
+    width: 200px;
   }
 
   td {

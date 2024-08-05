@@ -5,6 +5,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
   h1 {
@@ -225,10 +227,18 @@ const Purchase = () => {
 
   const handleSubmit = async () => {
     if (!date) {
-      alert("Please enter the date.");
+      toast.error("Please enter the date.");
       return;
     }
-
+  
+    // Check if any row has empty item, quantity, or amount
+    const invalidRows = rows.filter(row => !row.item || !row.quantity || !row.amount);
+  
+    if (invalidRows.length > 0) {
+      toast.error("Please fill in all the fields for each row.");
+      return;
+    }
+  
     // Calculate totalAmount for each row
     const updatedRows = rows.map(row => ({
       ...row,
@@ -236,10 +246,10 @@ const Purchase = () => {
       quantity: isNaN(row.quantity) ? 0 : row.quantity,
       totalAmount: (isNaN(row.quantity) ? 0 : row.quantity) * (isNaN(row.amount) ? 0 : row.amount) // Calculate totalAmount
     }));
-
+  
     // Format date to YYYY-MM-DD format
     const formattedDate = date.format('YYYY-MM-DD');
-
+  
     // Prepare data to send
     const formattedRowsData = updatedRows.map(row => ({
       ...row,
@@ -247,7 +257,7 @@ const Purchase = () => {
       quantity: isNaN(row.quantity) ? 0 : row.quantity,
       totalAmount: isNaN(row.totalAmount) ? 0 : row.totalAmount
     }));
-
+  
     try {
       console.log("Submitting data...", { date: formattedDate, arr: formattedRowsData });
       const response = await axios.post('http://localhost:3002/purchase/add', {
@@ -255,17 +265,19 @@ const Purchase = () => {
         arr: formattedRowsData
       });
       console.log("Response from server:", response.data);
-      alert("Items added successfully");
-
+      toast.success("Items added successfully");
+  
       // Clear the form
       setRows([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
       setDate(null);
       numRecordsRef.current.value = '';
-
+  
     } catch (error) {
       console.error("Error submitting data:", error);
+      toast.error("Error submitting data");
     }
   };
+  
 
   return (
     <Container>
@@ -321,13 +333,16 @@ const Purchase = () => {
                   type="number"
                   value={row.quantity}
                   onChange={(e) => handleInputChange(row.id, 'quantity', e.target.value)}
+                  required
                 />
               </td>
               <td>
                 <input
                   type="number"
                   value={row.amount}
-                  onChange={(e) => handleInputChange(row.id, 'amount', e.target.value)}
+                  onChange={(e) => handleInputChange(row.id, 'amount', e.target.value)
+                  }
+                  required
                 />
               </td>
               <td>
@@ -341,6 +356,7 @@ const Purchase = () => {
         <button className="add-button" onClick={handleAddOneRow}>Add One Row</button>
         <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
       </SubmitContainer>
+      <ToastContainer />
     </Container>
   );
 };

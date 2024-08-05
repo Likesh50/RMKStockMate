@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
   padding: 0px;
@@ -12,9 +14,10 @@ const Heading = styled.h1`
   color: #164863;
   margin-bottom: 20px;
 `;
-const SubHeading=styled.h2`
+
+const SubHeading=styled.h3`
   color: #164863;
-  margin-bottom: 20px;
+  margin-top: 20px;
 `;
 
 const Table = styled.table`
@@ -30,23 +33,15 @@ const Th = styled.th`
   padding: 10px;
   text-align: left;
   border: 1px solid #ddd;
-
-  &:nth-child(1) {
-    width: 50px;
-  }
-
-  &:not(:nth-child(1)) {
-    min-width: 200px;
-  }
+  width: 200px;
+  max-width: 200px;
 `;
 
 const Td = styled.td`
   padding: 10px;
   border: 1px solid #ddd;
-
-  &:nth-child(1) {
-    width: 50px;
-  }
+  width: 200px;
+  max-width: 200px;
 `;
 
 const Input = styled.input`
@@ -71,57 +66,10 @@ const Select = styled.select`
   font-size: 14px;
 `;
 
-const SearchContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px 0;
-
-  .search-input {
-    padding: 10px;
-    border: 1px solid #164863;
-    border-radius: 4px;
-    font-size: 16px;
-    width: 230px;
-    box-sizing: border-box;
-    margin-right: 10px;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    background-color: #f4f4f4;
-
-    &::placeholder {
-      color: #888;
-    }
-
-    &:focus {
-      border-color: #0a3d62;
-      box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
-    }
-  }
-
-  .add-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background-color: #164863;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-
-    &:hover {
-      background-color: #0a3d62;
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-  }
-`;
-
 const SubmitContainer = styled.div`
   margin-top: 20px;
   text-align: center;
+
   .add-button {
     padding: 10px 20px;
     border: none;
@@ -174,29 +122,26 @@ const AddItems = () => {
   const [items, setItems] = useState([]);
   const [itemsAvail, setItemsAvail] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        console.log("Fetching items...");
         const response = await axios.get("http://localhost:3002/addItems/getCategory");
-        console.log("Items fetched:", response.data);
         setItems(response.data);
       } catch (error) {
         console.error("Error fetching items:", error);
       }
     };
+
     const fetchItemsAvail = async () => {
       try {
-        console.log("Fetching items...");
         const response = await axios.get("http://localhost:3002/addItems/getItemCategory");
-        console.log("Items fetched Avail:", response.data);
         setItemsAvail(response.data);
       } catch (error) {
         console.error("Error fetching items:", error);
       }
     };
+
     fetchItems();
     fetchItemsAvail();
   }, []);
@@ -204,7 +149,6 @@ const AddItems = () => {
   const handleInputChange = (event) => {
     const value = event.target.value;
     setItemName(value);
-    setError(""); // Clear error when input changes
     if (value) {
       const filtered = itemsAvail.filter(item =>
         item.item.toLowerCase().includes(value.toLowerCase())
@@ -220,13 +164,21 @@ const AddItems = () => {
   };
 
   const handleSubmit = async () => {
+    if (!category) {
+      toast.error("Please select a category before adding.");
+      return;
+    }
+
     try {
-      const response = await axios.post('http://localhost:3002/addItems/insert', { itemName, category });
-      console.log(response.data);
-      setError(""); // Clear error if successful
+      await axios.post('http://localhost:3002/addItems/insert', { itemName, category });
+      toast.success("Item added successfully");
+      
+      // Reset input fields
+      setItemName("");
+      setCategory("");
+      setFilteredItems([]);
     } catch (error) {
-      console.error('Error adding data:', error.response ? error.response.data : error.message);
-      setError(error.response ? error.response.data : 'An error occurred while adding the item.');
+      toast.error(error.response ? error.response.data : 'An error occurred while adding the item.');
     }
   };
 
@@ -244,10 +196,10 @@ const AddItems = () => {
         <tbody>
           <tr>
             <Td>1</Td>
-            <Td><Input placeholder="ITEM" onChange={handleInputChange} /></Td>
+            <Td><Input value={itemName} placeholder="ITEM" onChange={handleInputChange} /></Td>
             <Td>
-              <Select onChange={handleCategoryChange}>
-                <option value="" disabled selected>Select Category</option>
+              <Select value={category} onChange={handleCategoryChange}>
+                <option value="" disabled>Select Category</option>
                 {items.map((item, idx) => (
                   <option key={idx} value={item.category}>
                     {item.category}
@@ -259,10 +211,9 @@ const AddItems = () => {
         </tbody>
       </Table>
       <SubmitContainer>
-        <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
-        {error && <ErrorText>{error}</ErrorText>}
+        <SubmitButton onClick={handleSubmit}>Add</SubmitButton>
       </SubmitContainer>
-      <Heading>Existing Items That Match</Heading>
+      <SubHeading>Existing Items That Match</SubHeading>
       {filteredItems.length > 0 && (
         <Table className="table table-bordered">
           <thead>
@@ -281,6 +232,7 @@ const AddItems = () => {
           </tbody>
         </Table>
       )}
+      <ToastContainer />
     </Container>
   );
 };

@@ -5,7 +5,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components';
 import axios from 'axios';
-import BackToTopButton from './BackToTopButton';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
   h1 {
@@ -37,9 +38,9 @@ const InputNumber = styled.input`
   border-radius: 4px;
   background-color: #f4f4f4;
   margin-left: 10px;
-  margin-top:24px;
-  width:190px
-  font-size:13px;
+  margin-top: 24px;
+  width: 190px;
+  font-size: 13px;
 `;
 
 const AddButton = styled.button`
@@ -198,7 +199,7 @@ function Dispatch() {
 
   const handleSubmit = async () => {
     if (!selectedDate) {
-      alert("Please enter the date");
+      toast.error("Please enter the date");
       return;
     }
   
@@ -216,15 +217,15 @@ function Dispatch() {
   
     try {
       const response = await axios.post('http://localhost:3002/dispatch/updateDispatch', { ItemArray: arr });
-      console.log(response.data);
-      alert("Items updated successfully");
-      window.location.reload();
+      toast.success("Items updated successfully");
+      setRows([{ id: Date.now(), sno: 1, item: '', quantity: '', currentQuantity: '', rmk: '', rmd: '', rmkcet: '', school: '' }]);
+      setSelectedDate(null);
+      numRecordsRef.current.value = '';
     } catch (error) {
       console.error("Error updating items:", error);
-      alert("Error updating items. Please try again.");
+      toast.error("Error updating items. Please try again.");
     }
   };
-  
   
   useEffect(() => {
     const fetchData = async () => {
@@ -236,7 +237,6 @@ function Dispatch() {
       }
     };    
     fetchData();
-    console.log(items);
   }, []);
 
   const handleAddRows = () => {
@@ -264,14 +264,12 @@ function Dispatch() {
       const response = await axios.post("http://localhost:3002/dispatch/getQuantity", {
         itemName: itemName,
       });
-      console.log(response.data.quantity); 
       return parseInt(response.data.quantity, 10); 
     } catch (error) {
       console.error("Error fetching quantity:", error);
       return 0; 
     }
   };
-  
   
   const calculateCurrentQuantity = (row) => {
     const quantity = parseInt(row.quantity || 0, 10);
@@ -281,6 +279,7 @@ function Dispatch() {
     const school = parseInt(row.school || 0, 10);
     return quantity - rmk - rmd - rmkcet - school;
   };
+
   const handleAddOneRow = () => {
     const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
     setRows(prevRows => [
@@ -317,7 +316,7 @@ function Dispatch() {
             const currentQuantity = calculateCurrentQuantity(updatedRow);
   
             if (currentQuantity < 0) {
-              alert("Current quantity cannot be less than 0.");
+              toast.error("Dispatch quantity exceeds the current quantity.");
               return row; 
             }
   
@@ -325,7 +324,7 @@ function Dispatch() {
                 parseInt(updatedRow.rmd || 0, 10) > parseInt(updatedRow.quantity, 10) ||
                 parseInt(updatedRow.rmkcet || 0, 10) > parseInt(updatedRow.quantity, 10) ||
                 parseInt(updatedRow.school || 0, 10) > parseInt(updatedRow.quantity, 10)) {
-              alert("Quantities for RMK, RMD, RMKCET, and School cannot be more than the total quantity.");
+              toast.error("Quantities for RMK, RMD, RMKCET, and School cannot be more than the total quantity.");
               return row; 
             }
   
@@ -339,9 +338,7 @@ function Dispatch() {
       );
     }
   };
-  
-  
-  
+
   return (
     <Container>
       <h1>DISPATCH</h1>
@@ -449,7 +446,7 @@ function Dispatch() {
         <SubmitButton className="add-button" onClick={handleAddOneRow}>Add</SubmitButton>
         <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
       </SubmitContainer>
-      
+      <ToastContainer />
     </Container>
   );
 }

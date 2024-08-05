@@ -171,7 +171,7 @@ const EventDetail = () => {
               {meal.items.map((item, i) => (
                 <ItemEntry key={i}>
                   <ItemName>{item.name}</ItemName>
-                  <ItemQuantity>{item.quantity} pcs</ItemQuantity>
+                  <ItemQuantity>{item.quantity} count</ItemQuantity>
                 </ItemEntry>
               ))}
             </ItemList>

@@ -5,6 +5,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Form = styled.form`
   display: flex;
@@ -22,6 +24,13 @@ const Section = styled.div`
 `;
 
 const SectionTitle = styled.h2`
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #164863;
+`;
+
+const Heading = styled.h1`
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 10px;
@@ -157,10 +166,16 @@ const AddEvent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
+    // Validate form fields
+    if (!eventName || !institution || !eventDate || mealSections.some(section => !section.mealType || section.items.some(item => !item.name || !item.quantity))) {
+      toast.error('Please fill in all required fields and ensure that all items have names and quantities.');
+      return;
+    }
+
     // Format the event date
     const formattedEventDate = eventDate ? dayjs(eventDate).format('YYYY-MM-DD') : null;
-  
+
     // Construct the event details in the required format
     const eventDetails = {
       event_name: eventName,
@@ -174,122 +189,121 @@ const AddEvent = () => {
         }))
       }))
     };
-  
+
     // Send data to the backend
     axios.post('http://localhost:3002/event/addevent', eventDetails)
       .then(response => {
-        console.log(response.data);
-        // handle success
-        alert('Form has been successfully submitted!');
-        // Clear form data
+        toast.success('Form has been successfully submitted!');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         setEventName('');
         setInstitution('');
         setMealSections([{ mealType: '', items: [{ name: '', quantity: '' }] }]);
         setEventDate(null);
       })
       .catch(error => {
-        console.error("There was an error submitting the form!", error);
-        // handle error
-        alert('There was an error submitting the form. Please try again.');
+        toast.error('There was an error submitting the form. Please try again.');
       });
   };
-  
+
   return (
-    <Form onSubmit={handleSubmit}>
-      <Section>
-        <SectionTitle>Event Details</SectionTitle>
-        <FormGroup>
-          <Label>Event Name:</Label>
-          <Input
-            type="text"
-            name="eventName"
-            value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label>Institution:</Label>
-          <Input
-            type="text"
-            name="institution"
-            value={institution}
-            onChange={(e) => setInstitution(e.target.value)}
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label>Date:</Label>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              value={eventDate}
-              onChange={(newValue) => setEventDate(newValue)}
-              renderInput={(params) => <Input {...params} />}
+    <>
+      <Form onSubmit={handleSubmit}>
+        <Section>
+          <Heading>Event Details</Heading>
+          <FormGroup>
+            <Label>Event Name:</Label>
+            <Input
+              type="text"
+              name="eventName"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
               required
             />
-          </LocalizationProvider>
-        </FormGroup>
-      </Section>
-      <Section>
-        <SectionTitle>Meal Details</SectionTitle>
-        {mealSections.map((mealSection, mealIndex) => (
-          <MealSection key={mealIndex}>
-            <MealHeader>
-              <FormGroup style={{ flexGrow: 1 }}>
-                <Label>Meal Type:</Label>
-                <Select
-                  value={mealSection.mealType}
-                  onChange={(e) => handleMealTypeChange(mealIndex, e.target.value)}
-                  required
-                >
-                  <option value="">Select Meal Type</option>
-                  <option value="Breakfast">Breakfast</option>
-                  <option value="Lunch">Lunch</option>
-                  <option value="Dinner">Dinner</option>
-                  <option value="Snacks">Snacks</option>
-                  <option value="Beverages">Beverages</option>
-                </Select>
-              </FormGroup>
-              <Button type="button" onClick={() => handleAddItem(mealIndex)}>
-                Add Item
-              </Button>
-            </MealHeader>
-            {mealSection.items.map((item, itemIndex) => (
-              <ItemEntry key={itemIndex}>
+          </FormGroup>
+          <FormGroup>
+            <Label>Institution:</Label>
+            <Input
+              type="text"
+              name="institution"
+              value={institution}
+              onChange={(e) => setInstitution(e.target.value)}
+              required
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label>Date:</Label>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                value={eventDate}
+                onChange={(newValue) => setEventDate(newValue)}
+                renderInput={(params) => <Input {...params} />}
+                required
+              />
+            </LocalizationProvider>
+          </FormGroup>
+        </Section>
+        <Section>
+          <SectionTitle>Meal Details</SectionTitle>
+          {mealSections.map((mealSection, mealIndex) => (
+            <MealSection key={mealIndex}>
+              <MealHeader>
                 <FormGroup style={{ flexGrow: 1 }}>
-                  <Label>Item Name:</Label>
-                  <Input
-                    type="text"
-                    value={item.name}
-                    onChange={(e) =>
-                      handleItemChange(mealIndex, itemIndex, 'name', e.target.value)
-                    }
+                  <Label>Meal Type:</Label>
+                  <Select
+                    value={mealSection.mealType}
+                    onChange={(e) => handleMealTypeChange(mealIndex, e.target.value)}
                     required
-                  />
+                  >
+                    <option value="">Select Meal Type</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Beverages">Beverages</option>
+                  </Select>
                 </FormGroup>
-                <FormGroup style={{ flexGrow: 1 }}>
-                  <Label>Quantity:</Label>
-                  <Input
-                    type="number"
-                    value={item.quantity}
-                    onChange={(e) =>
-                      handleItemChange(mealIndex, itemIndex, 'quantity', e.target.value)
-                    }
-                    required
-                  />
-                </FormGroup>
-              </ItemEntry>
-            ))}
-          </MealSection>
-        ))}
-      </Section>
-      <Holder>
-        <Button type="button" onClick={handleAddMealSection}>
-          Add Meal Type
-        </Button>
-        <Button type="submit">Submit</Button>
-      </Holder>
-    </Form>
+                <Button type="button" onClick={() => handleAddItem(mealIndex)}>
+                  Add Item
+                </Button>
+              </MealHeader>
+              {mealSection.items.map((item, itemIndex) => (
+                <ItemEntry key={itemIndex}>
+                  <FormGroup style={{ flexGrow: 1 }}>
+                    <Label>Item Name:</Label>
+                    <Input
+                      type="text"
+                      value={item.name}
+                      onChange={(e) =>
+                        handleItemChange(mealIndex, itemIndex, 'name', e.target.value)
+                      }
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup style={{ flexGrow: 1 }}>
+                    <Label>Quantity:</Label>
+                    <Input
+                      type="number"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleItemChange(mealIndex, itemIndex, 'quantity', e.target.value)
+                      }
+                      required
+                    />
+                  </FormGroup>
+                </ItemEntry>
+              ))}
+            </MealSection>
+          ))}
+        </Section>
+        <Holder>
+          <Button type="button" onClick={handleAddMealSection}>
+            Add Meal Type
+          </Button>
+          <Button type="submit">Submit</Button>
+        </Holder>
+      </Form>
+      <ToastContainer />
+    </>
   );
 };
 

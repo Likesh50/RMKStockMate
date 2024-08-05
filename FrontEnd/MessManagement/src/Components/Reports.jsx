@@ -6,6 +6,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ReportsContainer = styled.div`
   padding: 0px 20px;
@@ -81,8 +83,13 @@ const ReportCard = ({ title, route, fromDate, toDate, setFromDate, setToDate }) 
   const navigate = useNavigate();
 
   const handleFetch = () => {
-    const formattedFromDate = fromDate ? dayjs(fromDate).format('YYYY-MM-DD') : '';
-    const formattedToDate = toDate ? dayjs(toDate).format('YYYY-MM-DD') : '';
+    if (!fromDate || !toDate) {
+      toast.error('Please select both From and To dates.');
+      return;
+    }
+
+    const formattedFromDate = dayjs(fromDate).format('YYYY-MM-DD');
+    const formattedToDate = dayjs(toDate).format('YYYY-MM-DD');
     navigate(route, { state: { fromDate: formattedFromDate, toDate: formattedToDate } });
   };
 
@@ -115,43 +122,46 @@ const Reports = () => {
   const [toDate, setToDate] = useState(null);
 
   return (
-    <ReportsContainer>
-      <ReportsHeader>REPORTS</ReportsHeader>
-      <ReportsGrid>
-        <ReportCard 
-          title="Monthly" 
-          route="/dashboard/reports/monthly" 
-          fromDate={fromDate} 
-          toDate={toDate} 
-          setFromDate={setFromDate} 
-          setToDate={setToDate} 
-        />
-        <ReportCard 
-          title="Category-wise" 
-          route="/dashboard/reports/category-wise" 
-          fromDate={fromDate} 
-          toDate={toDate} 
-          setFromDate={setFromDate} 
-          setToDate={setToDate} 
-        />
-        <ReportCard 
-          title="Item-wise Comparison" 
-          route="/dashboard/reports/item-wise" 
-          fromDate={fromDate} 
-          toDate={toDate} 
-          setFromDate={setFromDate} 
-          setToDate={setToDate} 
-        />
-        <ReportCard 
-          title="Comparison" 
-          route="/dashboard/reports/comparison" 
-          fromDate={fromDate} 
-          toDate={toDate} 
-          setFromDate={setFromDate} 
-          setToDate={setToDate} 
-        />
-      </ReportsGrid>
-    </ReportsContainer>
+    <>
+      <ReportsContainer>
+        <ReportsHeader>REPORTS</ReportsHeader>
+        <ReportsGrid>
+          <ReportCard 
+            title="Monthly" 
+            route="/dashboard/reports/monthly" 
+            fromDate={fromDate} 
+            toDate={toDate} 
+            setFromDate={setFromDate} 
+            setToDate={setToDate} 
+          />
+          <ReportCard 
+            title="Category-wise" 
+            route="/dashboard/reports/category-wise" 
+            fromDate={fromDate} 
+            toDate={toDate} 
+            setFromDate={setFromDate} 
+            setToDate={setToDate} 
+          />
+          <ReportCard 
+            title="Item-wise Comparison" 
+            route="/dashboard/reports/item-wise" 
+            fromDate={fromDate} 
+            toDate={toDate} 
+            setFromDate={setFromDate} 
+            setToDate={setToDate} 
+          />
+          <ReportCard 
+            title="Comparison" 
+            route="/dashboard/reports/comparison" 
+            fromDate={fromDate} 
+            toDate={toDate} 
+            setFromDate={setFromDate} 
+            setToDate={setToDate} 
+          />
+        </ReportsGrid>
+      </ReportsContainer>
+      <ToastContainer />
+    </>
   );
 };
 
