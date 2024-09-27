@@ -36,6 +36,9 @@ const renderCustomizedLabel = ({
   percent,
   index,
 }) => {
+  // Only display the label if the percentage is greater than a certain threshold
+  if (percent < 0.02) return null; // Adjust this threshold as needed
+
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -47,6 +50,7 @@ const renderCustomizedLabel = ({
       fill="white"
       textAnchor={x > cx ? "start" : "end"}
       dominantBaseline="central"
+      fontSize="1.2rem"
     >
       {`${(percent * 100).toFixed(0)}%`}
     </text>
@@ -88,7 +92,7 @@ const DashboardPieChart = ({ data }) => {
             cy={200}
             labelLine={false}
             label={renderCustomizedLabel}
-            outerRadius={140}
+            outerRadius={190}
             fill="#8884d8"
             dataKey="value"
             animationDuration={1400}
@@ -98,7 +102,7 @@ const DashboardPieChart = ({ data }) => {
             ))}
           </Pie>
           <Tooltip content={<CustomTooltip />} />
-          <Legend />
+       
         </PieChart>
       </div>
     </ResponsiveContainer>
