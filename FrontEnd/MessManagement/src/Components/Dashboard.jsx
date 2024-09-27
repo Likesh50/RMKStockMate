@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 import DashboardBarGraph from './DashboardBarGraph';
 import DashboardLineChart from './DashboardLineChart';
-import DashboardBarGraph2 from './DashboardBarGraph2';
+import DashboardBarGraph2 from './DashboardPieChart';
+import DashboardPieChart from './DashboardPieChart';
 function DashBoard() {
     const [barGraphData, setBarGraphData] = useState([]);
     const [pieChartData, setPieChartData] = useState([]);
@@ -78,7 +79,7 @@ function DashBoard() {
                         <DashboardBarGraph data={barGraphData} />
                     </GridItem>
                     <GridItem title="Monthly Expense">
-                        <DashboardBarGraph2 data={barGraphData} /> 
+                        <DashboardPieChart data={dummyData}/>
                     </GridItem>
                     <GridItem title="Week's Expense">
                         <DashboardLineChart data={lineChartData} />
