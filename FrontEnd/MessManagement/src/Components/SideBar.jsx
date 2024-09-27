@@ -62,22 +62,23 @@ const SidebarItem = styled.li`
 const SideBar = () => {
   const location = useLocation();
   const isActive = (path) => location.pathname === path ? 'active' : '';
-
+  const role=window.sessionStorage.getItem("role");
+  console.log(role);
   return (
     <SidebarContainer>
       <SidebarList>
-        <SidebarItem className={isActive('/dashboard')}>
+        {role!=="Viewer" && (<SidebarItem className={isActive('/dashboard')}>
           <Link to="">
             <img src={purchase} width="40px" height="40px" alt="Purchase" />
             Purchase
           </Link>
-        </SidebarItem>
-        <SidebarItem className={isActive('/dashboard/dispatch')}>
+        </SidebarItem>)}
+        {role!=="Viewer" && (<SidebarItem className={isActive('/dashboard/dispatch')}>
           <Link to="./dispatch">
             <img src={dispatch} width="60px" height="40px" alt="Dispatch" />
             Dispatch
           </Link>
-        </SidebarItem>
+        </SidebarItem>)}
         <SidebarItem className={isActive('/dashboard/available')}>
           <Link to="available">
             <img src={Available} width="40px" height="40px" alt="Available Stock" />
@@ -90,24 +91,30 @@ const SideBar = () => {
             Reports
           </Link>
         </SidebarItem>
-        <SidebarItem className={isActive('/dashboard/add')}>
+        {role!=="Viewer" && (<SidebarItem className={isActive('/dashboard/add')}>
           <Link to="add">
             <img src={add} width="40px" height="40px" alt="Add Items" />
             Add Items
           </Link>
-        </SidebarItem>
-        <SidebarItem className={isActive('/dashboard/addevents')}>
+        </SidebarItem>)}
+        {role!=="Viewer" &&  (<SidebarItem className={isActive('/dashboard/addevents')}>
           <Link to="addevents">
             <img src={menu} width="40px" height="40px" alt="Add Event menu" />
             Add Event menu
           </Link>
-        </SidebarItem>
+        </SidebarItem>)}
         <SidebarItem className={isActive('/dashboard/eventlist')}>
           <Link to="eventlist">
             <img src={view} width="40px" height="40px" alt="View Event menu" />
             View Event menu
           </Link>
         </SidebarItem>
+        {role==="Admin" &&  (<SidebarItem className={isActive('/adminsignup')}>
+          <Link to="/adminsignup">
+            <img src={menu} width="40px" height="40px" alt="Add Event menu" />
+            Create users
+          </Link>
+        </SidebarItem>)}
       </SidebarList>
     </SidebarContainer>
   );

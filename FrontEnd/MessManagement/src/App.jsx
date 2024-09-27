@@ -13,9 +13,8 @@ import PrintItemReport from "./Components/PrintItemReport.jsx";
 import PrintComparisonReport from "./Components/PrintComparisonReport.jsx";
 import AddEvent from "./Components/AddEvent.jsx";
 import EventList from "./Components/EventList.jsx";
-import Page from "./Components/Page.jsx"; 
 import EventDetail from "./Components/EventDetail.jsx";
-
+import SignupPage from "./Components/SignUp.jsx";
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -33,6 +32,7 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path='/' element={<LoginPage />} />
+          <Route path='/adminsignUp' element={<SignupPage/>} />
           <Route path="/dashboard/*" element={<Layout />}>
             <Route index element={<Purchase />} />
             <Route path="dispatch" element={<Dispatch />} />
