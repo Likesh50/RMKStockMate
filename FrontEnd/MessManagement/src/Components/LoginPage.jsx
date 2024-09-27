@@ -5,6 +5,8 @@ import backgroundImage from '../assets/Front.jpg';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+
 const PageWrapper = styled.div`
   background-image: url(${backgroundImage});
   background-repeat: no-repeat;
@@ -75,19 +77,27 @@ const ErrorMessage = styled.div`
 function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate=useNavigate();
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if ((username === 'ADMIN' || username === 'admin') && password === 'selva') {
-      navigate('dashboard');
-      setError(''); 
-    } else {
-      setError('Invalid username or password');
+    try {
+      const response = await axios.post('http://localhost:3002/login', { username, password });
+      console.log(response.data);
+      if (response.data.token) {
+        // Save token to localStorage
+        window.sessionStorage.setItem('token', response.data.token);
+        window.sessionStorage.setItem('role', response.data.role);
+        window.sessionStorage.setItem('uname', response.data.uname);
+        setTimeout(()=>navigate('/dashboard'),1000);
+        toast.success(response.data.message || 'Login successful!'); // Dynamic success message
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Invalid username or password';
+      toast.error(errorMessage); // Dynamic error message
     }
   };
-  const notify = () => toast("Wow so easy!");
 
   return (
     <PageWrapper>
@@ -116,9 +126,8 @@ function LoginPage() {
               aria-label="Password"
             />
           </FormGroup>
-          <SubmitButton type="submit" onClick={notify}>Sign in</SubmitButton>
+          <SubmitButton type="submit">Sign in</SubmitButton>
         </form>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
       </LoginForm>
       <ToastContainer />
     </PageWrapper>

@@ -93,7 +93,7 @@ function NavBar() {
         </LogoLink>
       </Left>
       <Alig>
-        <h5>GENERAL MANAGER</h5>
+        <h5>{window.sessionStorage.getItem("uname")}</h5>
         <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
       </Alig>
     </Header>
