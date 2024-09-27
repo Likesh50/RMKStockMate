@@ -9,34 +9,34 @@ function DashBoard() {
     const [pieChartData, setPieChartData] = useState([]);
     const [lineChartData, setLineChartData] = useState([]);
 
-    // Dummy data
-    const [selectedOption, setSelectedOption] = useState('');
+    
 
-    const handleSelectChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
-    const dummyData = [
-        { name: "Group A", value: 400 },
-        { name: "Group B", value: 300 },
-        { name: "Group C", value: 300 },
-        { name: "Group D", value: 200 },
-    ];
-
-    const dummyDetails = [
-        { status: "Enrolled", students: 400 },
-        { status: "Graduated", students: 300 },
-        { status: "Dropped", students: 100 },
-        { status: "Transferred", students: 150 },
-    ];
     
     // Fetch data for the Bar Graph
     useEffect(() => {
-        setBarGraphData(dummyDetails); // Using dummy data for now
+       
+        fetch('http://localhost:3002/graph/category-amount-today')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => setBarGraphData(data))
+            .catch(error => console.error('Error fetching line chart data:', error));
     }, []);
 
     // Fetch data for the Pie Chart
     useEffect(() => {
-        setPieChartData(dummyData); // Using dummy data for now
+        fetch('http://localhost:3002/graph/category-amount-current-month')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => setPieChartData(data))
+            .catch(error => console.error('Error fetching line chart data:', error));
     }, []);
 
     // Fetch data for the Line Chart
@@ -51,35 +51,17 @@ function DashBoard() {
             .then(data => setLineChartData(data))
             .catch(error => console.error('Error fetching line chart data:', error));
     }, []);
-    const dummyDatas = [
-        { id: 1, label: 'Option 1' },
-        { id: 2, label: 'Option 2' },
-        { id: 3, label: 'Option 3' },
-        { id: 4, label: 'Option 4' },
-      ];
+    
 
     return (
         <div>
-            <select
-        className='dropbutton'
-        id="dropdown"
-        value={selectedOption}
-        onChange={handleSelectChange}
-      >
-        <option value="">Select Category</option>
-        {dummyDatas.map((option) => (
-          <option key={option.id} value={option.label}>
-            {option.label}
-          </option>
-        ))}
-      </select>
             <div className="grid-container">
                 <div className='home-grid-db'>
                     <GridItem title="Today's Expense">
-                        <DashboardBarGraph data={barGraphData} />
+                        <DashboardPieChart data={barGraphData}/>
                     </GridItem>
                     <GridItem title="Monthly Expense">
-                        <DashboardPieChart data={dummyData}/>
+                        <DashboardPieChart data={pieChartData}/>
                     </GridItem>
                     <GridItem title="Week's Expense">
                         <DashboardLineChart data={lineChartData} />
