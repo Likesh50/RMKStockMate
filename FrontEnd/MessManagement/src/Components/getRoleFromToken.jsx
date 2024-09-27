@@ -14,9 +14,9 @@ export function getRoleFromToken() {
       return decoded.role;
     }
     
-    return null; // No role found in the token
+    return null;
   } catch (error) {
     console.error('Error decoding token:', error);
-    return null; // Return null in case of an error
+    return null; 
   }
 }

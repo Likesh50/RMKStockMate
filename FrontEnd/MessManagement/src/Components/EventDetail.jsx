@@ -127,8 +127,7 @@ const getIconForMealType = (mealType) => {
 
 const EventDetail = () => {
   const [event, setEvent] = useState(null);
-  const { eventId } = useParams(); // Extract eventId from URL path
-
+  const { eventId } = useParams(); 
   useEffect(() => {
     if (eventId) {
       axios.get(`http://localhost:3002/event/eventdetail`, {
@@ -148,7 +147,6 @@ const EventDetail = () => {
     return <p>Loading...</p>;
   }
 
-  // Ensure event.menuData is defined and is an array
   const menuData = Array.isArray(event.meal_details) ? event.meal_details : [];
 
   return (

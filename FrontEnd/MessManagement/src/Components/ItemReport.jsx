@@ -18,14 +18,14 @@ const ItemTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
-  table-layout: fixed; /* Ensures columns do not expand beyond their width */
+  table-layout: fixed;
 
   th, td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
-    overflow-wrap: break-word; /* Handles long text wrapping */
-    word-break: break-word; /* Prevents overflow of long words */
+    overflow-wrap: break-word;
+    word-break: break-word;
     font-size: 18px;
   }
 
@@ -118,8 +118,8 @@ const Dropdown = styled.select`
 `;
 
 const TableContainer = styled.div`
-  min-height: 300px; /* Ensures minimum height to avoid shifting */
-  position: relative; /* Helps to position error message absolutely */
+  min-height: 300px;
+  position: relative;
 `;
 
 export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
@@ -129,7 +129,6 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch items for the dropdown
     axios.get('http://localhost:3002/item/getItems')
       .then(response => {
         setItems(response.data);
@@ -143,7 +142,6 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
 
   useEffect(() => {
     if (selectedItem) {
-      // Fetch data for the selected item
       axios.get('http://localhost:3002/item/report', {
         params: {
           item: selectedItem,
@@ -197,7 +195,7 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
 
   const handleItemChange = (e) => {
     setSelectedItem(e.target.value);
-    setData([]); // Clear the table data on dropdown change
+    setData([]); 
   };
 
   return (

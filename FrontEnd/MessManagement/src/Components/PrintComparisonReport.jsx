@@ -24,14 +24,14 @@ const ButtonContainer = styled.div`
 `;
 
 const ReportContainer = styled.div`
-  margin-top: 80px; /* Add margin to ensure report is below buttons */
+  margin-top: 80px;
   width: 100%;
-  max-height: 80vh; /* Set a fixed height for the report */
-  overflow-y: auto; /* Allow scrolling if content exceeds height */
+  max-height: 80vh; 
+  overflow-y: auto; 
 `;
 
 const PrintButton = styled.button`
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   border: none;
   color: white;
   padding: 15px 32px;

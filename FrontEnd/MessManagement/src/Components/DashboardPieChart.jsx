@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
-// Styled components for the custom tooltip
 const CustomTooltipWrapper = styled.div`
   color: white;
   display: flex;
@@ -58,8 +57,7 @@ const renderCustomizedLabel = ({
   percent,
   index,
 }) => {
-  // Only display the label if the percentage is greater than a certain threshold
-  if (percent < 0.02) return null; // Adjust this threshold as needed
+  if (percent < 0.02) return null; 
 
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);

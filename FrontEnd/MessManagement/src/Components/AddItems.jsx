@@ -173,7 +173,6 @@ const AddItems = () => {
       await axios.post('http://localhost:3002/addItems/insert', { itemName, category });
       toast.success("Item added successfully");
       
-      // Reset input fields
       setItemName("");
       setCategory("");
       setFilteredItems([]);

@@ -92,11 +92,9 @@ function SignupPage() {
       });
 
       if (response.data.token) {
-        // Save token to localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('role', response.data.role);
 
-        // Navigate to dashboard or login
         navigate('/login');
         toast.success('Signup successful!');
         setError('');

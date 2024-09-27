@@ -12,7 +12,6 @@ function DashBoard() {
     
 
     
-    // Fetch data for the Bar Graph
     useEffect(() => {
        
         fetch('http://localhost:3002/graph/category-amount-today')
@@ -26,7 +25,6 @@ function DashBoard() {
             .catch(error => console.error('Error fetching line chart data:', error));
     }, []);
 
-    // Fetch data for the Pie Chart
     useEffect(() => {
         fetch('http://localhost:3002/graph/category-amount-current-month')
             .then(response => {
@@ -39,7 +37,6 @@ function DashBoard() {
             .catch(error => console.error('Error fetching line chart data:', error));
     }, []);
 
-    // Fetch data for the Line Chart
     useEffect(() => {
         fetch('http://localhost:3002/graph/last-7-days')
             .then(response => {

@@ -86,16 +86,15 @@ function LoginPage() {
       const response = await axios.post('http://localhost:3002/login', { username, password });
       console.log(response.data);
       if (response.data.token) {
-        // Save token to localStorage
         window.sessionStorage.setItem('token', response.data.token);
         window.sessionStorage.setItem('role', response.data.role);
         window.sessionStorage.setItem('uname', response.data.uname);
         setTimeout(()=>navigate('/dashboard'),1000);
-        toast.success(response.data.message || 'Login successful!'); // Dynamic success message
+        toast.success(response.data.message || 'Login successful!'); 
       }
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Invalid username or password';
-      toast.error(errorMessage); // Dynamic error message
+      toast.error(errorMessage); 
     }
   };
 
