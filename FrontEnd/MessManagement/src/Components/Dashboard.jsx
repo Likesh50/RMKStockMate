@@ -78,7 +78,7 @@ function DashBoard() {
                         <DashboardBarGraph data={barGraphData} />
                     </GridItem>
                     <GridItem title="Monthly Expense">
-                        <DashboardPieChart data={pieChartData} />
+                        <DashboardBarGraph2 data={barGraphData} /> 
                     </GridItem>
                     <GridItem title="Week's Expense">
                         <DashboardLineChart data={lineChartData} />
