@@ -20,6 +20,7 @@ const ButtonContainer = styled.div`
   justify-content: center;
   gap: 20px; /* Adjust space between buttons */
   margin-bottom: 20px; /* Adjust space below the buttons */
+  
 `;
 
 const PrintButton = styled.button`
