@@ -12,6 +12,7 @@ const addItems = require('./Routes/addItems');
 const monthlyItem = require('./Routes/Monthly');
 const categoryItem = require('./Routes/Category');
 const compareItem = require('./Routes/Comparison');
+const graphItem = require('./Routes/graph');
 const Itemwise = require('./Routes/ItemWise');
 const Event = require('./Routes/event');
 const db = require('./db');
@@ -27,6 +28,7 @@ app.use('/category',categoryItem);
 app.use('/comparison',compareItem);
 app.use('/item',Itemwise);
 app.use('/event',Event);
+app.use('/graph',graphItem);
 const JWT_SECRET = 'rmkecmessmanagement-IT-2022-2026';
 
 app.post('/login', (req, res) => {

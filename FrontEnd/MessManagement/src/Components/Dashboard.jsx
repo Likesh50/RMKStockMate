@@ -4,55 +4,75 @@ import DashboardPieChart from './DashboardPieChart';
 import DashboardBarGraph from './DashboardBarGraph';
 import DashboardLineChart from './DashboardLineChart';
 
-
 function DashBoard() {
+    const [barGraphData, setBarGraphData] = useState([]);
+    const [pieChartData, setPieChartData] = useState([]);
+    const [lineChartData, setLineChartData] = useState([]);
+
+    // Dummy data
     const dummyData = [
         { name: "Group A", value: 400 },
         { name: "Group B", value: 300 },
         { name: "Group C", value: 300 },
         { name: "Group D", value: 200 },
-      ];
+    ];
 
     const dummyDetails = [
         { status: "Enrolled", students: 400 },
         { status: "Graduated", students: 300 },
         { status: "Dropped", students: 100 },
         { status: "Transferred", students: 150 },
-      ];      
+    ];
+    
+    // Fetch data for the Bar Graph
+    useEffect(() => {
+        setBarGraphData(dummyDetails); // Using dummy data for now
+    }, []);
 
-      const dummyLineData = [
-        { name: "January", absent: 30 },
-        { name: "February", absent: 45 },
-        { name: "March", absent: 50 },
-        { name: "April", absent: 20 },
-      ];
+    // Fetch data for the Pie Chart
+    useEffect(() => {
+        setPieChartData(dummyData); // Using dummy data for now
+    }, []);
 
-  return (
-    <div>
-      <div className="grid-container">
-        <div className='home-grid-db'>
-          <GridItem title="Today's Expense">
-            <DashboardBarGraph data={dummyDetails} />
-          </GridItem>
-          <GridItem title="Monthly Expense">
-            <DashboardPieChart data={dummyData} />
-          </GridItem>
-          <GridItem title="Week's Expense">
-            <DashboardLineChart data={dummyLineData} />
-          </GridItem>
+    // Fetch data for the Line Chart
+    useEffect(() => {
+        fetch('http://localhost:3002/graph/last-7-days')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => setLineChartData(data))
+            .catch(error => console.error('Error fetching line chart data:', error));
+    }, []);
+
+    return (
+        <div>
+            <div className="grid-container">
+                <div className='home-grid-db'>
+                    <GridItem title="Today's Expense">
+                        <DashboardBarGraph data={barGraphData} />
+                    </GridItem>
+                    <GridItem title="Monthly Expense">
+                        <DashboardPieChart data={pieChartData} />
+                    </GridItem>
+                    <GridItem title="Week's Expense">
+                        <DashboardLineChart data={lineChartData} />
+                    </GridItem>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 function GridItem({ title, children }) {
-  return (
-    <div className="grid-item-db">
-      <h3 className="grid-item-db-title">{title}</h3>
-      {children}
-    </div>
-  );
+    return (
+        <div className="grid-item-db">
+            <h3 className="grid-item-db-title">{title}</h3>
+            {children}
+        </div>
+    );
 }
 
 export default DashBoard;

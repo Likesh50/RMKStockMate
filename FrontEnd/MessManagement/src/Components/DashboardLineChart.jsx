@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import dayjs from "dayjs";
 import {
   LineChart,
   Line,
@@ -61,13 +62,13 @@ export default function DashboardLineChart({ data }) {
         margin={{ top: 20, right: 20, left: -30, bottom: 5 }}
       >
         <CartesianGrid stroke="white" strokeDasharray="3 3" />
-        <XAxis dataKey="name" tick={{ fontSize: 16 }} />
+        <XAxis dataKey="date" tick={{ fontSize: 16 }} />
         <YAxis tick={{ fontSize: 16 }} />
         <Tooltip content={<CustomTooltip />} />
         <Legend wrapperStyle={{ fontSize: "16px" }} />
         <Line
           type="monotone"
-          dataKey="absent"
+          dataKey="count"
           stroke="#8884d8"
           activeDot={{ r: 8 }}
           animationBegin={0}
