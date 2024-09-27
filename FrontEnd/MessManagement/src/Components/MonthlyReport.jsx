@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Axios from 'axios';
 import Logo from '../assets/Logo.png';
+import { HashLoader } from 'react-spinners';
 
 const Container = styled.div`
   @media print {
@@ -130,7 +131,21 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
   }, [fromDate, toDate]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div style={{
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+      }}>
+        <HashLoader color="#D0E8F0" loading={loading} size={90} />
+      </div>
+    );
   }
 
   return (
