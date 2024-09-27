@@ -23,7 +23,7 @@ const MainFrame = styled.div`
   height: 100%;
   padding: 1rem;
   max-height: 100%;
-  min-width: 93.2vw;
+  min-width: 93.45vw;
   background-color: #f4f4f4;
 `;
 

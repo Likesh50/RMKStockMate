@@ -1,6 +1,7 @@
 @media (min-width: 1024px) {
     .grid-container {
       grid-template-columns: repeat(2, 1fr);
+      margin-top: 50px;
     }
   }
   
@@ -34,4 +35,30 @@
     gap: 60px;
     width: 100%;
     max-width: 1400px;
+    margin-bottom: 50px;
   }
+
+  .dropbutton {
+    margin: 10px;
+    background-color: #4D4D4D; 
+    border-radius: 8px; 
+    color: white;
+    padding: 8px 12px; 
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: all 0.3s ease; 
+    }
+    
+    .dropbutton:hover {
+    background-color: #4D4D4D; 
+    border-color: white;
+    color: white;
+    }
+    
+    .dropbutton:focus {
+    outline: none; 
+    }
