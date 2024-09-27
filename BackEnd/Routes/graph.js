@@ -12,7 +12,6 @@ const getLast7Days = () => {
     }
     return last7Days;
 };
-
 router.get('/last-7-days', (req, res) => {
     const last7Days = getLast7Days();
 
@@ -44,6 +43,7 @@ router.get('/last-7-days', (req, res) => {
     });
 });
 
+
 const getCurrentMonthRange = () => {
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -74,7 +74,7 @@ router.get('/category-amount-current-month', (req, res) => {
         // Format results in the desired structure
         const formattedResults = results.map(row => ({
             name: row.category,   // "name" corresponds to category
-            value: row.totalAmount // "value" corresponds to the total amount
+            value: Math.floor(row.totalAmount)// "value" corresponds to the total amount
         }));
 
         res.json(formattedResults);
@@ -104,7 +104,7 @@ router.get('/category-amount-today', (req, res) => {
         // Format results in the desired structure
         const formattedResults = results.map(row => ({
             name: row.category,    // "name" corresponds to category
-            value: row.totalAmount // "value" corresponds to the total amount spent
+            value: Math.floor(row.totalAmount) // "value" corresponds to the total amount spent
         }));
         console.log(formattedResults);
         res.json(formattedResults);

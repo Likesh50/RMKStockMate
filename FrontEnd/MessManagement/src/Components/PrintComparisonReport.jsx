@@ -17,10 +17,10 @@ const Test = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 20px; 
-  margin-bottom: 20px; 
-  margin-top: -650px; 
-  z-index: 10;
+  gap: 20px; /* Adjust space between buttons */
+  margin-bottom: 20px; /* Adjust space below the buttons */
+  margin-top: -150px; /* Adjust the top position */
+  z-index: 10; /* Ensure buttons are above other content */
 `;
 
 const ReportContainer = styled.div`
