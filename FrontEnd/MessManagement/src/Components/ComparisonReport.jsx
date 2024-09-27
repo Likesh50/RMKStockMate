@@ -123,7 +123,6 @@ export const ComparisonReport = React.forwardRef(({ fromDate, toDate }, ref) => 
       const fetchedData = res.data || [];
       setData(fetchedData);
 
-      // Determine unique months from data keys
       const monthSet = new Set();
       fetchedData.forEach(row => {
         Object.keys(row).forEach(key => {

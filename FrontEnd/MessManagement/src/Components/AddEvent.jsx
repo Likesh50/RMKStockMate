@@ -167,16 +167,14 @@ const AddEvent = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validate form fields
+
     if (!eventName || !institution || !eventDate || mealSections.some(section => !section.mealType || section.items.some(item => !item.name || !item.quantity))) {
       toast.error('Please fill in all required fields and ensure that all items have names and quantities.');
       return;
     }
 
-    // Format the event date
     const formattedEventDate = eventDate ? dayjs(eventDate).format('YYYY-MM-DD') : null;
 
-    // Construct the event details in the required format
     const eventDetails = {
       event_name: eventName,
       institution: institution,
@@ -185,12 +183,11 @@ const AddEvent = () => {
         mealType: section.mealType,
         items: section.items.map(item => ({
           name: item.name,
-          quantity: parseInt(item.quantity, 10) // Convert quantity to integer
+          quantity: parseInt(item.quantity, 10)
         }))
       }))
     };
 
-    // Send data to the backend
     axios.post('http://localhost:3002/event/addevent', eventDetails)
       .then(response => {
         toast.success('Form has been successfully submitted!');

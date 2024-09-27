@@ -11,28 +11,28 @@ const Test = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Change this to flex-start */
+  justify-content: flex-start;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 20px; /* Adjust space between buttons */
-  top: 150px; /* Adjust the top position */
-  z-index: 10; /* Ensure buttons are above other content */
-  padding: 10px; /* Optional: padding for aesthetics */
-  border-radius: 8px; /* Optional: rounded corners */
+  gap: 20px; 
+  top: 150px; 
+  z-index: 10; 
+  padding: 10px;
+  border-radius:
 `;
 
 const ReportContainer = styled.div`
-  margin-top: 80px; /* Add margin to ensure report is below buttons */
+  margin-top: 80px; 
   width: 100%;
-  max-height: 80vh; /* Set a fixed height for the report */
-  overflow-y: auto; /* Allow scrolling if content exceeds height */
+  max-height: 80vh; 
+  overflow-y: auto; 
 `;
 
 const PrintButton = styled.button`
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50; 
   border: none;
   color: white;
   padding: 15px 32px;
@@ -58,7 +58,7 @@ const PrintButton = styled.button`
 `;
 
 const ExportButton = styled.button`
-  background-color: #2196F3; /* Blue */
+  background-color: #2196F3; 
   border: none;
   color: white;
   padding: 15px 32px;

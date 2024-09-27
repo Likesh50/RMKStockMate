@@ -231,7 +231,6 @@ const Purchase = () => {
       return;
     }
   
-    // Check if any row has empty item, quantity, or amount
     const invalidRows = rows.filter(row => !row.item || !row.quantity || !row.amount);
   
     if (invalidRows.length > 0) {
@@ -239,7 +238,6 @@ const Purchase = () => {
       return;
     }
   
-    // Calculate totalAmount for each row
     const updatedRows = rows.map(row => ({
       ...row,
       amount: isNaN(row.amount) ? 0 : row.amount,
@@ -247,10 +245,8 @@ const Purchase = () => {
       totalAmount: (isNaN(row.quantity) ? 0 : row.quantity) * (isNaN(row.amount) ? 0 : row.amount) // Calculate totalAmount
     }));
   
-    // Format date to YYYY-MM-DD format
     const formattedDate = date.format('YYYY-MM-DD');
   
-    // Prepare data to send
     const formattedRowsData = updatedRows.map(row => ({
       ...row,
       amount: isNaN(row.amount) ? 0 : row.amount,
@@ -267,7 +263,6 @@ const Purchase = () => {
       console.log("Response from server:", response.data);
       toast.success("Items added successfully");
   
-      // Clear the form
       setRows([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
       setDate(null);
       numRecordsRef.current.value = '';

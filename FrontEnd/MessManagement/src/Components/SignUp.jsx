@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import backgroundImage from '../assets/Front.jpg';
 import logo from '../assets/Logo.png';
 
-// Styled components
 const PageWrapper = styled.div`
   background-image: url(${backgroundImage});
   background-repeat: no-repeat;
@@ -85,18 +84,15 @@ function SignupPage() {
       });
 
       if (response.data.token) {
-        // Save token to localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('role', response.data.role);
 
-        // Navigate to dashboard or login
         toast.success(response.data.message);
-        navigate("/dashboard"); // Success notification
+        navigate("/dashboard");
       }
     } catch (error) {
-      // Use error response message for the toast
       const message = error.response?.data?.message || 'An error occurred. Please try again.';
-      toast.error(message); // Error notification
+      toast.error(message); 
     }
   };
 
