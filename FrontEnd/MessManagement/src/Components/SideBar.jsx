@@ -8,6 +8,7 @@ import reports from '../assets/reports.png';
 import add from '../assets/add.png';
 import menu from '../assets/menu.png';
 import view from '../assets/view.png';
+import dashboard from '../assets/dashboard.png';
 
 const SidebarContainer = styled.div`
   background-color: white;
@@ -67,7 +68,13 @@ const SideBar = () => {
     <SidebarContainer>
       <SidebarList>
         <SidebarItem className={isActive('/dashboard')}>
-          <Link to="">
+          <Link to="/dashboard">
+            <img src={dashboard} width="40px" height="40px" alt="dashboard" />
+            Dashboard
+          </Link>
+        </SidebarItem>
+        <SidebarItem className={isActive('/dashboard/purchase')}>
+          <Link to="./purchase">
             <img src={purchase} width="40px" height="40px" alt="Purchase" />
             Purchase
           </Link>

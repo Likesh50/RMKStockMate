@@ -15,6 +15,7 @@ import AddEvent from "./Components/AddEvent.jsx";
 import EventList from "./Components/EventList.jsx";
 import Page from "./Components/Page.jsx"; 
 import EventDetail from "./Components/EventDetail.jsx";
+import DashBoard from "./Components/Dashboard.jsx";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -34,8 +35,9 @@ function App() {
         <Routes>
           <Route path='/' element={<LoginPage />} />
           <Route path="/dashboard/*" element={<Layout />}>
-            <Route index element={<Purchase />} />
+            <Route index element={<DashBoard/>} />
             <Route path="dispatch" element={<Dispatch />} />
+            <Route path="purchase" element={<Purchase/>} />
             <Route path="available" element={<AvailableStock />} />
             <Route path="reports" element={<Reports />} />
             <Route path="add" element={<AddItems />} />
