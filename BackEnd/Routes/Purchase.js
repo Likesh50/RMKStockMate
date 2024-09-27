@@ -40,13 +40,20 @@ router.get('/getItems', async (req, res) => {
         
         console.log(itemName, purchaseQuantity, amountkg, total, date);
   
-        // Fetch current quantity for the item
+        // Fetch current record for the item
         const [rows] = await db.promise().query(
-          `SELECT COALESCE(quantity, 0) as quantity FROM current WHERE item = ? ORDER BY date DESC LIMIT 1`, 
+          `SELECT id, quantity FROM current WHERE item = ? ORDER BY date DESC LIMIT 1`, 
           [itemName]
         );
   
-        const currentQuantity = rows.length > 0 ? rows[0].quantity : 0;
+        let currentQuantity = 0;
+        let currentId = null;
+  
+        if (rows.length > 0) {
+          currentQuantity = rows[0].quantity;
+          currentId = rows[0].id;
+        }
+        
         const finalQuantity = currentQuantity + purchaseQuantity;
   
         // Insert into purchase table
@@ -56,17 +63,17 @@ router.get('/getItems', async (req, res) => {
         );
   
         // Check if the item exists in the current table
-        if (currentQuantity === 0) {
-          // Insert a new record into the current table
-          await db.promise().query(
-            `INSERT INTO current (item, category, quantity) VALUES (?, ?, ?)`,
-            [itemName, category, finalQuantity]
-          );
-        } else {
+        if (currentId) {
           // Update the existing record in the current table
           await db.promise().query(
-            `UPDATE current SET quantity = ? WHERE item = ?`,
-            [finalQuantity, itemName]
+            `UPDATE current SET quantity = ?, date = ? WHERE id = ?`,
+            [finalQuantity, date, currentId]
+          );
+        } else {
+          // Insert a new record into the current table
+          await db.promise().query(
+            `INSERT INTO current (item, category, quantity, date) VALUES (?, ?, ?, ?)`,
+            [itemName, category, finalQuantity, date]
           );
         }
   
@@ -77,11 +84,13 @@ router.get('/getItems', async (req, res) => {
         );
       }
   
-      res.send("Items inserted");
+      res.send("Items processed successfully");
     } catch (error) {
       console.error("Error processing request:", error);
       res.status(500).send("An error occurred");
     }
   });
+  
+  
     
   module.exports=router;
