@@ -74,7 +74,7 @@ const SideBar = () => {
             Dashboard
           </Link>
         </SidebarItem>
-        <SidebarItem className={isActive('/dashboard/purchase')}>
+        {role!=="Viewer" && (<SidebarItem className={isActive('/dashboard/purchase')}>
           <Link to="./purchase">
             <img src={purchase} width="40px" height="40px" alt="Purchase" />
             Purchase
