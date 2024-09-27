@@ -11,8 +11,8 @@ const CustomTooltipWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 50px;
+  width: 120px;
+  height: 70px;
   border-radius: 8px;
   overflow: hidden;
   pointer-events: none;
