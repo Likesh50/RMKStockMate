@@ -143,7 +143,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
         alignItems: 'center',
         backgroundColor: 'rgba(255, 255, 255, 0.7)',
       }}>
-        <HashLoader color="#D0E8F0" loading={loading} size={90} />
+        <HashLoader color="#164863" loading={loading} size={90} />
       </div>
     );
   }

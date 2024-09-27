@@ -11,20 +11,17 @@ const Test = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 20px; /* Adjust space between buttons */
-  margin-bottom: 20px; /* Adjust space below the buttons */
-  margin-top: -150px; /* Adjust the top position */
+  gap: 20px; /* Space between buttons */
+  margin: 20px 0; /* Space around buttons */
   z-index: 10; /* Ensure buttons are above other content */
 `;
 
 const ReportContainer = styled.div`
-  margin-top: 80px;
   width: 100%;
   max-height: 80vh; 
   overflow-y: auto; 
@@ -37,7 +34,6 @@ const PrintButton = styled.button`
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
-  display: inline-block;
   font-size: 16px;
   cursor: pointer;
   border-radius: 8px;
@@ -62,8 +58,6 @@ const ExportButton = styled.button`
   color: white;
   padding: 15px 32px;
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
   font-size: 16px;
   cursor: pointer;
   border-radius: 8px;
