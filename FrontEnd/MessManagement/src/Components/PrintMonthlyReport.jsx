@@ -11,7 +11,7 @@ const Test = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Align items at the start */
 `;
 
 const ButtonContainer = styled.div`
@@ -19,8 +19,15 @@ const ButtonContainer = styled.div`
   justify-content: center;
   gap: 20px; /* Adjust space between buttons */
   margin-bottom: 20px; /* Adjust space below the buttons */
+  top: 150px; /* Adjust the top position */
+  z-index: 10; /* Ensure buttons are above other content */
+`;
 
-  
+const ReportContainer = styled.div`
+  margin-top: 80px; /* Add margin to ensure report is below buttons */
+  width: 100%;
+  max-height: 80vh; /* Set a fixed height for the report */
+  overflow-y: auto; /* Allow scrolling if content exceeds height */
 `;
 
 const PrintButton = styled.button`
@@ -97,7 +104,9 @@ const PrintMonthlyReport = () => {
         />
         <ExportButton onClick={handleExport}>Export to Excel</ExportButton>
       </ButtonContainer>
-      <MonthlyReport ref={reportRef} fromDate={fromDate} toDate={toDate} />
+      <ReportContainer>
+        <MonthlyReport ref={reportRef} fromDate={fromDate} toDate={toDate} />
+      </ReportContainer>
     </Test>
   );
 };
