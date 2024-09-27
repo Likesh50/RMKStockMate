@@ -23,22 +23,28 @@ const TooltipValue = styled.p`
   font-size: 0.875rem;
 `;
 
+
 const COLORS = [
-  "#FF6666",  // Red
-  "#FFB366",  // Orange
-  "#FF9933",  // Dark Orange
-  "#80E6B3",  // Light Green
-  "#66CCCC",  // Cyan
   "#9999FF",  // Light Purple
-  "#FF66FF",  // Pink
-  "#66FF66",  // Green
+  "#FF6666",  // Bright Red
+  "#66FF99" ,  // Light Lime Green
+ 
   "#FFB300",  // Golden Yellow
   "#FF80AA",  // Light Pink
-  "#FFCC66",  // Light Orange
   "#66B2FF",  // Sky Blue
   "#B266FF",  // Violet
-  "#FF6666",  // Bright Red
-  "#66FF99"   // Light Lime Green
+  "#FF6646",  // Red
+  "#FFB366",  // Orange
+  "#FF9933",  // Dark Orange
+  
+  "#66CCCC",  // Cyan
+
+  "#FF66FF",  // Pink
+  "#66FF66",  // Green
+
+  "#FFCC66",  // Light Orange
+  "#80E6B3",
+ 
 ];
 
 const RADIAN = Math.PI / 180;
@@ -88,6 +94,7 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 const DashboardPieChart = ({ data }) => {
+  console.log(data);
   return (
     <ResponsiveContainer width={400} height={400}>
       <div style={{

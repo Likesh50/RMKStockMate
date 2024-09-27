@@ -63,7 +63,7 @@ router.get('/category-amount-current-month', (req, res) => {
         SELECT category, SUM(amount) AS totalAmount
         FROM purchase
         WHERE date BETWEEN ? AND ?
-        GROUP BY category
+        GROUP BY category ORDER BY totalAmount desc
     `;
 
     db.query(query, [start, end], (error, results) => {
@@ -93,7 +93,7 @@ router.get('/category-amount-today', (req, res) => {
         SELECT category, SUM(amount) AS totalAmount
         FROM purchase
         WHERE date = ?
-        GROUP BY category
+        GROUP BY category ORDER BY totalAmount desc
     `;
 
     db.query(query, [today], (error, results) => {
