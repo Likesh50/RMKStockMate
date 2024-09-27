@@ -19,7 +19,7 @@ const ButtonContainer = styled.div`
   justify-content: center;
   gap: 20px; /* Adjust space between buttons */
   margin-bottom: 20px; /* Adjust space below the buttons */
-  margin-top: -650px; /* Adjust the top position */
+  margin-top: -150px; /* Adjust the top position */
   z-index: 10; /* Ensure buttons are above other content */
 `;
 
