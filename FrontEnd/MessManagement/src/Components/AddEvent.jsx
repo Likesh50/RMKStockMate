@@ -129,6 +129,8 @@ const AddEvent = () => {
   const [institution, setInstitution] = useState('');
   const [mealSections, setMealSections] = useState([{ mealType: '', items: [{ name: '', quantity: '' }] }]);
   const [eventDate, setEventDate] = useState(null);
+  const [day, setDay] = useState('');
+  const [noOfPeople, setNoOfPeople] = useState('');
 
   const handleAddMealSection = () => {
     setMealSections([...mealSections, { mealType: '', items: [{ name: '', quantity: '' }] }]);
@@ -179,15 +181,17 @@ const AddEvent = () => {
       event_name: eventName,
       institution: institution,
       event_date: formattedEventDate,
+      day: day,
+      no_of_people: noOfPeople,
       meal_details: mealSections.map(section => ({
         mealType: section.mealType,
         items: section.items.map(item => ({
           name: item.name,
-          quantity: parseInt(item.quantity, 10)
+          quantity: item.quantity
         }))
       }))
     };
-
+    console.log(eventDetails);
     axios.post('http://localhost:3002/event/addevent', eventDetails)
       .then(response => {
         toast.success('Form has been successfully submitted!');
@@ -201,7 +205,22 @@ const AddEvent = () => {
         toast.error('There was an error submitting the form. Please try again.');
       });
   };
-
+  const handleDeleteItem = (mealIndex, itemIndex) => {
+    const updatedMealSections = mealSections.map((section, i) =>
+      i === mealIndex
+        ? {
+            ...section,
+            items: section.items.filter((_, j) => j !== itemIndex),
+          }
+        : section
+    );
+    setMealSections(updatedMealSections);
+  };
+  
+  const handleDeleteMealSection = (mealIndex) => {
+    const updatedMealSections = mealSections.filter((_, i) => i !== mealIndex);
+    setMealSections(updatedMealSections);
+  };
   return (
     <>
       <Form onSubmit={handleSubmit}>
@@ -238,59 +257,83 @@ const AddEvent = () => {
               />
             </LocalizationProvider>
           </FormGroup>
+          <FormGroup>
+          <Label>Day:</Label>
+          <Input
+            type="text"
+            value={day}
+            onChange={(e) => setDay(e.target.value)}
+            required
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label>Number of People:</Label>
+          <Input
+            type="text"
+            value={noOfPeople}
+            onChange={(e) => setNoOfPeople(e.target.value)}
+            required
+          />
+        </FormGroup>
+
         </Section>
         <Section>
           <SectionTitle>Meal Details</SectionTitle>
           {mealSections.map((mealSection, mealIndex) => (
-            <MealSection key={mealIndex}>
-              <MealHeader>
+          <MealSection key={mealIndex}>
+            <MealHeader>
+              <FormGroup style={{ flexGrow: 1 }}>
+                <Label>Meal Type:</Label>
+                <Select
+                  value={mealSection.mealType}
+                  onChange={(e) => handleMealTypeChange(mealIndex, e.target.value)}
+                  required
+                >
+                  <option value="">Select Meal Type</option>
+                  <option value="Breakfast">Breakfast</option>
+                  <option value="Lunch">Lunch</option>
+                  <option value="Dinner">Dinner</option>
+                  <option value="Snacks">Snacks</option>
+                  <option value="Beverages">Beverages</option>
+                </Select>
+              </FormGroup>
+              <Button type="button" onClick={() => handleAddItem(mealIndex)}>
+                Add Item
+              </Button>
+              <Button type="button" onClick={() => handleDeleteMealSection(mealIndex)}>
+                Delete Meal
+              </Button>
+            </MealHeader>
+            {mealSection.items.map((item, itemIndex) => (
+              <ItemEntry key={itemIndex}>
                 <FormGroup style={{ flexGrow: 1 }}>
-                  <Label>Meal Type:</Label>
-                  <Select
-                    value={mealSection.mealType}
-                    onChange={(e) => handleMealTypeChange(mealIndex, e.target.value)}
+                  <Label>Item Name:</Label>
+                  <Input
+                    type="text"
+                    value={item.name}
+                    onChange={(e) =>
+                      handleItemChange(mealIndex, itemIndex, 'name', e.target.value)
+                    }
                     required
-                  >
-                    <option value="">Select Meal Type</option>
-                    <option value="Breakfast">Breakfast</option>
-                    <option value="Lunch">Lunch</option>
-                    <option value="Dinner">Dinner</option>
-                    <option value="Snacks">Snacks</option>
-                    <option value="Beverages">Beverages</option>
-                  </Select>
+                  />
                 </FormGroup>
-                <Button type="button" onClick={() => handleAddItem(mealIndex)}>
-                  Add Item
+                <FormGroup style={{ flexGrow: 1 }}>
+                  <Label>Quantity:</Label>
+                  <Input
+                    type="text"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleItemChange(mealIndex, itemIndex, 'quantity', e.target.value)
+                    }
+                  />
+                </FormGroup>
+                <Button type="button" onClick={() => handleDeleteItem(mealIndex, itemIndex)}>
+                  Delete Item
                 </Button>
-              </MealHeader>
-              {mealSection.items.map((item, itemIndex) => (
-                <ItemEntry key={itemIndex}>
-                  <FormGroup style={{ flexGrow: 1 }}>
-                    <Label>Item Name:</Label>
-                    <Input
-                      type="text"
-                      value={item.name}
-                      onChange={(e) =>
-                        handleItemChange(mealIndex, itemIndex, 'name', e.target.value)
-                      }
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup style={{ flexGrow: 1 }}>
-                    <Label>Quantity:</Label>
-                    <Input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleItemChange(mealIndex, itemIndex, 'quantity', e.target.value)
-                      }
-                      required
-                    />
-                  </FormGroup>
-                </ItemEntry>
-              ))}
-            </MealSection>
-          ))}
+              </ItemEntry>
+            ))}
+          </MealSection>
+        ))}
         </Section>
         <Holder>
           <Button type="button" onClick={handleAddMealSection}>

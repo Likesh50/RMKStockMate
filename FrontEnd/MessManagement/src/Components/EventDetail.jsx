@@ -4,6 +4,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { FaPizzaSlice, FaCoffee, FaAppleAlt, FaHamburger, FaCookieBite, FaBeer, FaCalendarAlt, FaSchool, FaClipboardList } from 'react-icons/fa';
 import dayjs from 'dayjs';
+
 const MenuContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -48,14 +49,11 @@ const EventInfo = styled.p`
   font-weight: bold;
 `;
 
-const EventDate = styled(EventInfo)`
-  font-size: 1.2rem;
-  color: #164863;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-weight: bold;
-`;
+const EventDate = styled(EventInfo)``;
+
+const NoOfPeople = styled(EventInfo)``;
+
+const DayInfo = styled(EventInfo)``;
 
 const MealsContainer = styled.div`
   display: flex;
@@ -71,7 +69,7 @@ const MealSection = styled.div`
   border-radius: 8px;
   background-color: #ffffff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  flex: 1 1 calc(50% - 20px); /* Adjusts the width to be 50% minus the gap */
+  flex: 1 1 calc(50% - 20px);
   box-sizing: border-box;
 `;
 
@@ -127,7 +125,8 @@ const getIconForMealType = (mealType) => {
 
 const EventDetail = () => {
   const [event, setEvent] = useState(null);
-  const { eventId } = useParams(); 
+  const { eventId } = useParams();
+  
   useEffect(() => {
     if (eventId) {
       axios.get(`http://localhost:3002/event/eventdetail`, {
@@ -157,6 +156,8 @@ const EventDetail = () => {
           <EventInfo><FaSchool /> {event.institution}</EventInfo>
           <EventDate><FaCalendarAlt /> {dayjs(event.event_date).format("DD-MM-YYYY")}</EventDate>
         </EventInfoContainer>
+        <NoOfPeople>No. of People: {event.no_of_people}</NoOfPeople>
+        <DayInfo>Day: {event.day}</DayInfo>
       </EventDetails>
       <MealsContainer>
         {menuData.map((meal, index) => (
@@ -169,7 +170,7 @@ const EventDetail = () => {
               {meal.items.map((item, i) => (
                 <ItemEntry key={i}>
                   <ItemName>{item.name}</ItemName>
-                  <ItemQuantity>{item.quantity} count</ItemQuantity>
+                  <ItemQuantity>{item.quantity}</ItemQuantity>
                 </ItemEntry>
               ))}
             </ItemList>
