@@ -7,7 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { HashLoader } from 'react-spinners'; 
 const Container = styled.div`
   h1 {
     color: #164863;
@@ -157,12 +157,35 @@ const SubmitButton = styled.button`
     transform: scale(0.98);
   }
 `;
+const DeleteButton = styled.button`
+  background-color: #d9534f; /* Bootstrap danger color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 
+  &:hover {
+    background-color: #c9302c; /* Darker shade on hover */
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: #e7e7e7; /* Light gray for disabled */
+    color: #a9a9a9; /* Darker gray for text */
+    cursor: not-allowed;
+  }
+`;
 const Purchase = () => {
   const [rows, setRows] = useState([{ id: Date.now(), sno: 1, quantity: '', amount: '' }]);
   const numRecordsRef = useRef(null);
   const [date, setDate] = useState(null);
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -182,7 +205,10 @@ const Purchase = () => {
     const item = items.find(i => i.item === itemName);
     return item ? item.category : '';
   };
-
+  const handleDeleteRow = (id) => {
+    setRows(prevRows => prevRows.filter(row => row.id !== id));
+  };
+  
   const handleAddRows = () => {
     const numberOfRows = parseInt(numRecordsRef.current.value, 10);
     if (numberOfRows > 0) {
@@ -255,6 +281,7 @@ const Purchase = () => {
     }));
   
     try {
+      setLoading(true);
       console.log("Submitting data...", { date: formattedDate, arr: formattedRowsData });
       const response = await axios.post('http://localhost:3002/purchase/add', {
         date: formattedDate,
@@ -271,6 +298,9 @@ const Purchase = () => {
       console.error("Error submitting data:", error);
       toast.error("Error submitting data");
     }
+    finally {
+      setLoading(false);  
+    }
   };
   
 
@@ -278,6 +308,22 @@ const Purchase = () => {
     <Container>
       <h1>PURCHASE</h1>
       <FormContainer>
+              {loading && (
+          <div style={{
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+          }}>
+            <HashLoader color="#164863" loading={loading} size={90} />
+          </div>
+        )}
+
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
             <DatePicker label="Basic date picker" className="date-picker" onChange={(newDate) => setDate(newDate)}
@@ -304,6 +350,7 @@ const Purchase = () => {
             <th>Quantity</th>
             <th>Amount</th>
             <th>Total Amount</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -343,13 +390,16 @@ const Purchase = () => {
               <td>
                 {row.quantity && row.amount ? row.quantity * row.amount : 0}
               </td>
+              <td>
+              <DeleteButton onClick={() => handleDeleteRow(row.id)}>Delete</DeleteButton>
+              </td>
             </tr>
           ))}
         </tbody>
       </ItemTable>
       <SubmitContainer>
         <button className="add-button" onClick={handleAddOneRow}>Add One Row</button>
-        <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+        <SubmitButton onClick={handleSubmit} disabled={loading} >Submit</SubmitButton>
       </SubmitContainer>
       <ToastContainer />
     </Container>

@@ -283,7 +283,7 @@ const AddEvent = () => {
           <MealSection key={mealIndex}>
             <MealHeader>
               <FormGroup style={{ flexGrow: 1 }}>
-                <Label>Meal Type:</Label>
+                <Label>Meal Type:</Label>                                                         
                 <Select
                   value={mealSection.mealType}
                   onChange={(e) => handleMealTypeChange(mealIndex, e.target.value)}
