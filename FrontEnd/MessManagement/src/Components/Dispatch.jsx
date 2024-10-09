@@ -216,7 +216,7 @@ function Dispatch() {
     }));
   
     try {
-      const response = await axios.post('http://localhost:3002/dispatch/updateDispatch', { ItemArray: arr });
+      const response = await axios.post(`${RMK_MESS_URL}/dispatch/updateDispatch`, { ItemArray: arr });
       toast.success("Items updated successfully");
       setRows([{ id: Date.now(), sno: 1, item: '', quantity: '', currentQuantity: '', rmk: '', rmd: '', rmkcet: '', school: '' }]);
       setSelectedDate(null);
@@ -230,7 +230,7 @@ function Dispatch() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3002/dispatch/retrieve");
+        const response = await axios.get(`${RMK_MESS_URL}/dispatch/retrieve`);
         setItems(response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -261,7 +261,7 @@ function Dispatch() {
 
   const fetchTotalForItem = async (itemName) => {
     try {
-      const response = await axios.post("http://localhost:3002/dispatch/getQuantity", {
+      const response = await axios.post(`${RMK_MESS_URL}/dispatch/getQuantity`, {
         itemName: itemName,
       });
       return parseInt(response.data.quantity, 10); 

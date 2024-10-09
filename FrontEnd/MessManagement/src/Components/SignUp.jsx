@@ -77,7 +77,7 @@ function SignupPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3002/signup', {
+      const response = await axios.post(`${RMK_MESS_URL}/signup`, {
         username,
         password,
         role

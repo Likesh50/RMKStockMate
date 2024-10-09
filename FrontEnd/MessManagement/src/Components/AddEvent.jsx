@@ -188,7 +188,7 @@ const AddEvent = () => {
       }))
     };
 
-    axios.post('http://localhost:3002/event/addevent', eventDetails)
+    axios.post(`${RMK_MESS_URL}/event/addevent`, eventDetails)
       .then(response => {
         toast.success('Form has been successfully submitted!');
         window.scrollTo({ top: 0, behavior: 'smooth' });

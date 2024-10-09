@@ -92,7 +92,7 @@ function AvailableStock() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    Axios.get('http://localhost:3002/stocks/availablestock')
+    Axios.get(`${RMK_MESS_URL}/stocks/availablestock`)
       .then(res => {
         setCurr(res.data.data); 
         setFilteredCurr(res.data.data); 

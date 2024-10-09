@@ -168,7 +168,7 @@ const Purchase = () => {
     const fetchItems = async () => {
       try {
         console.log("Fetching items...");
-        const response = await axios.get("http://localhost:3002/purchase/getItems");
+        const response = await axios.get(`${RMK_MESS_URL}/purchase/getItems`);
         console.log("Items fetched:", response.data);
         setItems(response.data);
       } catch (error) {
@@ -256,7 +256,7 @@ const Purchase = () => {
   
     try {
       console.log("Submitting data...", { date: formattedDate, arr: formattedRowsData });
-      const response = await axios.post('http://localhost:3002/purchase/add', {
+      const response = await axios.post(`${RMK_MESS_URL}/purchase/add`, {
         date: formattedDate,
         arr: formattedRowsData
       });
