@@ -83,7 +83,7 @@ function LoginPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${RMK_MESS_URL}/login`, { username, password });
+      const response = await axios.post(`${process.env.RMK_MESS_URL}/login`, { username, password });
       console.log(response.data);
       if (response.data.token) {
         window.sessionStorage.setItem('token', response.data.token);
