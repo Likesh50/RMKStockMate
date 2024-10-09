@@ -122,7 +122,6 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
     .then(res => {
       setData(res.data || []); 
       setLoading(false);
-      console.log(data);
     })
     .catch(err => {
       console.error("Error fetching report data:", err);
@@ -165,46 +164,73 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
         <thead>
           <tr>
             <th>Item Name</th>
-            <th>Purchase Quantity</th>
-            <th>Purchase Amount</th>
-            <th>Closing Stock</th>
-            <th>RMK Quantity</th>
-            <th>RMK Amount</th>
-            <th>RMD Quantity</th>
-            <th>RMD Amount</th>
-            <th>RMKCET Quantity</th>
-            <th>RMKCET Amount</th>
-            <th>School Quantity</th>
-            <th>School Amount</th>
-            <th>Issue Total Quantity</th>
-            <th>Issue Total Amount</th>
+            <th colSpan="2">Opening Stock</th>
+            <th colSpan="2">Purchase</th>
+            <th colSpan="2">Total</th>
+            <th colSpan="2">RMK</th>
+            <th colSpan="2">RMD</th>
+            <th colSpan="2">RMKCET</th>
+            <th colSpan="2">School</th>
+            <th colSpan="2">Issue Total</th>
+            <th colSpan="2">Closing Stock</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th>Qty</th>
+            <th>Amt</th>
+            <th>Qty</th>
+            <th>Amount</th>
+            <th>Qty</th>
+            <th>Amt</th>
+            <th>Qty</th>
+            <th>Amt</th>
+            <th>Qty</th>
+            <th>Amt</th>
+            <th>Qty</th>
+            <th>Amt</th>
+            <th>Qty</th>
+            <th>Amt</th>
+            <th>Qty</th>
+            <th>Amt</th>
+            <th>Qty</th>
+            <th>Amt</th>
           </tr>
         </thead>
         <tbody>
           {data.length > 0 ? (
             data.map((row, index) => {
-              const unitPrice = row.unitPrice;
+              const totalQuantity = row.purchaseQuantity + row.openingStock;
+              const totalAmount = row.purchaseAmount + row.avgPreviousMonthAmount;
+              const issueQuantity = row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL;
+              const issueAmount = (row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL) * row.unitPrice;
+              const closingQuantity = totalQuantity - issueQuantity>0?totalQuantity - issueQuantity:0;
+              const closingAmount = totalAmount - issueAmount>0?totalAmount - issueAmount:0;
               return (
                 <tr key={index}>
                   <td>{row.item}</td>
+                  <td>{row.openingStock}</td>
+                  <td>{row.avgPreviousMonthAmount.toFixed(2)}</td>
                   <td>{row.purchaseQuantity}</td>
                   <td>{row.purchaseAmount.toFixed(2)}</td>
-                  <td>{row.closingStock}</td>
+                  <td>{totalQuantity}</td>
+                  <td>{totalAmount.toFixed(2)}</td>
                   <td>{row.RMK}</td>
-                  <td>{(row.RMK * unitPrice).toFixed(2)}</td>
+                  <td>{(row.RMK * row.unitPrice).toFixed(2)}</td>
                   <td>{row.RMD}</td>
-                  <td>{(row.RMD * unitPrice).toFixed(2)}</td>
+                  <td>{(row.RMD * row.unitPrice).toFixed(2)}</td>
                   <td>{row.RMKCET}</td>
-                  <td>{(row.RMKCET * unitPrice).toFixed(2)}</td>
+                  <td>{(row.RMKCET * row.unitPrice).toFixed(2)}</td>
                   <td>{row.RMKSCHOOL}</td>
-                  <td>{(row.RMKSCHOOL * unitPrice).toFixed(2)}</td>
-                  <td>{(row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL).toFixed(2)}</td>
-                  <td>{((row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL) * unitPrice).toFixed(2)}</td>
+                  <td>{(row.RMKSCHOOL * row.unitPrice).toFixed(2)}</td>
+                  <td>{issueQuantity}</td>
+                  <td>{issueAmount.toFixed(2)}</td>
+                  <td>{closingQuantity}</td>
+                  <td>{closingAmount.toFixed(2)}</td>
                 </tr>
               );
             })
           ) : (
-            <tr><td colSpan="14">No data available</td></tr>
+            <tr><td colSpan="20">No data available</td></tr>
           )}
         </tbody>
       </ItemTable>

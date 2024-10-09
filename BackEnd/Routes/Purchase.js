@@ -76,9 +76,7 @@ router.get('/getItems', async (req, res) => {
             [itemName, category, finalQuantity, date]
           );
         }
-  
-        // Insert into closingstock table
-        await db.promise().query(
+       await db.promise().query(
           `INSERT INTO closingstock (item, quantity, date, category) VALUES (?, ?, ?, ?)`,
           [itemName, finalQuantity, date, category]
         );

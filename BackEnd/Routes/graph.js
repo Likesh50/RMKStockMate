@@ -8,14 +8,12 @@ const getLast7Days = () => {
     for (let i = 0; i < 7; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() - i);
-        last7Days.push(date.toISOString().split('T')[0]); // Format: YYYY-MM-DD
+        last7Days.push(date.toISOString().split('T')[0]);
     }
     return last7Days;
 };
 router.get('/last-7-days', (req, res) => {
     const last7Days = getLast7Days();
-
-    // Create a placeholder for the response
     const resultsMap = last7Days.map(date => ({ date: date.split('-')[2], count: 0 })); // Extracting DD
 
     // Query to get the purchases grouped by date for the last 7 days
