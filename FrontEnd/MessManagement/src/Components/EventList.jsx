@@ -57,7 +57,7 @@ const EventList = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3002/event/events')
+    axios.get(`${RMK_MESS_URL}/event/events`)
       .then(response => {
         setEvents(response.data);
       })

@@ -130,7 +130,7 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:3002/item/getItems')
+    axios.get(`${RMK_MESS_URL}/item/getItems`)
       .then(response => {
         setItems(response.data);
         setLoading(false);
@@ -143,7 +143,7 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
 
   useEffect(() => {
     if (selectedItem) {
-      axios.get('http://localhost:3002/item/report', {
+      axios.get(`${RMK_MESS_URL}/item/report`, {
         params: {
           item: selectedItem,
           fdate: fromDate,

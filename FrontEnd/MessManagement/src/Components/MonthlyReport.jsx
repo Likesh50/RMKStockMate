@@ -113,7 +113,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Axios.get('http://localhost:3002/monthly/report', {
+    Axios.get(`${RMK_MESS_URL}/monthly/report`, {
       params: {
         fdate: fromDate,
         tdate: toDate

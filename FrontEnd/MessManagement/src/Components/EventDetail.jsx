@@ -129,7 +129,7 @@ const EventDetail = () => {
   
   useEffect(() => {
     if (eventId) {
-      axios.get(`http://localhost:3002/event/eventdetail`, {
+      axios.get(`${RMK_MESS_URL}/event/eventdetail`, {
         params: { eventId }
       })
       .then(response => {
