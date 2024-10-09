@@ -103,6 +103,8 @@ const PrintHeader = styled.div`
 
   @media print {
     display: block;
+    padding:5px; 
+    font-size:11px;
   }
 `;
 

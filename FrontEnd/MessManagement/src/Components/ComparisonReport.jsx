@@ -73,6 +73,7 @@ const ItemTable = styled.table`
   @media print {
     th, td {
       font-size: 11px; 
+      padding:5px; 
     }
   }
 `;
