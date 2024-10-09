@@ -4,14 +4,14 @@ const router = express.Router();
 
 router.post('/addevent', (req, res) => {
   console.log("REQUEST BODY IS ", req.body);
-  const { event_name, institution, event_date, meal_details } = req.body;
+  const { event_name, institution, event_date, meal_details,day,no_of_people } = req.body;
 
   const sqlInsert = `
-    INSERT INTO events(event_name, institution, event_date, meal_details)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO events(event_name, institution, event_date, meal_details,day,no_of_people)
+    VALUES (?, ?, ?, ?,?,?)
   `;
 
-  db.query(sqlInsert, [event_name, institution, event_date, JSON.stringify(meal_details)], (err, result) => {
+  db.query(sqlInsert, [event_name, institution, event_date, JSON.stringify(meal_details),day,no_of_people], (err, result) => {
     if (err) {
       console.error("Error inserting event details:", err);
       res.status(500).send("Error inserting event details");

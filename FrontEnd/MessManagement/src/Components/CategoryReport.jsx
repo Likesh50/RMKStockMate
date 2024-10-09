@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Logo from '../assets/Logo.png';
+import { HashLoader } from 'react-spinners';
 
 const Container = styled.div`
   @media print {
@@ -133,7 +134,21 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <div style={{
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+      }}>
+        <HashLoader color="#164863" loading={loading} size={90} />
+      </div>
+    );
   }
 
   return (

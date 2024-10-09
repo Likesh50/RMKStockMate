@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { HashLoader } from 'react-spinners'; 
 const Container = styled.div`
   h1 {
     color: #164863;
@@ -190,13 +190,35 @@ const SubmitButton = styled.button`
     transform: scale(0.98);
   }
 `;
+const DeleteButton = styled.button`
+  background-color: #d9534f; /* Bootstrap danger color */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 
+  &:hover {
+    background-color: #c9302c; /* Darker shade on hover */
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:disabled {
+    background-color: #e7e7e7; /* Light gray for disabled */
+    color: #a9a9a9; /* Darker gray for text */
+    cursor: not-allowed;
+  }
+`;
 function Dispatch() {
   const [rows, setRows] = useState([{ id: Date.now(), sno: 1, item: '', quantity: '', currentQuantity: '', rmk: '', rmd: '', rmkcet: '', school: '' }]);
   const [items, setItems] = useState([]);
   const numRecordsRef = useRef(null);
   const [selectedDate, setSelectedDate] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async () => {
     if (!selectedDate) {
       toast.error("Please enter the date");
@@ -216,7 +238,8 @@ function Dispatch() {
     }));
   
     try {
-      const response = await axios.post(`${RMK_MESS_URL}/dispatch/updateDispatch`, { ItemArray: arr });
+      setLoading(true);
+      const response = await axios.post('http://localhost:3002/dispatch/updateDispatch', { ItemArray: arr });
       toast.success("Items updated successfully");
       setRows([{ id: Date.now(), sno: 1, item: '', quantity: '', currentQuantity: '', rmk: '', rmd: '', rmkcet: '', school: '' }]);
       setSelectedDate(null);
@@ -224,6 +247,9 @@ function Dispatch() {
     } catch (error) {
       console.error("Error updating items:", error);
       toast.error("Error updating items. Please try again.");
+    }
+    finally {
+      setLoading(false);  
     }
   };
   
@@ -338,11 +364,29 @@ function Dispatch() {
       );
     }
   };
-
+  const handleDeleteRow = (id) => {
+    setRows(prevRows => prevRows.filter(row => row.id !== id));
+  };
+  
   return (
     <Container>
       <h1>DISPATCH</h1>
       <FormContainer>
+      {loading && (
+          <div style={{
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+          }}>
+            <HashLoader color="#164863" loading={loading} size={90} />
+          </div>
+        )}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
             <DatePicker label="Basic date picker" className="date-picker"  value={selectedDate} onChange={(newValue) => setSelectedDate(newValue)}/>
@@ -369,6 +413,7 @@ function Dispatch() {
             <th>RMKCET</th>
             <th>Schools</th>
             <th>Current Quantity</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -438,13 +483,16 @@ function Dispatch() {
                   onChange={(e) => handleInputChange(row.id, 'currentQuantity', e.target.value)}
                 />
               </td>
+              <td>
+              <DeleteButton onClick={() => handleDeleteRow(row.id)}>Delete</DeleteButton>
+              </td>
             </tr>
           ))}
         </tbody>
       </ItemTable>
       <SubmitContainer>
         <SubmitButton className="add-button" onClick={handleAddOneRow}>Add</SubmitButton>
-        <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+        <SubmitButton onClick={handleSubmit}  disabled={loading}>Submit</SubmitButton>
       </SubmitContainer>
       <ToastContainer />
     </Container>

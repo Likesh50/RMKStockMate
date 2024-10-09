@@ -2,6 +2,7 @@ import React, { useState, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import Logo from '../assets/Logo.png';
+import { HashLoader } from 'react-spinners';
 
 const Container = styled.div`
   @media print {
@@ -198,6 +199,23 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
     setData([]); 
   };
 
+  if (loading) {
+    return (
+      <div style={{
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+      }}>
+        <HashLoader color="#164863" loading={loading} size={90} />
+      </div>
+    );
+  }
   return (
     <Container ref={ref} className="print-container">
       <PrintHeader>
