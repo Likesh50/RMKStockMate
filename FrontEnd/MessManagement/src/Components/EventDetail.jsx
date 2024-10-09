@@ -129,7 +129,7 @@ const EventDetail = () => {
   
   useEffect(() => {
     if (eventId) {
-      axios.get(`${RMK_MESS_URL}/event/eventdetail`, {
+      axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/event/eventdetail`, {
         params: { eventId }
       })
       .then(response => {

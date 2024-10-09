@@ -114,7 +114,7 @@ export const ComparisonReport = React.forwardRef(({ fromDate, toDate }, ref) => 
   const [months, setMonths] = useState([]);
 
   useEffect(() => {
-    axios.get(`${RMK_MESS_URL}/comparison/report`, {
+    axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/comparison/report`, {
       params: {
         fdate: fromDate,
         tdate: toDate

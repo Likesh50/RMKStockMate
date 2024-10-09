@@ -170,7 +170,7 @@ const AddItems = () => {
     }
 
     try {
-      await axios.post(`${RMK_MESS_URL}/addItems/insert`, { itemName, category });
+      await axios.post(`${import.meta.env.VITE_RMK_MESS_URL}/addItems/insert`, { itemName, category });
       toast.success("Item added successfully");
       
       setItemName("");

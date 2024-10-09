@@ -85,7 +85,7 @@ function SignupPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${RMK_MESS_URL}/signup`, {
+      const response = await axios.post(`${import.meta.env.VITE_RMK_MESS_URL}/signup`, {
         username,
         password,
         role

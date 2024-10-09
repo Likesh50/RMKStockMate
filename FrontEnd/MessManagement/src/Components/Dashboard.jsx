@@ -14,7 +14,7 @@ function DashBoard() {
     
     useEffect(() => {
        
-        fetch(`${RMK_MESS_URL}/graph/category-amount-today`)
+        fetch(`${import.meta.env.VITE_RMK_MESS_URL}/graph/category-amount-today`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -26,7 +26,7 @@ function DashBoard() {
     }, []);
 
     useEffect(() => {
-        fetch(`${RMK_MESS_URL}/graph/category-amount-current-month`)
+        fetch(`${import.meta.env.VITE_RMK_MESS_URL}/graph/category-amount-current-month`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -38,7 +38,7 @@ function DashBoard() {
     }, []);
 
     useEffect(() => {
-        fetch(`${RMK_MESS_URL}/graph/last-7-days`)
+        fetch(`${import.meta.env.VITE_RMK_MESS_URL}/graph/last-7-days`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
