@@ -74,7 +74,7 @@ const ItemTable = styled.table`
 
   @media print {
     th, td {
-      font-size: 11px; 
+      font-size: 7px; 
     }
   }
 `;
@@ -257,6 +257,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
             <td><strong>{schoolTotal}</strong></td>
             <td></td>
             <td><strong>{issueTotalAmount}</strong></td>
+
           </tr>
 
         </tbody>
