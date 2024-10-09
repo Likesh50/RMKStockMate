@@ -126,7 +126,7 @@ const AddItems = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get(`${RMK_MESS_URL}/addItems/getCategory`);
+        const response = await axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/addItems/getCategory`);
         setItems(response.data);
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -135,7 +135,7 @@ const AddItems = () => {
 
     const fetchItemsAvail = async () => {
       try {
-        const response = await axios.get(`${RMK_MESS_URL}/addItems/getItemCategory`);
+        const response = await axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/addItems/getItemCategory`);
         setItemsAvail(response.data);
       } catch (error) {
         console.error("Error fetching items:", error);

@@ -122,6 +122,34 @@ const TableContainer = styled.div`
   min-height: 300px;
   position: relative;
 `;
+const TotalsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #e0f7fa;
+  border: 1px solid #164863;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  div {
+    flex: 1;
+    text-align: center;
+
+    &:first-child {
+      border-right: 1px solid #164863;
+    }
+
+    span {
+      display: block;
+      margin-top: 5px;
+      font-size: 14px;
+      color: #164863;
+    }
+  }
+`;
 
 export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
   const [selectedItem, setSelectedItem] = useState('');
@@ -220,6 +248,9 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
       </div>
     );
   }
+  const purchaseTotal = data.reduce((acc, row) => acc + (row.Purchased_amount ?? 0), 0).toFixed(2);
+  const issueTotal = data.reduce((acc, row) => acc + ((row.RMK_amount ?? 0) + (row.RMD_amount ?? 0) + (row.RMKCET_amount ?? 0) + (row.RMKSCHOOL_amount ?? 0)), 0).toFixed(2);
+  
   return (
     <Container ref={ref} className="print-container">
       <PrintHeader>
@@ -296,6 +327,16 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
           </tbody>
         </ItemTable>
       </TableContainer>
+      <TotalsContainer>
+      <div>
+        Total Purchase Amount
+        <span>{purchaseTotal}</span>
+      </div>
+      <div>
+        Total Issue Amount
+        <span>{issueTotal}</span>
+      </div>
+    </TotalsContainer>
     </Container>
   );
 });
