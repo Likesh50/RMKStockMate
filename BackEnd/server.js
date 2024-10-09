@@ -49,7 +49,7 @@ app.post('/login', (req, res) => {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
-      // Generate JWT
+
       const token = jwt.sign({ id: user.id, role: user.role,uname:user.uname }, JWT_SECRET, { expiresIn: '1h' });
       return res.json({ token, role: user.role,uname:user.uname });
     });
@@ -58,7 +58,7 @@ app.post('/login', (req, res) => {
 app.post('/signup', (req, res) => {
   const { username, password, role } = req.body;
 
-  // Check if the user already exists
+
   db.query('SELECT * FROM users WHERE uname = ?', [username], (err, result) => {
     if (err) {
       return res.status(500).json({ message: 'Database error', err });
@@ -68,16 +68,13 @@ app.post('/signup', (req, res) => {
       return res.status(400).json({ message: 'Username already exists' });
     }
 
-    // Hash the password before saving to the database
     const hashedPassword = bcrypt.hashSync(password, 10);
 
-    // Insert the new user into the database
     db.query('INSERT INTO users (uname, pass, role) VALUES (?, ?, ?)', [username, hashedPassword, role], (err, result) => {
       if (err) {
         return res.status(500).json({ message: 'Error inserting user', err });
       }
 
-      // Generate JWT toke
       return res.status(201).json({ message: 'User created', role });
     });
   });

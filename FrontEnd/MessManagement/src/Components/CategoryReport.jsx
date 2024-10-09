@@ -113,7 +113,7 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:3002/category/report', {
+    axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/category/report`, {
       params: {
         fdate: fromDate,
         tdate: toDate

@@ -126,7 +126,7 @@ const AddItems = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get("http://localhost:3002/addItems/getCategory");
+        const response = await axios.get(`${RMK_MESS_URL}/addItems/getCategory`);
         setItems(response.data);
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -135,7 +135,7 @@ const AddItems = () => {
 
     const fetchItemsAvail = async () => {
       try {
-        const response = await axios.get("http://localhost:3002/addItems/getItemCategory");
+        const response = await axios.get(`${RMK_MESS_URL}/addItems/getItemCategory`);
         setItemsAvail(response.data);
       } catch (error) {
         console.error("Error fetching items:", error);
@@ -170,7 +170,7 @@ const AddItems = () => {
     }
 
     try {
-      await axios.post('http://localhost:3002/addItems/insert', { itemName, category });
+      await axios.post(`${import.meta.env.VITE_RMK_MESS_URL}/addItems/insert`, { itemName, category });
       toast.success("Item added successfully");
       
       setItemName("");
