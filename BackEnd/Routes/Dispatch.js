@@ -84,7 +84,6 @@ router.post('/updateDispatch', async (req, res) => {
       await db.promise().query('COMMIT');
       res.json({ message: 'Dispatch updated successfully' });
   } catch (error) {
-      
       await db.promise().query('ROLLBACK');
       console.error('Error updating dispatch:', error);
       res.status(500).json({ error: 'Internal Server Error' });

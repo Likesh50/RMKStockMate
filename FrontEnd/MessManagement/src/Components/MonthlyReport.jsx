@@ -13,7 +13,9 @@ const Container = styled.div`
     color: #164863;
     text-align: center;
   }
+    height:100%
 `;
+
 
 const ItemTable = styled.table`
   width: 100%;
@@ -146,6 +148,13 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
       </div>
     );
   }
+  const purchaseTotal = data.reduce((acc, row) => acc + row.purchaseAmount, 0).toFixed(2);
+  const rmkTotal = data.reduce((acc, row) => acc + (row.RMK * row.unitPrice), 0).toFixed(2);
+  const rmdTotal = data.reduce((acc, row) => acc + (row.RMD * row.unitPrice), 0).toFixed(2);
+  const rmkcetTotal = data.reduce((acc, row) => acc + (row.RMKCET * row.unitPrice), 0).toFixed(2);
+  const schoolTotal = data.reduce((acc, row) => acc + (row.RMKSCHOOL * row.unitPrice), 0).toFixed(2);
+  const issueTotalAmount = data.reduce((acc, row) => acc + ((row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL) * row.unitPrice), 0).toFixed(2);
+
 
   return (
     <Container ref={ref} className="print-container">
@@ -227,13 +236,31 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
                   <td>{closingQuantity}</td>
                   <td>{closingAmount.toFixed(2)}</td>
                 </tr>
+                
               );
             })
           ) : (
             <tr><td colSpan="20">No data available</td></tr>
           )}
+          <tr>
+            <td><strong>Total</strong></td>
+            <td></td>
+            <td><strong>{purchaseTotal}</strong></td>
+            <td></td>
+            <td></td>
+            <td><strong>{rmkTotal}</strong></td>
+            <td></td>
+            <td><strong>{rmdTotal}</strong></td>
+            <td></td>
+            <td><strong>{rmkcetTotal}</strong></td>
+            <td></td>
+            <td><strong>{schoolTotal}</strong></td>
+            <td></td>
+            <td><strong>{issueTotalAmount}</strong></td>
+          </tr>
+
         </tbody>
       </ItemTable>
-    </Container>
+      </Container>
   );
 });
