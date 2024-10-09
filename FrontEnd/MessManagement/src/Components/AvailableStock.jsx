@@ -111,6 +111,10 @@ function AvailableStock() {
     setFilteredCurr(filteredData);
   };
 
+  const formatNumber = (number) => {
+    return Number(number).toFixed(2);
+  };
+
   return (
     <Container>
       <h1>AVAILABLE STOCK</h1>
@@ -137,7 +141,7 @@ function AvailableStock() {
             <tr key={index}>
               <td>{item.itemName}</td>
               <td>{item.category}</td>
-              <td>{item.quantity}</td>
+              <td>{formatNumber(item.quantity)}</td>
             </tr>
           )) : (
             <tr>
