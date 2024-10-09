@@ -201,12 +201,24 @@ export const ComparisonReport = React.forwardRef(({ fromDate, toDate }, ref) => 
               <td>{row.item_name}</td>
               {months.map(month => (
                 <React.Fragment key={month}>
-                  <td>{row[`${month}_quantity`] ?? '-'}</td>
-                  <td>{row[`${month}_amount`] ?? '-'}</td>
+                  <td>{(row[`${month}_quantity`] ?? '-') === '-' ? '-' : row[`${month}_quantity`].toFixed(2)}</td>
+                  <td>{(row[`${month}_amount`] ?? '-') === '-' ? '-' : row[`${month}_amount`].toFixed(2)}</td>
                 </React.Fragment>
               ))}
             </tr>
           ))}
+          <tr>
+            <td><strong>Total</strong></td>
+            {months.map(month => {
+              const totalAmount = data.reduce((acc, row) => acc + (Number(row[`${month}_amount`] ?? 0) || 0), 0);
+              return (
+                <React.Fragment key={month}>
+                  <td>-</td> {/* No total for quantity */}
+                  <td>{formatNumber(totalAmount.toFixed(2))}</td>
+                </React.Fragment>
+              );
+            })}
+          </tr>
         </tbody>
       </ItemTable>
     </Container>

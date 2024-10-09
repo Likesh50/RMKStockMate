@@ -199,6 +199,10 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
     setData([]); 
   };
 
+  const formatNumber = (number) => {
+    return Number(number).toFixed(2);
+  };
+
   if (loading) {
     return (
       <div style={{
@@ -242,14 +246,18 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
           <thead>
             <tr>
               <th rowSpan="2">Item Name</th>
+              <th colSpan="2">Purchased</th>
               <th colSpan="2">RMK</th>
               <th colSpan="2">RMD</th>
               <th colSpan="2">RMKCET</th>
               <th colSpan="2">School</th>
               <th colSpan="2">Issued</th>
-              <th colSpan="2">Purchased</th>
+              <th colSpan="2">Closing</th>
+              
             </tr>
             <tr>
+              <th>Quantity</th>
+              <th>Amount</th>
               <th>Quantity</th>
               <th>Amount</th>
               <th>Quantity</th>
@@ -268,6 +276,8 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
             {data.map((row, index) => (
               <tr key={index}>
                 <td>{row.item}</td>
+                <td>{row.Purchased_quantity}</td>
+                <td>{row.Purchased_amount}</td>
                 <td>{row.RMK_quantity}</td>
                 <td>{row.RMK_amount}</td>
                 <td>{row.RMD_quantity}</td>
@@ -278,8 +288,9 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
                 <td>{row.RMKSCHOOL_amount}</td>
                 <td>{row.RMK_quantity + row.RMD_quantity + row.RMKCET_quantity + row.RMKSCHOOL_quantity}</td>
                 <td>{row.RMK_amount + row.RMD_amount + row.RMKCET_amount + row.RMKSCHOOL_amount}</td>
-                <td>{row.Purchased_quantity}</td>
-                <td>{row.Purchased_amount}</td>
+                <td>{formatNumber(Math.max(0, row.Purchased_quantity - (row.RMK_quantity + row.RMD_quantity + row.RMKCET_quantity + row.RMKSCHOOL_quantity)))}</td>
+                <td>{formatNumber(Math.max(0, row.Purchased_amount - (row.RMK_amount + row.RMD_amount + row.RMKCET_amount + row.RMKSCHOOL_amount)))}</td>
+
               </tr>
             ))}
           </tbody>
