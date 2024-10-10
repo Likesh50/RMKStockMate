@@ -130,7 +130,7 @@ const Footer = styled.footer`
     padding: 10px;
     background-color: #164863;
     color: white;
-    margin-top: 130px;
+    margin-top: 0px;
     display: none;
     @media print {
     display: block;

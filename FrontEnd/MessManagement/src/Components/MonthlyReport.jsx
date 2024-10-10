@@ -6,7 +6,7 @@ import { HashLoader } from 'react-spinners';
 
 const Container = styled.div`
   @media print {
-    margin: 20px;
+    margin: 40px;
   }
 
   h1 {
@@ -22,6 +22,7 @@ const ItemTable = styled.table`
   border-collapse: collapse;
   font-family: Arial, sans-serif;
   table-layout: fixed;
+
 
   th, td {
     border: 1px solid #ddd;
@@ -95,7 +96,7 @@ const Footer = styled.footer`
     padding: 10px;
     background-color: #164863;
     color: white;
-    margin-top: 130px;
+    margin-top: 0px;
     display: none;
     @media print {
     display: block;
