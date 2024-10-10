@@ -124,6 +124,19 @@ const TableContainer = styled.div`
   min-height: 300px;
   position: relative;
 `;
+
+const Footer = styled.footer`
+    text-align: center;
+    padding: 10px;
+    background-color: #164863;
+    color: white;
+    margin-top: 130px;
+    display: none;
+    @media print {
+    display: block;
+  }
+`;
+
 const TotalsContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -339,6 +352,9 @@ export const ItemReport = forwardRef(({ fromDate, toDate }, ref) => {
         <span>{issueTotal}</span>
       </div>
     </TotalsContainer>
+    <Footer>
+                Copyright © 2024. All rights reserved to DEPARTMENT of INFORMATION TECHNOLOGY - RMKEC
+            </Footer>
     </Container>
   );
 });
