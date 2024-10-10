@@ -114,6 +114,10 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const formatNumber = (number) => {
+    return Number(number).toFixed(2);
+  };
+
   useEffect(() => {
     Axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/monthly/report`, {
       params: {
@@ -273,7 +277,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
           <td></td>
           <td><strong>{issueTotalAmount}</strong></td>
           <td></td>
-          <td><strong>{totalAmountTotal-issueTotalAmount}</strong></td>
+          <td><strong>{formatNumber(totalAmountTotal-issueTotalAmount)}</strong></td>
         
         </tr>
 
