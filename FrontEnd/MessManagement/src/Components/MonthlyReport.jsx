@@ -74,7 +74,8 @@ const ItemTable = styled.table`
 
   @media print {
     th, td {
-      font-size: 11px; 
+      font-size: 10px; 
+      padding:5px; 
     }
   }
 `;
@@ -83,7 +84,6 @@ const DateRange = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
-
   h2 {
     margin: 0;
     font-size: 20px;
@@ -166,8 +166,20 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
   const rmkcetTotal = data.reduce((acc, row) => acc + (row.RMKCET * row.unitPrice), 0).toFixed(2);
   const schoolTotal = data.reduce((acc, row) => acc + (row.RMKSCHOOL * row.unitPrice), 0).toFixed(2);
   const issueTotalAmount = data.reduce((acc, row) => acc + ((row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL) * row.unitPrice), 0).toFixed(2);
+ // Calculate total opening stock amount
+  const openingStockAmountTotal = data.reduce((acc, row) => acc + (row.adjustedOpeningStock ?? 0), 0).toFixed(2);
 
 
+  const totalAmountTotal = data.reduce((acc, row) => acc + (row.purchaseAmount + (row.adjustedOpeningStock || 0)), 0).toFixed(2);
+
+  const closingStockTotalAmount = data.reduce((acc, row) => {
+    const totalQuantity = row.purchaseQuantity + row.openingStock;
+    const issueQuantity = row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL;
+    const closingQuantity = totalQuantity - issueQuantity > 0 ? totalQuantity - issueQuantity : 0;
+    const closingAmount = closingQuantity * row.unitPrice; // Calculate closing stock amount
+    return acc + closingAmount; // Sum it up
+  }, 0).toFixed(2);
+  
   return (
     <Container ref={ref} className="print-container">
       <PrintHeader>
@@ -221,7 +233,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
           {data.length > 0 ? (
             data.map((row, index) => {
               const totalQuantity = row.purchaseQuantity + row.openingStock;
-              const totalAmount = row.purchaseAmount + row.avgPreviousMonthAmount;
+              const totalAmount = row.purchaseAmount + row.adjustedOpeningStock;
               const issueQuantity = row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL;
               const issueAmount = (row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL) * row.unitPrice;
               const closingQuantity = totalQuantity - issueQuantity>0?totalQuantity - issueQuantity:0;
@@ -230,7 +242,7 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
                 <tr key={index}>
                   <td>{row.item}</td>
                   <td>{row.openingStock}</td>
-                  <td>{row.avgPreviousMonthAmount.toFixed(2)}</td>
+                  <td>{row.adjustedOpeningStock.toFixed(2)}</td>
                   <td>{row.purchaseQuantity}</td>
                   <td>{row.purchaseAmount.toFixed(2)}</td>
                   <td>{totalQuantity}</td>
@@ -254,22 +266,30 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
           ) : (
             <tr><td colSpan="20">No data available</td></tr>
           )}
-          <tr>
-            <td><strong>Total</strong></td>
-            <td></td>
-            <td><strong>{purchaseTotal}</strong></td>
-            <td></td>
-            <td></td>
-            <td><strong>{rmkTotal}</strong></td>
-            <td></td>
-            <td><strong>{rmdTotal}</strong></td>
-            <td></td>
-            <td><strong>{rmkcetTotal}</strong></td>
-            <td></td>
-            <td><strong>{schoolTotal}</strong></td>
-            <td></td>
-            <td><strong>{issueTotalAmount}</strong></td>
-          </tr>
+              <tr>
+          <td><strong>Total</strong></td>
+          <td></td>
+          <td><strong>{openingStockAmountTotal}</strong></td>
+          <td></td>
+          <td><strong>{purchaseTotal}</strong></td>
+          <td></td>
+          <td><strong>{totalAmountTotal}</strong></td>
+          <td></td>
+          <td><strong>{rmkTotal}</strong></td>
+          <td></td>
+          <td><strong>{rmdTotal}</strong></td>
+          <td></td>
+          <td><strong>{rmkcetTotal}</strong></td>
+          <td></td>
+          <td><strong>{schoolTotal}</strong></td>
+          <td></td>
+          <td><strong>{issueTotalAmount}</strong></td>
+          <td></td>
+          <td><strong>{totalAmountTotal-issueTotalAmount}</strong></td>
+        
+        </tr>
+
+
 
         </tbody>
       </ItemTable>

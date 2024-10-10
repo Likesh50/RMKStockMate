@@ -74,6 +74,7 @@ const ItemTable = styled.table`
   @media print {
     th, td {
       font-size: 11px; 
+      padding:5px; 
     }
   }
 `;
@@ -178,26 +179,42 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
         <thead>
           <tr>
             <th>Category Name</th>
+            <th>Purchase Total</th>
             <th>RMK</th>
             <th>RMD</th>
             <th>RMKCET</th>
             <th>School</th>
             <th>Issue Total</th>
-            <th>Purchase Total</th>
+            <th>Closing Total</th>
           </tr>
         </thead>
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
               <td>{row.category}</td>
+              <td>{formatNumber(row.purchase_amount)}</td>
               <td>{formatNumber(row.RMK_amount)}</td>
               <td>{formatNumber(row.RMD_amount)}</td>
               <td>{formatNumber(row.RMKCET_amount)}</td>
               <td>{formatNumber(row.RMKSCHOOL_amount)}</td>
               <td>{formatNumber(row.total_amount)}</td>
-              <td>{formatNumber(row.purchase_amount)}</td>
+              <td>{formatNumber(Math.max(0, row.purchase_amount - row.total_amount))}</td>
             </tr>
           ))}
+          <tr>
+          <td><strong>Total</strong></td>
+          <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.purchase_amount, 0))}</strong></td>
+          <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMK_amount, 0))}</strong></td>
+          <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMD_amount, 0))}</strong></td>
+          <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMKCET_amount, 0))}</strong></td>
+          <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMKSCHOOL_amount, 0))}</strong></td>
+          <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.total_amount, 0))}</strong></td>
+          <td>
+          <strong>
+            {formatNumber(data.reduce((acc, row) => acc + Math.max(0, row.purchase_amount - row.total_amount), 0))}
+          </strong>
+          </td>
+        </tr>
         </tbody>
       </ItemTable>
       <Footer>
