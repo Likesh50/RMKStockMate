@@ -90,6 +90,18 @@ const DateRange = styled.div`
   }
 `;
 
+const Footer = styled.footer`
+    text-align: center;
+    padding: 10px;
+    background-color: #164863;
+    color: white;
+    margin-top: 130px;
+    display: none;
+    @media print {
+    display: block;
+  }
+`;
+
 const PrintHeader = styled.div`
   display: none;
   text-align: center;
@@ -261,6 +273,9 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
 
         </tbody>
       </ItemTable>
+            <Footer>
+                Copyright © 2024. All rights reserved to DEPARTMENT of INFORMATION TECHNOLOGY - RMKEC
+            </Footer>
       </Container>
   );
 });
