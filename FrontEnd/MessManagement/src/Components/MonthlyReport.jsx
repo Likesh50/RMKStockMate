@@ -27,6 +27,7 @@ const ItemTable = styled.table`
   font-family: Arial, sans-serif;
   table-layout: fixed;
 
+
   th, td {
     border: 1px solid #ddd;
     padding: 10px;
