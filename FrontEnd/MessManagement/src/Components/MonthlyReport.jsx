@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import Axios from 'axios';
 import Logo from '../assets/Logo.png';
@@ -7,15 +7,19 @@ import { HashLoader } from 'react-spinners';
 const Container = styled.div`
   @media print {
     margin: 20px;
+    margin-bottom:
+    h1{
+      font-size:20px;
+    }
   }
 
   h1 {
     color: #164863;
     text-align: center;
+    
   }
-    height:100%
+  height: 100%;
 `;
-
 
 const ItemTable = styled.table`
   width: 100%;
@@ -75,8 +79,11 @@ const ItemTable = styled.table`
   @media print {
     th, td {
       font-size: 10px; 
-      padding:5px; 
+      padding: 5px;
+     
     }
+
+    
   }
 `;
 
@@ -84,28 +91,32 @@ const DateRange = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
-  h2 {
+  h3 {
     margin: 0;
-    font-size: 20px;
+    font-size: 17px;
   }
 `;
 
 const Footer = styled.footer`
-    text-align: center;
-    padding: 10px;
-    background-color: #164863;
-    color: white;
-    margin-top: 130px;
-    display: none;
-    @media print {
+  text-align: center;
+  padding: 10px;
+  background-color: #164863;
+  color: white;
+
+  display: none;
+
+  @media print {
     display: block;
   }
 `;
 
 const PrintHeader = styled.div`
   display: none;
-  text-align: center;
   margin-bottom: 20px;
+
+  .content {
+    margin-left: 180px;
+  }
 
   img {
     width: 150px;
@@ -122,9 +133,32 @@ const PrintHeader = styled.div`
   }
 `;
 
+const PageNumber = styled.div`
+  
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+
+  @media print {
+    position: fixed;
+    bottom: 10px;
+    right: 0;
+    left: 0;
+    color: black;
+    font-size: 12px;
+
+
+    
+  }
+`;
+
 export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const pageRef = useRef(null);
 
   useEffect(() => {
     Axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/monthly/report`, {
@@ -143,6 +177,23 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
     });
   }, [fromDate, toDate]);
 
+  useEffect(() => {
+    const handleBeforePrint = () => {
+      const pages = document.querySelectorAll(".pageNumber");
+
+      pages.forEach((page, index) => {
+        page.textContent = `Page ${index + 1}`;
+        
+      });
+    };
+
+    window.addEventListener("beforeprint", handleBeforePrint);
+
+    return () => {
+      window.removeEventListener("beforeprint", handleBeforePrint);
+    };
+  }, []);
+
   if (loading) {
     return (
       <div style={{
@@ -160,40 +211,42 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
       </div>
     );
   }
+
   const purchaseTotal = data.reduce((acc, row) => acc + row.purchaseAmount, 0).toFixed(2);
   const rmkTotal = data.reduce((acc, row) => acc + (row.RMK * row.unitPrice), 0).toFixed(2);
   const rmdTotal = data.reduce((acc, row) => acc + (row.RMD * row.unitPrice), 0).toFixed(2);
   const rmkcetTotal = data.reduce((acc, row) => acc + (row.RMKCET * row.unitPrice), 0).toFixed(2);
   const schoolTotal = data.reduce((acc, row) => acc + (row.RMKSCHOOL * row.unitPrice), 0).toFixed(2);
   const issueTotalAmount = data.reduce((acc, row) => acc + ((row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL) * row.unitPrice), 0).toFixed(2);
- // Calculate total opening stock amount
   const openingStockAmountTotal = data.reduce((acc, row) => acc + (row.adjustedOpeningStock ?? 0), 0).toFixed(2);
-
-
   const totalAmountTotal = data.reduce((acc, row) => acc + (row.purchaseAmount + (row.adjustedOpeningStock || 0)), 0).toFixed(2);
-
   const closingStockTotalAmount = data.reduce((acc, row) => {
     const totalQuantity = row.purchaseQuantity + row.openingStock;
     const issueQuantity = row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL;
     const closingQuantity = totalQuantity - issueQuantity > 0 ? totalQuantity - issueQuantity : 0;
-    const closingAmount = closingQuantity * row.unitPrice; // Calculate closing stock amount
-    return acc + closingAmount; // Sum it up
+    const closingAmount = closingQuantity * row.unitPrice;
+    return acc + closingAmount;
   }, 0).toFixed(2);
-  
+
   return (
     <Container ref={ref} className="print-container">
       <PrintHeader>
-        <div className="content">
+        <div style={{ display: 'flex' }}>
           <img src={Logo} alt="Logo" />
-          <h1>FOOD MANAGEMENT</h1>
+          <div className="content">
+            <h1>FOOD MANAGEMENT SYSTEM</h1>
+            <h1>Monthly Report</h1>
+          </div>
         </div>
       </PrintHeader>
-      <h1>Monthly Report</h1>
+
       <DateRange>
-        <h2>From: {fromDate}</h2>
-        <h2>To: {toDate}</h2>
+        <h3>From: {fromDate}</h3>
+        <h3>To: {toDate}</h3>
       </DateRange>
+      
       <ItemTable>
+        {/* Table headers */}
         <thead>
           <tr>
             <th>Item Name</th>
@@ -229,15 +282,17 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
             <th>Amt</th>
           </tr>
         </thead>
+
+        {/* Table body */}
         <tbody>
           {data.length > 0 ? (
             data.map((row, index) => {
               const totalQuantity = row.purchaseQuantity + row.openingStock;
-              const totalAmount = row.purchaseAmount + row.adjustedOpeningStock;
+              const totalAmount = row.purchaseAmount + (row.adjustedOpeningStock || 0);
               const issueQuantity = row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL;
               const issueAmount = (row.RMK + row.RMD + row.RMKCET + row.RMKSCHOOL) * row.unitPrice;
-              const closingQuantity = totalQuantity - issueQuantity>0?totalQuantity - issueQuantity:0;
-              const closingAmount = totalAmount - issueAmount>0?totalAmount - issueAmount:0;
+              const closingQuantity = totalQuantity - issueQuantity > 0 ? totalQuantity - issueQuantity : 0;
+              const closingAmount = totalAmount - issueAmount > 0 ? totalAmount - issueAmount : 0;
               return (
                 <tr key={index}>
                   <td>{row.item}</td>
@@ -260,42 +315,44 @@ export const MonthlyReport = React.forwardRef(({ fromDate, toDate }, ref) => {
                   <td>{closingQuantity}</td>
                   <td>{closingAmount.toFixed(2)}</td>
                 </tr>
-                
               );
             })
           ) : (
             <tr><td colSpan="20">No data available</td></tr>
           )}
-              <tr>
-          <td><strong>Total</strong></td>
-          <td></td>
-          <td><strong>{openingStockAmountTotal}</strong></td>
-          <td></td>
-          <td><strong>{purchaseTotal}</strong></td>
-          <td></td>
-          <td><strong>{totalAmountTotal}</strong></td>
-          <td></td>
-          <td><strong>{rmkTotal}</strong></td>
-          <td></td>
-          <td><strong>{rmdTotal}</strong></td>
-          <td></td>
-          <td><strong>{rmkcetTotal}</strong></td>
-          <td></td>
-          <td><strong>{schoolTotal}</strong></td>
-          <td></td>
-          <td><strong>{issueTotalAmount}</strong></td>
-          <td></td>
-          <td><strong>{totalAmountTotal-issueTotalAmount}</strong></td>
-        
-        </tr>
 
-
-
+          {/* Totals Row */}
+          <tr>
+            <td><strong>Total</strong></td>
+            <td></td>
+            <td><strong>{openingStockAmountTotal}</strong></td>
+            <td></td>
+            <td><strong>{purchaseTotal}</strong></td>
+            <td></td>
+            <td><strong>{totalAmountTotal}</strong></td>
+            <td></td>
+            <td><strong>{rmkTotal}</strong></td>
+            <td></td>
+            <td><strong>{rmdTotal}</strong></td>
+            <td></td>
+            <td><strong>{rmkcetTotal}</strong></td>
+            <td></td>
+            <td><strong>{schoolTotal}</strong></td>
+            <td></td>
+            <td><strong>{issueTotalAmount}</strong></td>
+            <td></td>
+            <td><strong>{totalAmountTotal - issueTotalAmount}</strong></td>
+          </tr>
         </tbody>
       </ItemTable>
-            <Footer>
-                Copyright © 2024. All rights reserved to DEPARTMENT of INFORMATION TECHNOLOGY - RMKEC
-            </Footer>
-      </Container>
+
+      
+
+
+        <Footer>
+          Copyright © 2024. All rights reserved to DEPARTMENT of INFORMATION TECHNOLOGY - RMKEC
+        </Footer>
+      
+    </Container>
   );
 });
