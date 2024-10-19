@@ -158,6 +158,14 @@ const Reports = () => {
             setFromDate={setFromDate} 
             setToDate={setToDate} 
           />
+          <ReportCard 
+            title="Category Comparison" 
+            route="/dashboard/reports/categorycomparison" 
+            fromDate={fromDate} 
+            toDate={toDate} 
+            setFromDate={setFromDate} 
+            setToDate={setToDate} 
+          />
         </ReportsGrid>
       </ReportsContainer>
       <ToastContainer />

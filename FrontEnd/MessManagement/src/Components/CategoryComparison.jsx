@@ -50,26 +50,6 @@ const ItemTable = styled.table`
     color: #000;
   }
 
-  td input {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 4px;
-    font-size: 14px;
-    width: 90%;
-  }
-
-  td select {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 4px;
-    font-size: 12px;
-    min-width: 180px;
-  }
-
-  .sno {
-    min-width: 50px;
-  }
-
   @media print {
     th, td {
       font-size: 11px; 
@@ -121,13 +101,13 @@ const PrintHeader = styled.div`
   }
 `;
 
-export const ComparisonReport = React.forwardRef(({ fromDate, toDate }, ref) => {
+export const CategoryComparison = React.forwardRef(({ fromDate, toDate }, ref) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [months, setMonths] = useState([]);
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/comparison/report`, {
+    axios.get(`${import.meta.env.VITE_RMK_MESS_URL}/categorycomparison/category-report`, {
       params: {
         fdate: fromDate,
         tdate: toDate
@@ -136,16 +116,18 @@ export const ComparisonReport = React.forwardRef(({ fromDate, toDate }, ref) => 
     .then(res => {
       const fetchedData = res.data || [];
       setData(fetchedData);
-
+      console.log(fetchedData);
+      
+      // Extract the months dynamically from the fetched data
       const monthSet = new Set();
-      fetchedData.forEach(row => {
-        Object.keys(row).forEach(key => {
-          const monthMatch = key.match(/(\w+)_quantity/);
+      if (fetchedData.length > 0) {
+        Object.keys(fetchedData[0]).forEach(key => {
+          const monthMatch = key.match(/(\w+)_amount/);
           if (monthMatch) {
             monthSet.add(monthMatch[1]);
           }
         });
-      });
+      }
 
       setMonths([...monthSet]);
       setLoading(false);
@@ -194,51 +176,35 @@ export const ComparisonReport = React.forwardRef(({ fromDate, toDate }, ref) => 
       <ItemTable>
         <thead>
           <tr>
-            <th rowSpan="2">Item Name</th>
-            <th rowSpan="2">Category</th>
+            <th>Category</th>
             {months.map(month => (
-              <th colSpan="2" key={month}>{month}</th>
-            ))}
-          </tr>
-          <tr>
-            {months.map(month => (
-              <React.Fragment key={month}>
-                <th>Quantity</th>
-                <th>Amount</th>
-              </React.Fragment>
+              <th key={month}>{month} Amount</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {data.map((row, index) => (
             <tr key={index}>
-              <td>{row.item_name}</td>
-              <td>{row.item_category}</td>
+              <td>{row.category_name}</td>
               {months.map(month => (
-                <React.Fragment key={month}>
-                  <td>{(row[`${month}_quantity`] ?? '-') === '-' ? '-' : row[`${month}_quantity`].toFixed(2)}</td>
-                  <td>{(row[`${month}_amount`] ?? '-') === '-' ? '-' : row[`${month}_amount`].toFixed(2)}</td>
-                </React.Fragment>
+                <td key={month}>{(row[`${month}_amount`] ?? '-') === '-' ? '-' : formatNumber(row[`${month}_amount`])}</td>
               ))}
             </tr>
           ))}
           <tr>
             <td><strong>Total</strong></td>
             {months.map(month => {
-              const totalAmount = data.reduce((acc, row) => acc + (Number(row[`${month}_amount`] ?? 0) || 0), 0);
+              const totalAmount = data.reduce((acc, row) => acc + (Number(row[`${month}_amount`] ?? 0)), 0);
               return (
-                <React.Fragment key={month}>
-                  <td>-</td> {/* No total for quantity */}
-                  <td>{formatNumber(totalAmount.toFixed(2))}</td>
-                </React.Fragment>
+                <td key={month}>{formatNumber(totalAmount)}</td>
               );
             })}
           </tr>
         </tbody>
       </ItemTable>
-          <Footer>
-                Copyright © 2024. All rights reserved to DEPARTMENT of INFORMATION TECHNOLOGY - RMKEC
-            </Footer>
+      <Footer>
+        Copyright © 2024. All rights reserved to DEPARTMENT of INFORMATION TECHNOLOGY - RMKEC
+      </Footer>
     </Container>
   );
 });

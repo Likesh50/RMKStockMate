@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const router = express.Router();
 
-router.get('/report', async (req, res) => {
+router.get('/category-report', async (req, res) => {
   const f = req.query.fdate; // Start date in 'YYYY-MM-DD' format
   const t = req.query.tdate; // End date in 'YYYY-MM-DD' format
 
@@ -19,19 +19,18 @@ router.get('/report', async (req, res) => {
       const monthName = new Date(startDate.getFullYear(), m).toLocaleString('default', { month: 'long' });
       months.push(monthName);
       monthColumns.push(`
-        COALESCE(SUM(CASE WHEN MONTH(p.date) = ${m + 1} THEN p.quantity ELSE 0 END), 0) AS ${monthName}_quantity,
         COALESCE(SUM(CASE WHEN MONTH(p.date) = ${m + 1} THEN p.amount ELSE 0 END), 0) AS ${monthName}_amount
       `);
     }
 
     const sqlQuery = `
       SELECT
-        p.category AS item_category,
-        p.item AS item_name,
-        ${monthColumns.join(',\n')}
+        p.category AS category_name,
+        ${monthColumns.join(',\n')},
+        SUM(p.amount) AS total_amount
       FROM purchase p
       WHERE p.date BETWEEN ? AND ?
-      GROUP BY p.category, p.item;  -- Include p.category in GROUP BY
+      GROUP BY p.category;
     `;
 
     const [rows] = await db.promise().query(sqlQuery, [f, t]);
@@ -39,10 +38,9 @@ router.get('/report', async (req, res) => {
     res.status(200).send(rows);
     console.log(rows);
   } catch (err) {
-    console.error("Error fetching report data:", err);
-    res.status(500).send({ error: 'An error occurred while fetching report data' });
+    console.error("Error fetching category report data:", err);
+    res.status(500).send({ error: 'An error occurred while fetching category report data' });
   }
 });
-
 
 module.exports = router;
