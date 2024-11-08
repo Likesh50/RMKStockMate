@@ -8,6 +8,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { HashLoader } from 'react-spinners'; 
+import dayjs from 'dayjs';
 const Container = styled.div`
   h1 {
     color: #164863;
@@ -326,9 +327,14 @@ const Purchase = () => {
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
-            <DatePicker label="Basic date picker" className="date-picker" onChange={(newDate) => setDate(newDate)}
-              value={date}
-              format="YYYY-MM-DD" />
+          <DatePicker
+              label="Select date"
+              className="date-picker"
+              value={dayjs.isDayjs(date) ? date : null} // Ensuring date is a valid dayjs object
+              onChange={(newDate) => setDate(newDate && dayjs.isDayjs(newDate) ? newDate : dayjs())}
+              maxDate={dayjs()} // Use dayjs() for maxDate if you want today's date as the limit
+              format="YYYY-MM-DD"
+            />
           </DemoContainer>
         </LocalizationProvider>
         <Records>

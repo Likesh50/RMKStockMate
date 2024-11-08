@@ -185,7 +185,7 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
             <th>RMKCET</th>
             <th>School</th>
             <th>Issue Total</th>
-            <th>Closing Total</th>
+            {/* <th>Closing Total</th> */}
           </tr>
         </thead>
         <tbody>
@@ -198,7 +198,7 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
               <td>{formatNumber(row.RMKCET_amount)}</td>
               <td>{formatNumber(row.RMKSCHOOL_amount)}</td>
               <td>{formatNumber(row.total_amount)}</td>
-              <td>{formatNumber(Math.max(0, row.purchase_amount - row.total_amount))}</td>
+              {/* <td>{formatNumber(Math.max(0, row.purchase_amount - row.total_amount-row.closing_stock_amount))}</td> */}
             </tr>
           ))}
           <tr>
@@ -208,7 +208,7 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
           <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMD_amount, 0))}</strong></td>
           <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMKCET_amount, 0))}</strong></td>
           <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMKSCHOOL_amount, 0))}</strong></td>
-          <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.total_amount, 0))}</strong></td>
+          {/* <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.total_amount, 0))}</strong></td> */}
           <td>
           <strong>
             {formatNumber(data.reduce((acc, row) => acc + Math.max(0, row.purchase_amount - row.total_amount), 0))}

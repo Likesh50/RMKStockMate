@@ -168,7 +168,7 @@ export const CategoryComparison = React.forwardRef(({ fromDate, toDate }, ref) =
           <h1>FOOD MANAGEMENT</h1>
         </div>
       </PrintHeader>
-      <h1>Comparison Report</h1>
+      <h1>Category Comparison Report</h1>
       <DateRange>
         <h2>From: {fromDate}</h2>
         <h2>To: {toDate}</h2>
