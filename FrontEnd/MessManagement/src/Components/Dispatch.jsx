@@ -291,7 +291,7 @@ function Dispatch() {
       const response = await axios.post(`${import.meta.env.VITE_RMK_MESS_URL}/dispatch/getQuantity`, {
         itemName: itemName,
       });
-      return parseInt(response.data.quantity, 10); 
+      return parseFloat(response.data.quantity || 0); 
     } catch (error) {
       console.error("Error fetching quantity:", error);
       return 0; 
@@ -299,13 +299,13 @@ function Dispatch() {
   };
   
   const calculateCurrentQuantity = (row) => {
-    const quantity = parseInt(row.quantity || 0, 10);
-    const rmk = parseInt(row.rmk || 0, 10);
-    const rmd = parseInt(row.rmd || 0, 10);
-    const rmkcet = parseInt(row.rmkcet || 0, 10);
-    const school = parseInt(row.school || 0, 10);
+    const quantity = parseFloat(row.quantity || 0);
+    const rmk = parseFloat(row.rmk || 0);
+    const rmd = parseFloat(row.rmd || 0);
+    const rmkcet = parseFloat(row.rmkcet || 0);
+    const school = parseFloat(row.school || 0);
     return quantity - rmk - rmd - rmkcet - school;
-  };
+};
 
   const handleAddOneRow = () => {
     const lastSno = rows.length > 0 ? rows[rows.length - 1].sno : 0;
@@ -347,13 +347,15 @@ function Dispatch() {
               return row; 
             }
   
-            if (parseInt(updatedRow.rmk || 0, 10) > parseInt(updatedRow.quantity, 10) ||
-                parseInt(updatedRow.rmd || 0, 10) > parseInt(updatedRow.quantity, 10) ||
-                parseInt(updatedRow.rmkcet || 0, 10) > parseInt(updatedRow.quantity, 10) ||
-                parseInt(updatedRow.school || 0, 10) > parseInt(updatedRow.quantity, 10)) {
+            if (
+              parseFloat(updatedRow.rmk || 0) > parseFloat(updatedRow.quantity) ||
+              parseFloat(updatedRow.rmd || 0) > parseFloat(updatedRow.quantity) ||
+              parseFloat(updatedRow.rmkcet || 0) > parseFloat(updatedRow.quantity) ||
+              parseFloat(updatedRow.school || 0) > parseFloat(updatedRow.quantity)
+          ) {
               toast.error("Quantities for RMK, RMD, RMKCET, and School cannot be more than the total quantity.");
               return row; 
-            }
+          }
   
             return {
               ...updatedRow,
