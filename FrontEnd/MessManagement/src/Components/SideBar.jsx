@@ -9,7 +9,7 @@ import add from '../assets/add.png';
 import menu from '../assets/menu.png';
 import view from '../assets/view.png';
 import dashboard from '../assets/dashboard.png';
-
+import vendor from '../assets/vendor.png';
 const SidebarContainer = styled.div`
   background-color: white;
   min-height: 100vh; 
@@ -114,6 +114,12 @@ const SideBar = () => {
           <Link to="eventlist">
             <img src={view} width="40px" height="40px" alt="View Event menu" />
             View Event menu
+          </Link>
+        </SidebarItem>
+        <SidebarItem className={isActive('/dashboard/vendors')}>
+          <Link to="vendors">
+            <img src={vendor} width="40px" height="40px" alt="Vendor Details" />
+           Vendor Details
           </Link>
         </SidebarItem>
         {role==="Admin" &&  (<SidebarItem className={isActive('/adminsignup')}>

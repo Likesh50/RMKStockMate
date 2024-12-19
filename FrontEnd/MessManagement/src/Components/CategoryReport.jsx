@@ -208,12 +208,12 @@ export const CategoryReport = React.forwardRef(({ fromDate, toDate }, ref) => {
           <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMD_amount, 0))}</strong></td>
           <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMKCET_amount, 0))}</strong></td>
           <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.RMKSCHOOL_amount, 0))}</strong></td>
-          {/* <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.total_amount, 0))}</strong></td> */}
-          <td>
+          <td><strong>{formatNumber(data.reduce((acc, row) => acc + row.total_amount, 0))}</strong></td>
+          {/* <td>
           <strong>
             {formatNumber(data.reduce((acc, row) => acc + Math.max(0, row.purchase_amount - row.total_amount), 0))}
           </strong>
-          </td>
+          </td> */}
         </tr>
         </tbody>
       </ItemTable>
