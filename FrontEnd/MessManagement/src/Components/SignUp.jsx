@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import logo from '../assets/Logo.png';
+import backgroundImage from '../assets/Front.jpg';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import backgroundImage from '../assets/Front.jpg';
-import logo from '../assets/Logo.png';
+import axios from 'axios';
 
 const PageWrapper = styled.div`
   background-image: url(${backgroundImage});
@@ -56,6 +56,13 @@ const Input = styled.input`
   border-radius: 5px;
 `;
 
+const Select = styled.select`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
+
 const SubmitButton = styled.button`
   background-color: #1e620a;
   color: white;
@@ -67,7 +74,7 @@ const SubmitButton = styled.button`
   margin-left: 33%;
 `;
 
-function SignupPage() {
+const SignupPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('Viewer'); 
@@ -124,7 +131,7 @@ function SignupPage() {
             />
           </FormGroup>
           <FormGroup>
-            <select
+            <Select
               value={role}
               onChange={(e) => setRole(e.target.value)}
               aria-label="Role"
@@ -132,7 +139,7 @@ function SignupPage() {
               <option value="Viewer">Viewer</option>
               <option value="Editor">Editor</option>
               <option value="Admin">Developer</option>
-            </select>
+            </Select>
           </FormGroup>
           <SubmitButton type="submit">Sign up</SubmitButton>
         </form>
@@ -140,6 +147,6 @@ function SignupPage() {
       <ToastContainer />
     </PageWrapper>
   );
-}
+};
 
 export default SignupPage;
